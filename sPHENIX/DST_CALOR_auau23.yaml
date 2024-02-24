@@ -1,0 +1,84 @@
+#__________________________________________________________________________________________________________________
+#_______________________________________________________________________________________________________DST_CALOR__
+DST_CALOR:
+
+   #
+   # Params defines replacement variables which can be used in the job
+   # definition below.  It also defines condor requirements, such as 
+   # memory and disk.  The condor parameters $(par) will be replaced by
+   # condor at submission time with values determined in matching the
+   # input files to the required output through the kaedama rule.
+   # 
+   params:
+     name:       DST_CALOR_auau23                                                        # name of the production series / dataset type
+     build:      ana.387                                                                 # software build
+     build_name: ana387                                                                  # ... stripped of the period
+     dbtag:      2023p003                                                                # database tag
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)                   # naming convention for logfiles.  Condor will substitute the name, build and dbtag
+     outbase :   $(name)_$(build)_$(tag)                                                 # naming convention for the output files (run and segment will be applied by user macro)
+     script  :   run_caloreco.sh                                                         # name of the user production script
+     payload :   ./slurp-examples/sPHENIX/caloreco/                                      # github directory where production scripts, macros, etc... are found
+     mem     :   2048MB                                                                  # memory requirement
+     disk    :   2GB                                                                     # disk requirement
+
+   #
+   # Database query to find input files.  Note that the {run_condition}, {seg_condition} and
+   # {limit_condition} are defined in kaedama from command line arguments.  These should be 
+   # left in the query.
+   #
+   input: 
+     db: filecatalog
+     query: |-
+        select
+            'filecatalog/datasets'           as source    ,
+            runnumber                                     ,
+            segment                                       ,
+            filename                         as files     ,
+            filename || ':0:' || events      as fileranges
+        from
+            datasets
+        where
+            filename like 'DST_EVENT_auau23_ana393_2023p009-%'
+            {run_condition} 
+            {seg_condition}
+        order by runnumber,segment
+            {limit_condition}
+            ;
+
+#     query: |-
+#        select filename,runnumber,segment from datasets
+#            where filename like 'DST_EVENT_auau23_ana393_2023p009-%'
+#        {run_condition} 
+#        {seg_condition}
+#        order by runnumber,segment
+#        {limit_condition}
+
+   # Declares the directory where input files are found, output files are stored, and
+   # log/condor files should be placed.
+   filesystem:
+     outdir : "/sphenix/lustre01/sphnxpro/slurptest/$$([$(run)/100])00"
+     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/$$([$(run)/100])00"
+     condor :        "/sphenix/data/data02/sphnxpro/testlogs/$$([$(run)/100])00"
+
+   # 
+   # Specifies the condor job submission file.  Variables declared in the params
+   # and filesystem block may be substituded here using the syntax {variable}.
+   # 
+   # Condor variables are defined using the syntax $(variable).  
+   #
+   # Note well -- it is important to ensure that the list of arguments is correctly
+   # defined and maps onto the expected input of the payload script.
+   #
+   job:
+     executable             : "{payload}/run_caloreco.sh"
+     arguments              : "$(nevents) $(run) $(seg) $(lfn) . $(dst) $(outdir) $(buildarg) $(tag) $(inputs) $(ClusterId) $(ProcId)"
+     user_job_wrapper       : "init.sh"
+     output_destination     : 'file://{condor}'
+     transfer_input_files   : "{payload},cups.py,init.sh,pull.py,odbc.ini"
+     output                 : "{logbase}.condor.stdout"
+     error                  : "{logbase}.condor.stderr"
+     log                    : "{condor}/{logbase}.condor"
+     accounting_group       : "group_sphenix.mdc2"
+     accounting_group_user  : "sphnxpro"
+     transfer_output_files  : '$(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d).out,$(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d).err'
+#    transfer_output_files  : 'stdout.log,stderr.log'
