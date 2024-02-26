@@ -58,7 +58,7 @@ DST_CALOR:
    filesystem:
      outdir : "/sphenix/lustre01/sphnxpro/slurptest/$$([$(run)/100])00"
      logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/$$([$(run)/100])00"
-     condor :        "/sphenix/data/data02/sphnxpro/testlogs/$$([$(run)/100])00"
+     condor :        "/tmp/$$([$(run)/100])00"
 
    # 
    # Specifies the condor job submission file.  Variables declared in the params
