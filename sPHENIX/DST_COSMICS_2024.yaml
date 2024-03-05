@@ -55,7 +55,7 @@ DST_COSMICS:
    filesystem:  
      outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccosmics/$$([$(run)/100])00"
      logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/$$([$(run)/100])00"
-     condor :        "/sphenix/data/data02/sphnxpro/testlogs/$$([$(run)/100])00"
+     condor :        "/tmp/testlogs/$$([$(run)/100])00"
 
    #
    # Again I note the need to ensure that the arguments are properly specified given the
@@ -64,7 +64,7 @@ DST_COSMICS:
    job:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges)"
-     output_destination    : 'file://{condor}'
+     output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
