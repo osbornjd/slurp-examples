@@ -26,8 +26,8 @@ echo stageout ${filename} ${destination} start `date`
 
 # Once it has been moved... and perhaps we place some error checking here... we remove it.
 
-echo Remove ${filename} `date`
-rm ${filename}
+#echo Remove ${filename} `date`
+#rm ${filename}
 
 
 
