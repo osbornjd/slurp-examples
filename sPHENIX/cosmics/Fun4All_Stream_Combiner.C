@@ -24,6 +24,7 @@ void Fun4All_Stream_Combiner(int nEvents = 100,
 			     int runnumber = 30117,
 			     const string &type = "beam",
 			     const string &outdir = "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccosmics/",
+			     const int     neventsper=100,
                              const string &input_tpcfile00 = "tpc00.list",
                              const string &input_tpcfile01 = "tpc01.list",
                              const string &input_tpcfile02 = "tpc02.list",
@@ -106,7 +107,7 @@ void Fun4All_Stream_Combiner(int nEvents = 100,
   string outfilename = "./" + type + ".root";
   Fun4AllOutputManager *out = new Fun4AllDstOutputManager("out",outfilename);
   out->UseFileRule();
-  out->SetNEvents(10);                       // number of events per output file
+  out->SetNEvents(neventsper);                       // number of events per output file
   out->SetClosingScript("stageout.sh");      // script to call on file close (not quite working yet...)
   out->SetClosingScriptArgs(outdir);  // additional beyond the name of the file
   se->registerOutputManager(out);
