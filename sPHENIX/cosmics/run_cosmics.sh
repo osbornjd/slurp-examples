@@ -51,11 +51,13 @@ ls -la
 
 outputname="cosmics-${runnumber}-${segment}";
 
-runnumber=$(printf "%08d" $runnumber)
-sequence=$(printf "%04d" $sequence)
+echo $outbase
+echo $logbase
 
-cp stderr.log ${logbase}-${runnumber}-${segment}.log
-cp stdout.log ${logbase}-${runnumber}-${segment}.log
+cp stderr.log ${logbase}.err
+cp stdout.log ${logbase}.out
+
+ls -la
 
 echo "script done"
 } > stdout.log 2>stderr.log

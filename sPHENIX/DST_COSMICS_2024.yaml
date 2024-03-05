@@ -71,7 +71,6 @@ DST_COSMICS:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : 'stdout.log,stderr.log'
+     transfer_output_files : '{logbase}.out,{logbase}.err'
      priority : '3800'
 
-#    transfer_output_files : '$(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d).out,$(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d).err'

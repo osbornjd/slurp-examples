@@ -21,8 +21,9 @@ R__LOAD_LIBRARY(libfun4allraw.so)
 R__LOAD_LIBRARY(libffarawmodules.so)
 
 void Fun4All_Stream_Combiner(int nEvents = 100,
-			   int runnumber = 30117,
-			const string &type = "beam",
+			     int runnumber = 30117,
+			     const string &type = "beam",
+			     const string &outdir = "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccosmics/",
                              const string &input_tpcfile00 = "tpc00.list",
                              const string &input_tpcfile01 = "tpc01.list",
                              const string &input_tpcfile02 = "tpc02.list",
@@ -105,9 +106,9 @@ void Fun4All_Stream_Combiner(int nEvents = 100,
   string outfilename = "./" + type + ".root";
   Fun4AllOutputManager *out = new Fun4AllDstOutputManager("out",outfilename);
   out->UseFileRule();
-  out->SetNEvents(100);                         // number of events per output file
-  out->SetClosingScript("stageout.sh");        // script to call on file close (not quite working yet...)
-  out->SetClosingScriptArgs("/sphenix/lustre01/sphnxpro/commissioning/aligned_streaming_tpc_2");  // additional beyond the name of the file
+  out->SetNEvents(10);                       // number of events per output file
+  out->SetClosingScript("stageout.sh");      // script to call on file close (not quite working yet...)
+  out->SetClosingScriptArgs(outdir);  // additional beyond the name of the file
   se->registerOutputManager(out);
 
   if (nEvents < 0)

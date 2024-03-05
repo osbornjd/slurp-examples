@@ -16,13 +16,22 @@ dbtag=`echo ${dstname} | cut -d'_' -f4`
 runnumber=`echo ${base} | cut -d'-' -f2`
 segment=`echo ${base} | cut -d'-' -f3`
 
-echo stageout ${filename} ${destination} `date`
+echo stageout ${filename} ${destination} start `date`
 
-./cups.py -r ${runnumber} -s ${segment} -d test stageout ${filename} ${destination}
+#./cups.py -r ${runnumber} -s ${segment} -d test stageout ${filename} ${destination}
+
+#md5true=(`md5sum ${filename}`)
+cp --verbose  ${filename} ${destination}  
+#md5check=(`md5sum ${destination}/${filename}`)
+
+#echo stageout ${filename} ${destination} copied `date`
+
+./cups.py -r ${runnumber} -s ${segment} -d DST_TPCCOSMICS_${build}_${dbtag} catalog --ext root --path ${destination} --dataset ${build}_${dbtag} --hostname lustre --nevents 0
+#$$$./cups.py -r ${runnumber} -s ${segment} -d DST_TPCCOSMICS catalog --ext root --path ${destination} --dataset test --hostname lustre --nevents 0
 
 # Once it has been moved... and perhaps we place some error checking here... we remove it.
 
-ecaho Remove ${filename} `date`
+echo Remove ${filename} `date`
 rm ${filename}
 
 #dbtag=${dstname##*_}
