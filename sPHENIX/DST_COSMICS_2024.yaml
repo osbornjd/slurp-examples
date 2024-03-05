@@ -34,19 +34,23 @@ DST_COSMICS:
       direct_path: /sphenix/lustre01/sphnxpro/commissioning/tpc/cosmics/
       query: |-
          select 
-                'daqdb/filelist'                                                 as source  , 
-                runnumber                                                                   , 
-                0                                                                as segment , 
-                string_agg( distinct split_part(filename,'/',-1), ' ' )    as files,   
-                string_agg( distinct split_part(filename,'/',-1) || ':' || firstevent || ':' || lastevent              , ' ' )    as fileranges
-
+                'daqdb/filelist'                                                                                    as source      , 
+                runnumber                                                                                                          , 
+                0                                                                                                   as segment     , 
+                string_agg( distinct split_part(filename,'/',-1), ' ' )                                             as files       ,   
+                string_agg( distinct split_part(filename,'/',-1) || ':' || firstevent || ':' || lastevent, ' ' )    as fileranges  
          from  
                 filelist
+
          where 
                 filename     like '/bbox%/TPC%cosmics%.evt' and
-                transferred_to_sdcc='t'
                 {run_condition}
+
          group by runnumber
+
+         having
+                every(transferred_to_sdcc)                                            
+
          order by runnumber
                 {limit_condition}
               ;              
