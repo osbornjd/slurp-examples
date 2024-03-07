@@ -23,39 +23,18 @@ dbtag=${10}
 inputs=(`echo ${11} | tr "," " "`)  # array of input files
 ranges=(`echo ${12} | tr "," " "`)  # array of input files and ranges
 
-./cups.py -r ${runnumber} -s ${segment} -d DST_EVENT_auau23_${build}_${dbtag} started
+echo basefilename ${basefilename}
+echo baselogname  ${baselogname}
+
+./cups.py -r ${runnumber} -s ${segment} -d ${basefilename} started
 
 hostname
 
 event0=$(( nevents * ( segment ) ))
 eventF=$(( nevents * ( segment + 1 ) - 1))
 
-
-
-this_script=$BASH_SOURCE
-this_script=`readlink -f $this_script`
-this_dir=`dirname $this_script`
-echo rsyncing from $this_dir
-echo running: $this_script $*
-
-if [[ ! -z "$_CONDOR_SCRATCH_DIR" && -d $_CONDOR_SCRATCH_DIR ]]
-then
-    cd $_CONDOR_SCRATCH_DIR
-else
-    echo condor scratch NOT set
-    exit 1
-fi
-
 # Ensure the existence of the output directory
 mkdir -p ${outputdir}/
-
-# Map input files onto input filelists
-#for f in "${inputs[@]}"; do
-#    b=$( basename $f )
-#    l=${b%%-*}.list
-#    #echo Mapping $f onto $l
-#    echo $f >> $l    
-#done
 
 # Map input files onto input filelists
 #
@@ -65,7 +44,6 @@ mkdir -p ${outputdir}/
 # If min event is in the  file then use the file
 # if max event is in the  file then use the file
 # if min event is < the file min AND max event is > the file max then use the file
-
 
 inputlist=""
 for f in "${ranges[@]}"; do    
@@ -100,7 +78,6 @@ for f in "${ranges[@]}"; do
 	  inputlist="${fname} ${inputlist}"
           continue;
     fi
-
 done
 
 for inlist in *.list; do
@@ -127,49 +104,24 @@ hcalwest="beam_West.list"
 ll1="beam_LL1.list"
 gl1="GL1_beam_gl1daq.list"
 
+# Mark state as running and provide input list
+./cups.py -r ${runnumber} -s ${segment} -d ${basefilename} running
+./cups.py -r ${runnumber} -s ${segment} -d ${basefilename} inputs --files ${inputlist}
 
-./cups.py -r ${runnumber} -s ${segment} -d DST_EVENT_auau23_${build}_${dbtag} running
+echo root.exe -q -b Fun4All_Combiner.C\(${nevents},\"${seb00}\",\"${seb01}\",\"${seb02}\",\"${seb03}\",\"${seb04}\",\"${seb05}\",\"${seb06}\",\"${seb07}\",\"${hcalwest}\",\"${hcaleast}\",\"${zdc}\",\"${mbd}\",\"${outputdir}\",\"${basefilename}\"\) 
 
-echo inputlist $inputlist
-echo ./cups.py -r ${runnumber} -s ${segment} -d DST_EVENT_auau23_${build}_${dbtag} inputs --files ${inputlist}
-./cups.py -r ${runnumber} -s ${segment} -d DST_EVENT_auau23_${build}_${dbtag} inputs --files ${inputlist}
-
-ls -la
-
-echo root.exe -q -b Fun4All_Combiner.C\(${nevents},\"${seb00}\",\"${seb01}\",\"${seb02}\",\"${seb03}\",\"${seb04}\",\"${seb05}\",\"${seb06}\",\"${seb07}\",\"${hcalwest}\",\"${hcaleast}\",\"${zdc}\",\"${mbd}\",\"${outputdir}\",\"${basefilename}\"\)
-     root.exe -q -b Fun4All_Combiner.C\(${nevents},\"${seb00}\",\"${seb01}\",\"${seb02}\",\"${seb03}\",\"${seb04}\",\"${seb05}\",\"${seb06}\",\"${seb07}\",\"${hcalwest}\",\"${hcaleast}\",\"${zdc}\",\"${mbd}\",\"${outputdir}\",\"${basefilename}\"\)      | pull.py
-
-# go to sleep for 2min
-#sleep 120
-
+root.exe -q -b Fun4All_Combiner.C\(${nevents},\"${seb00}\",\"${seb01}\",\"${seb02}\",\"${seb03}\",\"${seb04}\",\"${seb05}\",\"${seb06}\",\"${seb07}\",\"${hcalwest}\",\"${hcaleast}\",\"${zdc}\",\"${mbd}\",\"${outputdir}\",\"${basefilename}\"\) 
 status_f4a=$?
 
-./cups.py -r ${runnumber} -s ${segment} -d DST_EVENT_auau23_${build}_${dbtag} exitcode -e ${status_f4a}
-
-
-cat <<EOF > qatest.json
-{
-  "workflow" : "event combine",
-  "build"    : "${build}",
-  "tag"      : "${tag}"
-}
-EOF
-
-#$$$$ ./cups.py -r ${runnumber} -s ${segment} -d DST_EVENT_auau23_${build}_${dbtag} quality --qafile qatest.json
-
+./cups.py -r ${runnumber} -s ${segment} -d ${basefilename} exitcode -e ${status_f4a}
 
 echo "script done"
+ls -la
 
 } > stdout.log 2>stderr.log
 
+cp stderr.log ${baselogname}.err 
+cp stdout.log ${baselogname}.out
 
 
-runnumber=$(printf "%08d" $runnumber)
-segment=$(printf "%04i" $segment)
-rootname=DST_EVENT_auau23_${build}_${dbtag}-${runnumber}-${segment}.prdf
-
-ls -l *.log >> stdout.log
-
-cp stderr.log ${rootname/prdf/err}
-cp stdout.log ${rootname/prdf/out}
 
