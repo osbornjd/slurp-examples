@@ -34,12 +34,20 @@
 
 #include <phool/recoConsts.h>
 
+#include <centrality/CentralityReco.h>
+#include <calotrigger/MinimumBiasClassifier.h>
+
+#include <calovalid/CaloValid.h>
+
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libfun4allraw.so)
 R__LOAD_LIBRARY(libcalo_reco.so)
+R__LOAD_LIBRARY(libcalotrigger.so)
+R__LOAD_LIBRARY(libcentrality.so)
 R__LOAD_LIBRARY(libffamodules.so)
 R__LOAD_LIBRARY(libmbd.so)
 R__LOAD_LIBRARY(libglobalvertex.so)
+R__LOAD_LIBRARY(libcalovalid.so)
 
 void Fun4All_Year1(int nEvents = 5,
                    const std::string &lfn = "beam-00023053-0201.prdf",
@@ -65,6 +73,13 @@ void Fun4All_Year1(int nEvents = 5,
   int runnumber = runseg.first;
   int segment = runseg.second;
 
+
+  char outfile_hist[100];
+  sprintf(outfile_hist, "HIST_CALOR-%08d-%04d.root", runnumber, segment);
+  //string fulloutfile_hist = string("./") + outfile_hist;
+//  string fulloutfile_hist = string("/sphenix/lustre01/sphnxpro/commissioning/calovalid_ana399_2023p008/") + outfile_hist;
+  string fulloutfile_hist = string("./") + outfile_hist;
+
   //===============
   // conditions DB flags
   //===============
@@ -81,7 +96,7 @@ void Fun4All_Year1(int nEvents = 5,
   // Write the DST
   //======================
 
-  Enable::DSTOUT = true;
+  Enable::DSTOUT = false;     // do not copy the DST file...
   Enable::DSTOUT_COMPRESS = false;
   DstOut::OutputDir = outdir;
   DstOut::OutputFile = outputFile;
@@ -139,14 +154,17 @@ void Fun4All_Year1(int nEvents = 5,
   std::cout << "status setters" << std::endl;
   CaloTowerStatus *statusEMC = new CaloTowerStatus("CEMCSTATUS");
   statusEMC->set_detector_type(CaloTowerDefs::CEMC);
+  statusEMC->set_time_cut(1);
   se->registerSubsystem(statusEMC);
 
   CaloTowerStatus *statusHCalIn = new CaloTowerStatus("HCALINSTATUS");
   statusHCalIn->set_detector_type(CaloTowerDefs::HCALIN);
+  statusHCalIn->set_time_cut(2);
   se->registerSubsystem(statusHCalIn);
 
   CaloTowerStatus *statusHCALOUT = new CaloTowerStatus("HCALOUTSTATUS");
   statusHCALOUT->set_detector_type(CaloTowerDefs::HCALOUT);
+  statusHCALOUT->set_time_cut(2);
   se->registerSubsystem(statusHCALOUT);
 
   ////////////////////
@@ -283,6 +301,21 @@ void Fun4All_Year1(int nEvents = 5,
     se->registerSubsystem(calibOHCal_SZ);
   }
 
+  MinimumBiasClassifier *minimumbiasclassifier = new MinimumBiasClassifier();
+  se->registerSubsystem(minimumbiasclassifier);
+
+  CentralityReco *centralityreco = new CentralityReco();
+  se->registerSubsystem(centralityreco);
+
+  ///////////////////////////////////
+  // Validation 
+  CaloValid *ca = new CaloValid("calomodulename",fulloutfile_hist);
+  ca->set_timing_cut_width(200);  //integers for timing width, > 1 : wider cut around max peak time
+  ca->apply_vertex_cut(false);
+  ca->set_vertex_cut(20.);
+  se->registerSubsystem(ca);
+
+
   Fun4AllInputManager *In = new Fun4AllPrdfInputManager("in");
   In->AddFile(lfn);
   se->registerInputManager(In);
@@ -296,6 +329,11 @@ void Fun4All_Year1(int nEvents = 5,
   {
     string FullOutFile = DstOut::OutputFile;
     Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", FullOutFile);
+
+    out->Verbosity(10);
+    out->SetClosingScript("stageout.sh");      
+    out->SetClosingScriptArgs(outdir);  // additional beyond the name of the file
+
     se->registerOutputManager(out);
   }
 
