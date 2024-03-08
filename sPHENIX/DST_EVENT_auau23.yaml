@@ -6,9 +6,9 @@ DST_EVENT:
  
    params:
      name:       DST_EVENT_auau23
-     build:      ana.393
-     build_name: ana393
-     dbtag:      2023p009
+     build:      new
+     build_name: new
+     dbtag:      2023p008
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
