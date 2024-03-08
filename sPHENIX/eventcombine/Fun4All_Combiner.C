@@ -78,8 +78,13 @@ void Fun4All_Combiner(int nEvents = 0,
 //  Fun4AllEventOutputManager *out = new Fun4AllEventOutputManager("EvtOut","/sphenix/lustre01/sphnxpro/commissioning/aligned/beam-%08d-%04d.prdf",20000);
 //  Fun4AllEventOutputManager *out = new Fun4AllEventOutputManager("EvtOut","./beam_emcal-%08d-%04d.prdf",nGB*1000.0);
 //  Fun4AllEventOutputManager *out = new Fun4AllEventOutputManager("EvtOut", outputDir+"/"+"beam_emcal-%08d-%04d.prdf",20000);
-  Fun4AllEventOutputManager *out = new Fun4AllEventOutputManager("EvtOut", outputDir + "/" + outputName + "-%08d-%04d.prdf",0,2000); /// 1GB=1000 last arg
+//  Fun4AllEventOutputManager *out = new Fun4AllEventOutputManager("EvtOut", outputDir + "/" + outputName + "-%08d-%04d.prdf",0,2000); /// 1GB=1000 last arg
+  Fun4AllEventOutputManager *out = new Fun4AllEventOutputManager("EvtOut", outputName + "-%08d-%04d.prdf",0,2000); /// 1GB=1000 last arg
   out->Verbosity(10);
+  //  out->SetNEvents(1000);                     // number of events per output file
+  out->SetClosingScript("stageout.sh");      
+  out->SetClosingScriptArgs(outputDir);  // additional beyond the name of the file
+
 //"/sphenix/lustre01/sphnxpro/commissioning/aligned_v2/beam-%08d-%04d.prdf",0,2000);
 //    out->DropPacket(21102);
   se->registerOutputManager(out);
