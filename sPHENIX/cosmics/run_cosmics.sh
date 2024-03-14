@@ -31,7 +31,8 @@ echo ${inputs[@]}
 inputlist=""
 for f in "${inputs[@]}"; do
     b=$( basename $f )
-    l=${b%%_cosmics*}
+    l=${b%%_cosmics*}  # handle either cosmic events or calibrations
+    l=${l%%_calib*}
     echo ${f} >> ${l/TPC_ebdc/tpc}.list
     inputlist="${f} ${inputlist}"
 done
@@ -50,7 +51,7 @@ ls -la
 
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} exitcode -e ${status_f4a}
 
-outputname="cosmics-${runnumber}-${segment}";
+#???outputname="cosmics-${runnumber}-${segment}";
 
 echo $outbase
 echo $logbase
