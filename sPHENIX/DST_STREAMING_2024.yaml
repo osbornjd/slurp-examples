@@ -14,7 +14,7 @@ DST_COSMICS:
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   /direct/sphenix+u/sphnxpro/slurp-examples/sPHENIX/cosmics/
-     mem     :   4096MB   
+     mem     :   8192MB   
 
    #
    # input query:
@@ -72,6 +72,7 @@ DST_COSMICS:
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
      transfer_output_files : '{logbase}.out,{logbase}.err'
+#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
 
 #_______________________________________________________________________________________________________DST_EVENT__
@@ -90,7 +91,7 @@ DST_TPCCALIB:
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   /direct/sphenix+u/sphnxpro/slurp-examples/sPHENIX/cosmics/
-     mem     :   4096MB   
+     mem     :   16384MB
 
    #
    # input query:
@@ -148,5 +149,6 @@ DST_TPCCALIB:
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
      transfer_output_files : '{logbase}.out,{logbase}.err'
+#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
 
