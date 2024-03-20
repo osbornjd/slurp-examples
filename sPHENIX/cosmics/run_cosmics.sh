@@ -1,15 +1,5 @@
 #!/usr/bin/bash
 
-{
-
-export USER="$(id -u -n)"
-export LOGNAME=${USER}
-export HOME=/sphenix/u/${USER}
-
-source /opt/sphenix/core/bin/sphenix_setup.sh -n ${5}
-
-export ODBCINI=./odbc.ini
- 
 neventsper=100  # number of events per output file
 nevents=${1}
 outbase=${2}
@@ -21,6 +11,16 @@ build=${7/./}
 dbtag=${8}
 inputs=(`echo ${9} | tr "," " "`)  # array of input files 
 
+{
+
+export USER="$(id -u -n)"
+export LOGNAME=${USER}
+export HOME=/sphenix/u/${USER}
+
+source /opt/sphenix/core/bin/sphenix_setup.sh -n ${5}
+
+export ODBCINI=./odbc.ini
+ 
 echo ${inputs[@]}
 
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
@@ -46,6 +46,7 @@ ls *.list
 
 echo root.exe -q -b Fun4All_Stream_Combiner.C\(${nevents},${runnumber},\"${outbase}\",\"${outdir}\",${neventsper}\);
      root.exe -q -b Fun4All_Stream_Combiner.C\(${nevents},${runnumber},\"${outbase}\",\"${outdir}\",${neventsper}\); status_f4a=$?
+#sleep 600
 
 ls -la 
 
@@ -56,13 +57,13 @@ ls -la
 echo $outbase
 echo $logbase
 
-cp stderr.log ${logbase}.err
-cp stdout.log ${logbase}.out
+#cp stderr.log ${logbase}.err
+#cp stdout.log ${logbase}.out
 
 ls -la
 
 echo "script done"
-} > stdout.log 2>stderr.log
+} > ${logbase}.out 2>${logbase}.err
 
 
 
