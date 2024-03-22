@@ -14,7 +14,10 @@ dbtag=`echo ${dstname} | cut -d'_' -f4`
 runnumber=`echo ${base} | cut -d'-' -f2`
 segment=`echo ${base} | cut -d'-' -f3`
 
+ls -la
+
 echo ./cups.py -r ${runnumber} -s ${segment} -d test stageout ${filename} ${destination}
+     ./cups.py -r ${runnumber} -s ${segment} -d test stageout ${filename} ${destination}
 
 echo stageout ${filename} ${destination} finish `date`
 
