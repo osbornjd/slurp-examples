@@ -1,6 +1,5 @@
 #!/usr/bin/bash
 
-neventsper=100  # number of events per output file
 nevents=${1}
 outbase=${2}
 logbase=${3}
@@ -10,6 +9,8 @@ outdir=${6}
 build=${7/./}
 dbtag=${8}
 inputs=(`echo ${9} | tr "," " "`)  # array of input files 
+ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
+neventsper={$11:-1000}
 
 {
 
@@ -26,7 +27,7 @@ echo ${inputs[@]}
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
 
 #______________________________________________________________________________________________
-# Map input files into filelists
+# Map TPC input files into filelists
 # TPC_ebdc23_cosmics-00030117-0009.evt test%%_cosmics*
 inputlist=""
 for f in "${inputs[@]}"; do
@@ -40,13 +41,18 @@ done
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files ${inputlist}
 #______________________________________________________________________________________________
 
+touch gl1.list
+touch intt[0-7].list
+touch mvtx[0-5].list
+touch tpot.list
+
+
 ls *.list
 
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
 
 echo root.exe -q -b Fun4All_Stream_Combiner.C\(${nevents},${runnumber},\"${outbase}\",\"${outdir}\",${neventsper}\);
      root.exe -q -b Fun4All_Stream_Combiner.C\(${nevents},${runnumber},\"${outbase}\",\"${outdir}\",${neventsper}\); status_f4a=$?
-#sleep 600
 
 ls -la 
 
@@ -63,11 +69,5 @@ echo $logbase
 ls -la
 
 echo "script done"
-} > ${logbase}.out 2>${logbase}.err
-
-
-
-
-
-
+} > ${logbase}.out 2>${logbase}.err 
 
