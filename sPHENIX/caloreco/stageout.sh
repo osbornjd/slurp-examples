@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-filename=${1}
+filename=`basename ${1}`   # must be a local file
 destination=${2}
 
 echo stageout ${filename} ${destination} start `date`
@@ -16,8 +16,8 @@ segment=`echo ${base} | cut -d'-' -f3`
 
 ls -la
 
-echo ./cups.py -r ${runnumber} -s ${segment} -d test stageout ${filename} ${destination}
-     ./cups.py -r ${runnumber} -s ${segment} -d test stageout ${filename} ${destination}
+echo ./cups.py -r ${runnumber} -s ${segment} --dsttype ${dsttype} -d ${build}_${dbtag}  stageout ${filename} ${destination}
+     ./cups.py -r ${runnumber} -s ${segment} --dsttype ${dsttype} -d ${build}_${dbtag}  stageout ${filename} ${destination}
 
 echo stageout ${filename} ${destination} finish `date`
 
