@@ -90,13 +90,13 @@ void Fun4All_Year1(int nEvents = 5,
   rc->set_uint64Flag("TIMESTAMP", runnumber);
   CDBInterface::instance()->Verbosity(1);
 
-  // set up production relatedstuff
-  Enable::PRODUCTION = true;
+  // Production flag to false b/c this is handled by production system now
+  Enable::PRODUCTION = false; //
   //======================
   // Write the DST
   //======================
 
-  Enable::DSTOUT = false;     // do not copy the DST file...
+  Enable::DSTOUT = true;    
   Enable::DSTOUT_COMPRESS = false;
   DstOut::OutputDir = outdir;
   DstOut::OutputFile = outputFile;
