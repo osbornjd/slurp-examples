@@ -10,8 +10,7 @@ build=${7/./}
 dbtag=${8}
 inputs=(`echo ${9} | tr "," " "`)  # array of input files 
 ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
-neventsper={$11:-1000}
-
+neventsper=${11:-1000}
 {
 
 export USER="$(id -u -n)"
