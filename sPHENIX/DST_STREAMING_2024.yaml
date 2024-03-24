@@ -14,7 +14,9 @@ DST_COSMICS:
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   /direct/sphenix+u/sphnxpro/slurp-examples/sPHENIX/cosmics/
-     mem     :   8192MB   
+     mem     :   8192MB
+     neventsper: 500
+#     mem     :   4096MB
 
    #
    # input query:
@@ -53,9 +55,9 @@ DST_COSMICS:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccosmics/$$([$(run)/100])00"
-     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/$$([$(run)/100])00"
-     condor :        "/tmp/testlogs/$$([$(run)/100])00"
+     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccosmics/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
+     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
+     condor :        "/tmp/testlogs/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
 
    #
    # Again I note the need to ensure that the arguments are properly specified given the
@@ -63,7 +65,7 @@ DST_COSMICS:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges)"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -91,7 +93,10 @@ DST_TPCCALIB:
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   /direct/sphenix+u/sphnxpro/slurp-examples/sPHENIX/cosmics/
-     mem     :   16384MB
+     mem     :   2048MB
+     neventsper: 500
+     mem     :   8192MB
+#    mem     :   16384MB
 
    #
    # input query:
@@ -130,9 +135,9 @@ DST_TPCCALIB:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccalib/$$([$(run)/100])00"
-     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/$$([$(run)/100])00"
-     condor :        "/tmp/testlogs/$$([$(run)/100])00"
+     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccalib/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
+     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
+     condor :        "/tmp/testlogs/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
 
    #
    # Again I note the need to ensure that the arguments are properly specified given the
