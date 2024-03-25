@@ -8,13 +8,13 @@ echo stageout ${filename} ${destination} start `date`
 # decode filename
 base=${filename/.prdf/}
 dstname=${base%%-*}
-dsttype=`echo ${dstname} | cut -d'_' -f1,2`
-build=`echo ${dstname} | cut -d'_' -f3`
-dbtag=`echo ${dstname} | cut -d'_' -f4`
-runnumber=`echo ${base} | cut -d'-' -f2`
-segment=`echo ${base} | cut -d'-' -f3`
+dsttype=`echo ${dstname} | cut -d'_' -f1-3`
+build=`echo ${dstname}   | cut -d'_' -f4`
+dbtag=`echo ${dstname}   | cut -d'_' -f5`
+runnumber=`echo ${base}  | cut -d'-' -f2`
+segment=`echo ${base}    | cut -d'-' -f3`
 
-#            sh.dpipe( procline, w=0,s='f',d='n',i=True, _out=counter )    
+# sh.dpipe( procline, w=0,s='f',d='n',i=True, _out=counter )    
 nevents=$( dpipe -w 0 -s f -d n -i ${filename} )
 
 echo ./cups.py -r ${runnumber} -s ${segment} -d ${dstname}  stageout ${filename} ${destination} --dsttype ${dsttype} --dataset ${build}_${dbtag}  --nevents ${nevents}
