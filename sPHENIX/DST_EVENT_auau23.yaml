@@ -54,9 +54,9 @@ DST_EVENT:
               ;              
                 
    filesystem:
-     outdir : "/sphenix/lustre01/sphnxpro/slurptest/$$([$(run)/100])00"
-     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/$$([$(run)/100])00"
-     condor :        "/tmp/$$([$(run)/100])00"
+     outdir : "/sphenix/lustre01/sphnxpro/slurptest/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$(rungroup)"
+     condor :        "/tmp/testlogs/run_$(rungroup)"
 
    #
    # Again I note the need to ensure that the arguments are properly specified given the

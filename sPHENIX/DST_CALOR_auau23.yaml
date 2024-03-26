@@ -48,9 +48,9 @@ DST_CALOR:
    # Declares the directory where input files are found, output files are stored, and
    # log/condor files should be placed.
    filesystem:
-     outdir : "/sphenix/lustre01/sphnxpro/slurptest/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
-     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
-     condor :        "/tmp/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
+     outdir : "/sphenix/lustre01/sphnxpro/slurptest/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$(rungroup)"
+     condor :        "/tmp/run_$(rungroup)"
 
    # 
    # Specifies the condor job submission file.  Variables declared in the params
