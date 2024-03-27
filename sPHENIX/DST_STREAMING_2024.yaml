@@ -13,10 +13,9 @@ DST_COSMICS:
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
-     payload :   /direct/sphenix+u/sphnxpro/slurp-examples/sPHENIX/cosmics/
+     payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   8192MB
      neventsper: 500
-#     mem     :   4096MB
 
    #
    # input query:
@@ -33,7 +32,7 @@ DST_COSMICS:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/tpc/cosmics/
+      direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/cosmics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -44,7 +43,11 @@ DST_COSMICS:
          from  
                 filelist
          where 
-                filename     like '/bbox%/TPC%cosmics%.evt'
+                ( filename  like '/bbox%/TPC%cosmics%.evt'   or
+                  filename  like '/bbox%/TPOT%cosmics%.evt'  or
+                  filename  like '/bbox%/cosmics_intt%.evt'  or
+                  filename  like '/bbox%/GL1_cosmics%'       or
+                  filename  like '/bbox%/cosmics_mvtx%.evt' )
                 {run_condition}
          group by runnumber
          having
