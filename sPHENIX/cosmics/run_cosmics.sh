@@ -31,22 +31,63 @@ echo ${inputs[@]}
 inputlist=""
 for f in "${inputs[@]}"; do
     b=$( basename $f )
-    l=${b%%_cosmics*}  # handle either cosmic events or calibrations
-    l=${l%%_calib*}
-    echo ${f} >> ${l/TPC_ebdc/tpc}.list
-    inputlist="${f} ${inputlist}"
+    # TPC files
+    if [[ $b =~ "TPC_ebdc" ]]; then
+       l=${b%%_cosmics*}  # handle either cosmic events or calibrations
+       l=${l%%_calib*}
+       echo ${f} >> ${l/TPC_ebdc/tpc}.list
+       echo Add ${f} to ${l/TPC_ebdc/tpc}.list
+       inputlist="${f} ${inputlist}"
+    fi
+    # TPOT files
+    if [[ $b =~ "TPOT_ebdc" ]]; then
+       echo ${f} >> tpot.list 
+       echo Add ${f} to tpot.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "GL1_cosmics" ]]; then
+       echo ${f} >> gl1.list
+       echo Add ${f} to gl1.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "cosmics_intt" ]]; then
+       l=${b#*cosmics_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "cosmics_mvtx" ]]; then
+       l=${b#*cosmics_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+    
 done
 
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files ${inputlist}
 #______________________________________________________________________________________________
 
 touch gl1.list
-touch intt[0-7].list
-touch mvtx[0-5].list
+touch intt0.list
+touch intt1.list
+touch intt2.list
+touch intt3.list
+touch intt4.list
+touch intt5.list
+touch intt6.list
+touch intt7.list
+touch mvtx0.list
+touch mvtx1.list
+touch mvtx2.list
+touch mvtx3.list
+touch mvtx4.list
+touch mvtx5.list
 touch tpot.list
 
-
-ls *.list
+ls -la *.list
 
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
 
