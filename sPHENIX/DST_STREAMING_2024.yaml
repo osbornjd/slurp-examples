@@ -4,12 +4,14 @@
 #
 DST_COSMICS:
  
-   # DST_EVENT works from a pre-built set of run lists.
+   # At the moment, an extra _ in here will throw off cups b/c it parses out 
+   # run, build, dsttype, etc... from the output filename... so DST_COSMICS_run1aua
+   # will need to wait...
    params:
-     name:       DST_TPCCOSMICS
+     name:       DST_COSMICS_auau23
      build:      new
      build_name: new
-     dbtag:      2023p009
+     dbtag:      2023p013
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
