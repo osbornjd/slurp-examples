@@ -52,14 +52,14 @@ for f in "${inputs[@]}"; do
     fi
     if [[ $b =~ "cosmics_intt" ]]; then
        l=${b#*cosmics_}
-       l=${l%%-}
+       l=${l%%-*}
        echo ${f} >> ${l}.list
        echo Add ${f} to ${l}.list
        inputlist="${f} ${inputlist}"
     fi
     if [[ $b =~ "cosmics_mvtx" ]]; then
        l=${b#*cosmics_}
-       l=${l%%-}
+       l=${l%%-*}
        echo ${f} >> ${l}.list
        echo Add ${f} to ${l}.list
        inputlist="${f} ${inputlist}"
