@@ -4,8 +4,8 @@
 R__LOAD_LIBRARY(libFROG.so)
 void GetEntries(const std::string &file)
 {
-  gSystem->Load("libFROG.so");                                                                                                                                                                                                                                                                                                                                  
-  gSystem->Load("libg4dst.so");                                                                                                                                                                                                                                                                                                                                 
+  gSystem->Load("libFROG.so");
+  gSystem->Load("libg4dst.so");
   // prevent root to start gdb-backtrace.sh
   // in case of crashes, it hangs the condor job
   for (int i = 0; i < kMAXSIGNALS; i++)
@@ -16,6 +16,11 @@ void GetEntries(const std::string &file)
   TFile *f = TFile::Open(fr->location(file));
   cout << "Getting events for " << file << endl;
   TTree *T = (TTree *) f->Get("T");
-  cout << "Number of Entries: " <<  T->GetEntries() << endl;                                                                                                                                                                                                                                                                                                    
+  int nEntries = -1
+  if (T)
+  {
+    nEntries = T->GetEntries();
+  }
+  cout << "Number of Entries: " <<  nEntries << endl;
 };              
 #endif
