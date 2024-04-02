@@ -53,7 +53,8 @@ DST_COSMICS:
                 {run_condition}
          group by runnumber
          having
-                every(transferred_to_sdcc)                                            
+                every(transferred_to_sdcc) and
+                max(lastevent)>1000
          order by runnumber
                 {limit_condition}
               ;              
