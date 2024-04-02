@@ -94,9 +94,12 @@ ls -la *.list
 echo root.exe -q -b Fun4All_Stream_Combiner.C\(${nevents},${runnumber},\"${outbase}\",\"${outdir}\",${neventsper}\);
      root.exe -q -b Fun4All_Stream_Combiner.C\(${nevents},${runnumber},\"${outbase}\",\"${outdir}\",${neventsper}\); status_f4a=$?
 
+# There should be no output files hanging around  (TODO add number of root files to exit code)
 ls -la 
 
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} exitcode -e ${status_f4a}
+# Flag run as finished.  Increment nevents by zero
+echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents 0 --inc 
+     ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents 0 --inc 
 
 #???outputname="cosmics-${runnumber}-${segment}";
 
