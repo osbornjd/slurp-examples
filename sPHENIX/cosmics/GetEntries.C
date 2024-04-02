@@ -16,7 +16,7 @@ void GetEntries(const std::string &file)
   TFile *f = TFile::Open(fr->location(file));
   cout << "Getting events for " << file << endl;
   TTree *T = (TTree *) f->Get("T");
-  int nEntries = -1
+  int nEntries = -1;
   if (T)
   {
     nEntries = T->GetEntries();
