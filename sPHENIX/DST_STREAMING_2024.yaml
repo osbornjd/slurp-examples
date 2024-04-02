@@ -52,13 +52,13 @@ DST_COSMICS:
                   filename  like '/bbox%/cosmics_intt%.evt'  or
                   filename  like '/bbox%/GL1_cosmics%'       or
                   filename  like '/bbox%/cosmics_mvtx%.evt' )
-            and sum( case when filename like '/bbox%/GL1_cosmics%' then 1 else 0 end )
                 {run_condition}
 
          group by runnumber
          having
-                every(transferred_to_sdcc) and
-                max(lastevent)>1000
+                every(transferred_to_sdcc)   and
+                max(lastevent)>1000          and
+                sum( case when filename like '/bbox%/GL1_cosmics%' then 1 else 0 end )>0
          order by runnumber
                 {limit_condition}
               ;              
