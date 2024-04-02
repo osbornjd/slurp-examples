@@ -47,11 +47,13 @@ DST_COSMICS:
          from  
                 filelist
          where 
-                ( filename  like '/bbox%/TPC%cosmics%.evt'   or
-                  filename  like '/bbox%/TPOT%cosmics%.evt'  or
-                  filename  like '/bbox%/cosmics_intt%.evt'  or
-                  filename  like '/bbox%/GL1_cosmics%'       or
-                  filename  like '/bbox%/cosmics_mvtx%.evt' )
+           ( 
+             (filename  like '/bbox%/TPC%cosmics%.evt'   and lastevent>2 ) or
+             (filename  like '/bbox%/TPOT%cosmics%.evt'  and lastevent>2 ) or
+             (filename  like '/bbox%/cosmics_intt%.evt'  and lastevent>2 ) or
+             (filename  like '/bbox%/GL1_cosmics%'       and lastevent>2 ) or
+             (filename  like '/bbox%/cosmics_mvtx%.evt'  and lastevent>2 )
+           )
                 {run_condition}
 
          group by runnumber
