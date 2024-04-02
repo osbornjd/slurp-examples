@@ -32,6 +32,8 @@ DST_COSMICS:
    # The {*_condition} parameters (run, seg, limit) are substituted by kaedama
    # based on (optional) command line options.
    #
+   # For now, require GL1 files...
+   #
    input:
       db: daqdb
       direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/cosmics/
@@ -50,7 +52,9 @@ DST_COSMICS:
                   filename  like '/bbox%/cosmics_intt%.evt'  or
                   filename  like '/bbox%/GL1_cosmics%'       or
                   filename  like '/bbox%/cosmics_mvtx%.evt' )
+            and sum( case when filename like '/bbox%/GL1_cosmics%' then 1 else 0 end )
                 {run_condition}
+
          group by runnumber
          having
                 every(transferred_to_sdcc) and
