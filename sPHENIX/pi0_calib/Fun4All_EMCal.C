@@ -21,9 +21,12 @@
 
 #include <phool/recoConsts.h>
 
+#include <calotrigger/MinimumBiasClassifier.h>
+#include <centrality/CentralityInfo.h>
+
 #include <cdbobjects/CDBTTree.h>  // for CDBTTree
 #include <ffamodules/CDBInterface.h>
-#include <GlobalVariables.C>
+//#include <GlobalVariables.C>
 
 #include <litecaloeval/LiteCaloEval.h>
 #include <calib_emc_pi0/pi0EtaByEta.h>
@@ -35,13 +38,15 @@ R__LOAD_LIBRARY(libcalo_reco.so)
 R__LOAD_LIBRARY(libffamodules.so)
 R__LOAD_LIBRARY(libLiteCaloEvalTowSlope.so)
 R__LOAD_LIBRARY(libcalibCaloEmc_pi0.so)
+R__LOAD_LIBRARY(libcalotrigger.so)
+R__LOAD_LIBRARY(libcentrality.so)
 
 void createLocalEMCalCalibFile(const string fname, int runNumber);
 
 
 
 
-void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",int iter = 2, const std::string &calib_fname="local_calib_copy.root")
+void Fun4All_EMCal(int nevents = 1, const std::string &fname = "inputdata.txt",int iter = 4, const std::string &calib_fname="local_calib_copy.root")
 {
   bool enableMasking = 0;
 
@@ -50,6 +55,7 @@ void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",i
 
   Fun4AllServer *se = Fun4AllServer::instance();
   se->Verbosity(0);
+  CDBInterface::instance()->Verbosity(1);
 
   // se->Verbosity(verbosity);
   recoConsts *rc = recoConsts::instance();
@@ -85,9 +91,9 @@ void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",i
     gSystem->Exit(0);
   }
 
+
   ////////////////////
   // Calibrate towers
-  
   std::cout << "Calibrating EMCal" << std::endl;
   CaloTowerCalib *calibEMC = new CaloTowerCalib("CEMCCALIB");
   calibEMC->set_detector_type(CaloTowerDefs::CEMC);
@@ -100,7 +106,7 @@ void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",i
   std::cout << "Building clusters" << std::endl;
   RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplate");
   ClusterBuilder->Detector("CEMC");
-  ClusterBuilder->set_threshold_energy(0.20);  // for when using basic calibration
+  ClusterBuilder->set_threshold_energy(0.03);  // for when using basic calibration
   std::string emc_prof = getenv("CALIBRATIONROOT");
   emc_prof += "/EmcProfile/CEMCprof_Thresh30MeV.root";
   ClusterBuilder->LoadProfile(emc_prof);
@@ -115,22 +121,15 @@ void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",i
   se->registerSubsystem(clusterCorrection);
 */
 
-  ///////////////////
-  // analysis modules
-  if (iter==1){
-    LiteCaloEval *eval7e = new LiteCaloEval("CEMCEVALUATOR2", "CEMC",OutFile);
-    eval7e->CaloType(LiteCaloEval::CEMC);
-    eval7e->setInputTowerNodeName("TOWERINFO_CALIB_CEMC");
-    se->registerSubsystem(eval7e);
-  }
 
-  if (iter>1){
-    pi0EtaByEta *ca = new pi0EtaByEta("calomodulename", OutFile);
-    ca->set_timing_cut_width(16);
-    ca->apply_vertex_cut(false);
-    ca->set_vertex_cut(20.);
-    se->registerSubsystem(ca);
-  }
+  pi0EtaByEta *ca = new pi0EtaByEta("calomodulename", OutFile);
+  ca->set_timing_cut_width(16);
+  ca->apply_vertex_cut(false);
+  ca->set_vertex_cut(20.);
+  ca->set_pt1BaseClusCut(1.3);
+  ca->set_pt2BaseClusCut(0.7);
+  ca->set_NclusDeptFac(1.4);
+  se->registerSubsystem(ca);
 
   se->run(nevents);
   se->End();
@@ -148,7 +147,8 @@ void Fun4All_EMCal(int nevents = 0, const std::string &fname = "inputdata.txt",i
 void createLocalEMCalCalibFile(const string fname, int runNumber)
 {
   string default_time_independent_calib = "cemc_pi0_twrSlope_v1_default";
-  string m_calibName = "cemc_pi0_twrSlope_v1";
+  //string m_calibName = "cemc_pi0_twrSlope_v1";
+  string m_calibName = "getdefault";
 
   string calibdir = CDBInterface::instance()->getUrl(m_calibName);
   string filePath;
@@ -156,7 +156,6 @@ void createLocalEMCalCalibFile(const string fname, int runNumber)
   if (!calibdir.empty())
   {
     filePath = calibdir;
-    // cdbttree = new CDBTTree(calibdir);
   }
   else
   {
@@ -168,7 +167,6 @@ void createLocalEMCalCalibFile(const string fname, int runNumber)
       exit(1);
     }
     filePath = calibdir;
-    // cdbttree = new CDBTTree(calibdir);
     std::cout << "No specific file for " << m_calibName << " found, using default calib " << default_time_independent_calib << std::endl;
   }
 
