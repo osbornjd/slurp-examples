@@ -60,7 +60,13 @@ DST_COSMICS:
          having
                 every(transferred_to_sdcc)   and
                 max(lastevent)>1000          and
-                sum( case when filename like '/bbox%/GL1_cosmics%' then 1 else 0 end )>0
+                sum( case when filename like '/bbox%/GL1_cosmics%' then 1 else 0 end )>0 and
+                (
+                   sum( case when filename like '/bbox%/TPC%cosmics%' then 1 else 0 end )>0 or
+                   sum( case when filename like '/bbox%/TPOT%cosmics%' then 1 else 0 end )>0 or
+                   sum( case when filename like '/bbox%/cosmics%intt%' then 1 else 0 end )>0 or
+                   sum( case when filename like '/bbox%/cosmics%mvtx%' then 1 else 0 end )>0 
+                )
          order by runnumber
                 {limit_condition}
               ;              
