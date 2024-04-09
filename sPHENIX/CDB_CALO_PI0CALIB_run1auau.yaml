@@ -1,0 +1,101 @@
+#__________________________________________________________________________________________________________________
+#_______________________________________________________________________________________________________DST_CALOR__
+CDB_CALO_CALIB_histograms:
+
+   params:
+     name:       CDB_CALO_CALIB_ITER_run1auau                                            # name of the production series / dataset type
+     build:      new                                                                     # software build
+     build_name: new                                                                     # ... stripped of the period
+     dbtag:      2023p011                                                                # database tag
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)                   # naming convention for logfiles.  Condor will substitute the name, build and dbtag
+     outbase :   $(name)_$(build)_$(tag)                                                 # naming convention for the output files (run and segment will be applied by user macro)
+     script  :   run_pi0_calib.sh                                                        # name of the user production script
+     payload :   ./slurp-examples/sPHENIX/pi0_calib/                                     # github directory where production scripts, macros, etc... are found
+     mem     :   2048MB                                                                  # memory requirement
+     disk    :   2GB                                                                     # disk requirement
+
+   #
+   # Database query to find input files.  Note that the {run_condition}, {seg_condition} and
+   # {limit_condition} are defined in kaedama from command line arguments.  These should be 
+   # left in the query.
+   #
+   input: 
+     db: filecatalog
+     query: |-
+        with
+          calib as (
+             select filename,runnumber,24316 as lastrun, segment as iteration from datasets where filename like 'CDB_CALO_PI0CALIB_ITER_run1auau-%.root'
+          ),
+          inputs as (
+             select filename,runnumber,segment,(filename||':'||0||':'||events) as filerange,floor(segment/10) as groupseg
+             from datasets
+          where (
+              filename like 'DST_EVENT_auau23_ana399%' and  ( select filename from calib ) is not null
+          )
+        )
+        --
+        -- Next, build the input file list.  Each row will result in one job dispatched to condor.
+        -- It will take in the list of all files matching the criteria and return a (possibly
+        -- aggregated) input list, with the calibrtion file appended.
+        --
+        select
+            'filecatalog/datasets'           as source    ,
+            (select runnumber from calib)    as runnumber ,
+            row_number() over ()             as segment   ,
+            ( 
+                string_agg( distinct split_part(inputs.filename,'/',-1), ' ' ) || ' ' ||
+                ( select filename from calib )   
+            )                                as files     
+            ,
+            (
+                string_agg( distinct split_part(inputs.filerange,'/',-1), ' ' ) || ' ' ||                
+                ( select filename from calib ) || ':0:0' 
+            ) as fileranges,
+            ( select filename from calib ) as inputfile,
+            'HST_CALO_PI0CALIB_ITER_run1auau-'||to_char((select runnumber from calib),'FM00000000')||'-'||to_char((select lastrun from calib),'FM00000000')||'-'||to_char((row_number() over() - 1),'FM0000')||'.root' as outputfile,
+            ( select iteration from calib ) as iteration
+        from
+            inputs
+        where (
+            ( select filename from calib ) is not null
+        )
+        group by (
+              inputs.runnumber,inputs.groupseg
+        )
+        order by (
+              inputs.runnumber,inputs.groupseg
+        )
+        limit 10
+        ;
+
+
+
+   # Declares the directory where input files are found, output files are stored, and
+   # log/condor files should be placed.
+   filesystem:
+     outdir : "/sphenix/lustre01/sphnxpro/run1auau_pi0_calib/cdb_pi0calib/"
+     logdir : "file:///sphenix/data/data02/sphnxpro/run1auau_pi0_calib/cdb_pi0calib/"
+     condor :        "/tmp/cdb_pi0calib/"
+
+   # 
+   # Specifies the condor job submission file.  Variables declared in the params
+   # and filesystem block may be substituded here using the syntax {variable}.
+   # 
+   # Condor variables are defined using the syntax $(variable).  
+   #
+   # Note well -- it is important to ensure that the list of arguments is correctly
+   # defined and maps onto the expected input of the payload script.
+   #
+   job:
+     executable             : "{payload}/run_pi0_calib.sh"
+     arguments              : "$(nevents) $(run) $(seg) {logbase} {outbase} $(outdir) $(buildarg) $(tag) $(inputs) $(ClusterId) $(ProcId)"
+     user_job_wrapper       : "init.sh"
+     output_destination     : '{logdir}'
+     transfer_input_files   : "{payload},cups.py,init.sh,pull.py,odbc.ini"
+     output                 : "{logbase}.condor.stdout"
+     error                  : "{logbase}.condor.stderr"
+     log                    : "{condor}/{logbase}.condor"
+     accounting_group       : "group_sphenix.mdc2"
+     accounting_group_user  : "sphnxpro"
+     transfer_output_files  : 'stdout.log,stderr.log' 
+#    transfer_output_files  : '$(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d).out,$(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d).err'
