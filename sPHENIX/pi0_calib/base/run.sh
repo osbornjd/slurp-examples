@@ -18,27 +18,24 @@
 
 export TargetDir="$PWD"/condorout
 
-iter=0
+iter=1
 
-while read dir; do 
-  rm inputdata.txt
-  for file in /sphenix/lustre01/sphnxpro/commissioning/DST_ana.395_2023p007/DST_CALO*-000"$dir"-*.root
-  do
-cat >>inputdata.txt<< EOF
-$file
-EOF
-done
-done < runList.txt # redirect the input of the
+rm temprun.txt
+read dir < runList.txt
+echo "$dir" > temprun.txt
+CreateDstList.pl --list temprun.txt --build ana403 --cdb 2023p011 DST_CALO
+export listfile="dst_calo-000${dir}.list"
+mv $listfile inputdata.list
 
 
 if [ "$iter" -eq 0 ]; then
-  root "../Fun4All_EMCal.C(0,\"inputdata.txt\",0,\"local_calib_copy.root\")"
+  root "../Fun4All_EMCal.C(0,\"inputdata.list\",0,\"local_calib_copy.root\")"
   iter=$((iter+1))
 fi
 
 
 # upper bound on x determines number of iterations
-for((x=0;x<35;x++));
+for((x=0;x<5;x++));
 do
 
 if [ -d ${TargetDir} ]; then
@@ -53,22 +50,15 @@ i=0
 while read dir; do 
   li=$(printf "%04d" $i)
 
-  rm inputdata.txt
   
   # creates a list of all files for a particular run
-  for file in /sphenix/lustre01/sphnxpro/commissioning/DST_ana395_2023p007/DST_CALO*-000"$dir"-*.root
-  do
-cat >>inputdata.txt<< EOF
-$file
-EOF
-done
-
-  if [ "$iter" -le 3 ]; then
-    j=16
-  else
-    j=100
-  fi
-  tot_files=$( cat inputdata.txt | wc -l )
+  echo "$dir" > temprun.txt
+  CreateDstList.pl --list temprun.txt --build ana403 --cdb 2023p011 DST_CALO
+  export listfile="dst_calo-000${dir}.list"
+   echo $listfile
+  
+  j=100
+  tot_files=$( cat ${listfile} | wc -l )
   echo "total files: $tot_files"
   rem=$(( $tot_files%$j ))
   files_per_job=$(( $tot_files/$j ))
@@ -95,7 +85,7 @@ done
     end_file=$(( $start_file+$files_per_job-1 ))
     echo "start file: $start_file   end file: $end_file"
 
-    sed -n $start_file\,${end_file}p inputdata.txt > tmp.txt
+    sed -n $start_file\,${end_file}p ${listfile} > tmp.txt
     mv tmp.txt ${WorkDir}/inputdata.txt
     
     pushd ${WorkDir}
@@ -140,7 +130,7 @@ file_directory="${TargetDir}/OutDir*/DONE.root"
 
 while [ $(ls $file_directory | wc -l) -lt $((i)) ]; do
      current_file_count=$(ls $file_directory | wc -l)
-    echo "Waiting for $((i)) files, currently $current_file_count"
+    echo "on iteration $iter :  Waiting for $((i)) files, currently $current_file_count"
     sleep 30  # Adjust the sleep duration as needed
 done
 
@@ -161,11 +151,7 @@ hadd -k $hist_out $file_to_hadd
 ################################
 # FITTING (not done with condor
 
-if [ "$iter" -le 3 ]; then
-  root -b "../doTscFit.C(\"${hist_out}\",\"local_calib_copy.root\",$iter)"
-else
-  root -b "../doFitAndCalibUpdate.C(\"${hist_out}\",\"local_calib_copy.root\",$iter)"
-fi
+root -b "../doFitAndCalibUpdate.C(\"${hist_out}\",\"local_calib_copy.root\",$iter)"
 
 iter=$((iter+1))
 
