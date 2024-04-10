@@ -103,18 +103,18 @@ DST_TPCCALIB:
  
    # DST_EVENT works from a pre-built set of run lists.
    params:
-     name:       DST_TPCCALIB
+     name:       DST_TPCCALIB_run2pp
      build:      new
      build_name: new
-     dbtag:      2023p009
+     dbtag:      2023p011
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   /direct/sphenix+u/sphnxpro/slurp-examples/sPHENIX/cosmics/
      mem     :   2048MB
      neventsper: 500
-     mem     :   8192MB
-#    mem     :   16384MB
+#    mem     :   8192MB
+     mem     :   16384MB
 
    #
    # input query:
@@ -153,9 +153,9 @@ DST_TPCCALIB:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccalib/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
-     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
-     condor :        "/tmp/testlogs/run_$$([$(run)/100])00_$$([1+$(run)/100])00"
+     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccalib/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$(rungroup)"
+     condor :        "/tmp/testlogs/run_$(rungroup)"
 
    #
    # Again I note the need to ensure that the arguments are properly specified given the
@@ -163,7 +163,7 @@ DST_TPCCALIB:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges)"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
