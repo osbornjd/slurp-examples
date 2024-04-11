@@ -52,7 +52,12 @@ CDB_CALO_CALIB_histograms:
                 ( select filename from calib ) || ':0:0' 
             ) as fileranges,
             ( select filename from calib ) as inputfile,
-            'HST_CALO_PI0CALIB_ITER_run1auau-'||to_char((select runnumber from calib),'FM00000000')||'-'||to_char((select lastrun from calib),'FM00000000')||'-'||to_char((row_number() over() - 1),'FM0000')||'.root' as outputfile,
+            'HST_CALO_CALIB_ITER_run1auau-'||
+                        to_char((select runnumber from calib),'FM00000000') ||'-'||
+                        to_char((select lastrun from calib),'FM00000000')   ||'-'||
+                        to_char((row_number() over() - 1),'FM0000')         ||'-'||
+                        to_char((select iteration from calib),'FM00')       ||'.root'
+                        as outputfile,
             ( select iteration from calib ) as iteration
         from
             inputs
