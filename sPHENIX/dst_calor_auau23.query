@@ -1,0 +1,20 @@
+with 
+inputs as ( 
+    select distinct filename as input, runnumber, segment
+        from
+            datasets
+        where
+            filename like 'DST_EVENT_auau23_ana399%'
+),
+outputs as (
+     select filename as output, runnumber, segment
+        from 
+            datasets
+        where
+            filename like 'DST_CALO_run1auau_ana410_2023p014-%'
+)
+
+
+select distinct inputs.runnumber from inputs left outer join outputs on inputs.runnumber=outputs.runnumber and inputs.segment=outputs.segment where outputs.runnumber is null;
+
+
