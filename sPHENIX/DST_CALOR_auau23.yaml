@@ -10,10 +10,10 @@ DST_CALOR:
    # input files to the required output through the kaedama rule.
    # 
    params:
-     name:       DST_CALOR_auau23                                                        # name of the production series / dataset type
-     build:      new                                                                 # software build
-     build_name: new                                                                  # ... stripped of the period
-     dbtag:      2023p011                                                                # database tag
+     name:       DST_CALO_run1auau                                                       # name of the production series 
+     build:      ana.410                                                                 # software build
+     build_name: ana410                                                                  # ... stripped of the period
+     dbtag:      2023p014                                                                # database tag
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)                   # naming convention for logfiles.  Condor will substitute the name, build and dbtag
      outbase :   $(name)_$(build)_$(tag)                                                 # naming convention for the output files (run and segment will be applied by user macro)
      script  :   run_caloreco.sh                                                         # name of the user production script
@@ -38,7 +38,7 @@ DST_CALOR:
         from
             datasets
         where
-            filename like 'DST_EVENT_auau23_ana393_2023p009-%'
+            filename like 'DST_EVENT_auau23_ana399%'
             {run_condition} 
             {seg_condition}
         order by runnumber,segment
@@ -48,9 +48,9 @@ DST_CALOR:
    # Declares the directory where input files are found, output files are stored, and
    # log/condor files should be placed.
    filesystem:
-     outdir : "/sphenix/lustre01/sphnxpro/slurptest/run_$(rungroup)"
-     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$(rungroup)"
-     condor :        "/tmp/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/production/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/prodlogs/run_$(rungroup)"
+     condor :        "/tmp/prodlogs/run_$(rungroup)"
 
    # 
    # Specifies the condor job submission file.  Variables declared in the params
