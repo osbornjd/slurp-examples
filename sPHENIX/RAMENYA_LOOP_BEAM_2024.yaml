@@ -17,7 +17,7 @@ DST_BEAM:
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   8192MB
-     neventsper: 500
+     neventsper: 5000
 
    #
    # input query:
@@ -290,7 +290,7 @@ DST_BEAM_NO_INTT:
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   8192MB
-     neventsper: 500
+     neventsper: 5000
 
    #
    # input query:
