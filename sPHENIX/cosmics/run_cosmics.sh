@@ -25,6 +25,7 @@ echo ${inputs[@]}
 
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
 
+
 #______________________________________________________________________________________________
 # Map TPC input files into filelists
 # TPC_ebdc23_cosmics-00030117-0009.evt test%%_cosmics*
@@ -33,8 +34,9 @@ for f in "${inputs[@]}"; do
     b=$( basename $f )
     # TPC files
     if [[ $b =~ "TPC_ebdc" ]]; then
-       l=${b%%_cosmics*}  # handle either cosmic events or calibrations
+       l=${b%%_cosmics*}  # handle either cosmic events or calibrations or beam...
        l=${l%%_calib*}
+       l=${l%%_beam*}
        echo ${f} >> ${l/TPC_ebdc/tpc}.list
        echo Add ${f} to ${l/TPC_ebdc/tpc}.list
        inputlist="${f} ${inputlist}"
@@ -59,6 +61,46 @@ for f in "${inputs[@]}"; do
     fi
     if [[ $b =~ "cosmics_mvtx" ]]; then
        l=${b#*cosmics_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+
+    if [[ $b =~ "GL1_beam" ]]; then
+       echo ${f} >> gl1.list
+       echo Add ${f} to gl1.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "beam_intt" ]]; then
+       l=${b#*beam_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "beam_mvtx" ]]; then
+       l=${b#*beam_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+
+    if [[ $b =~ "GL1_calib" ]]; then
+       echo ${f} >> gl1.list
+       echo Add ${f} to gl1.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "calib_intt" ]]; then
+       l=${b#*calib_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "calib_mvtx" ]]; then
+       l=${b#*calib_}
        l=${l%%-*}
        echo ${f} >> ${l}.list
        echo Add ${f} to ${l}.list
@@ -114,3 +156,19 @@ ls -la
 echo "script done"
 } > ${logbase}.out 2>${logbase}.err 
 
+
+find ${logbase}.out -size +5MB -print -exec mv '{}' '{}'_yuge
+find ${logbase}.err -size +5MB -print -exec mv '{}' '{}'_yuge
+
+if [ test -f ${logbase}.out_yuge ]; then
+   head -c 2MB ${logbase}.out_yuge >   ${logbase}.out
+   echo "============================================================================================================================= [snip] ==============================" >> ${logbase}.out  
+   tail -c 2MB ${logbase}.out_yuge >>  ${logbase}.out 
+fi
+
+
+if [ test -f ${logbase}.err_yuge ]; then
+   head -c 2MB ${logbase}.err_yuge >   ${logbase}.err
+   echo "============================================================================================================================= [snip] ==============================" >> ${logbase}.out  
+   tail -c 2MB ${logbase}.err_yuge >>  ${logbase}.err 
+fi
