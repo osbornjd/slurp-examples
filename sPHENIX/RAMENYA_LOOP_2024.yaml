@@ -33,8 +33,6 @@ DST_COSMICS:
    # based on (optional) command line options.
    #
    # For now, require GL1 files...
-   #--           (filename  like '/bbox%/cosmics_mvtx%.evt'  and lastevent>2 )
-   #              sum( case when filename like '/bbox%/cosmics%mvtx%' then 1 else 0 end )>0 
    input:
       db: daqdb
       direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/cosmics/
@@ -52,7 +50,8 @@ DST_COSMICS:
              (filename  like '/bbox%/TPC%cosmics%.evt'   and lastevent>2 ) or
              (filename  like '/bbox%/TPOT%cosmics%.evt'  and lastevent>2 ) or
              (filename  like '/bbox%/cosmics_intt%.evt'  and lastevent>2 ) or
-             (filename  like '/bbox%/GL1_cosmics%'       and lastevent>2 ) 
+             (filename  like '/bbox%/GL1_cosmics%'       and lastevent>2 ) or
+             (filename  like '/bbox%/cosmics_mvtx%.evt'  and lastevent>2 )
            )
                 {run_condition}
 
@@ -64,7 +63,8 @@ DST_COSMICS:
                 (
                    sum( case when filename like '/bbox%/TPC%cosmics%' then 1 else 0 end )>0 or
                    sum( case when filename like '/bbox%/TPOT%cosmics%' then 1 else 0 end )>0 or
-                   sum( case when filename like '/bbox%/cosmics%intt%' then 1 else 0 end )>0 
+                   sum( case when filename like '/bbox%/cosmics%intt%' then 1 else 0 end )>0 or
+                   sum( case when filename like '/bbox%/cosmics%mvtx%' then 1 else 0 end )>0 
                 )
          order by runnumber
                 {limit_condition}
@@ -228,7 +228,8 @@ DST_COSMICS_INTT_RAW:
            ( 
              (filename  like '/bbox%/TPOT%cosmics%.evt'  and lastevent>2 ) or
              (filename  like '/bbox%/cosmics_intt%.evt'  and lastevent>2 ) or
-             (filename  like '/bbox%/GL1_cosmics%'       and lastevent>2 ) 
+             (filename  like '/bbox%/GL1_cosmics%'       and lastevent>2 ) or
+             (filename  like '/bbox%/cosmics_mvtx%.evt'  and lastevent>2 )
            )
                 {run_condition}
            and runnumber>=35590
@@ -240,7 +241,8 @@ DST_COSMICS_INTT_RAW:
                 sum( case when filename like '/bbox%/GL1_cosmics%' then 1 else 0 end )>0 and
                 (
                    sum( case when filename like '/bbox%/TPOT%cosmics%' then 1 else 0 end )>0 or
-                   sum( case when filename like '/bbox%/cosmics%intt%' then 1 else 0 end )>0
+                   sum( case when filename like '/bbox%/cosmics%intt%' then 1 else 0 end )>0 or
+                   sum( case when filename like '/bbox%/cosmics%mvtx%' then 1 else 0 end )>0 
                 )
          order by runnumber
                 {limit_condition}
@@ -321,7 +323,8 @@ DST_COSMICS_NO_INTT:
            ( 
              (filename  like '/bbox%/TPC%cosmics%.evt'   and lastevent>2 ) or
              (filename  like '/bbox%/TPOT%cosmics%.evt'  and lastevent>2 ) or
-             (filename  like '/bbox%/GL1_cosmics%'       and lastevent>2 ) 
+             (filename  like '/bbox%/GL1_cosmics%'       and lastevent>2 ) or
+             (filename  like '/bbox%/cosmics_mvtx%.evt'  and lastevent>2 )
            )
                 {run_condition}
 
@@ -332,7 +335,8 @@ DST_COSMICS_NO_INTT:
                 sum( case when filename like '/bbox%/GL1_cosmics%' then 1 else 0 end )>0 and
                 (
                    sum( case when filename like '/bbox%/TPC%cosmics%' then 1 else 0 end )>0 or
-                   sum( case when filename like '/bbox%/TPOT%cosmics%' then 1 else 0 end )>0 
+                   sum( case when filename like '/bbox%/TPOT%cosmics%' then 1 else 0 end )>0  or
+                   sum( case when filename like '/bbox%/cosmics%mvtx%' then 1 else 0 end )>0 
                 )
          order by runnumber
                 {limit_condition}
@@ -360,7 +364,9 @@ DST_COSMICS_NO_INTT:
      accounting_group_user : "sphnxpro"
      transfer_output_files : '{logbase}.out,{logbase}.err'
 #    transfer_output_files : 'stdout.log,stderr.log'
-     priority : '3800'#_______________________________________________________________________________________________________DST_EVENT__
+     priority : '3800'
+
+#_______________________________________________________________________________________________________DST_EVENT__
 #
 # kaedama.py --rule DST_EVENT --config examples/sPHENIX/DST_EVENT_aua23.yaml --runs ...
 #
