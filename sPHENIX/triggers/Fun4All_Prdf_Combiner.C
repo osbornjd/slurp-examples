@@ -80,7 +80,7 @@ void Fun4All_Prdf_Combiner(int nEvents = 0,
   cemcinfile.push_back(cemcinput15);
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(1);
+  se->Verbosity(0);
   Fun4AllPrdfInputTriggerManager *in = new Fun4AllPrdfInputTriggerManager("Comb");
   //  in->Verbosity(1);
   // this one is the reference
