@@ -37,6 +37,7 @@ for f in "${inputs[@]}"; do
        l=${b%%_cosmics*}  # handle either cosmic events or calibrations or beam...
        l=${l%%_calib*}
        l=${l%%_beam*}
+       l=${l%%_physics*}
        echo ${f} >> ${l/TPC_ebdc/tpc}.list
        echo Add ${f} to ${l/TPC_ebdc/tpc}.list
        inputlist="${f} ${inputlist}"
@@ -106,6 +107,26 @@ for f in "${inputs[@]}"; do
        echo Add ${f} to ${l}.list
        inputlist="${f} ${inputlist}"
     fi
+
+    if [[ $b =~ "GL1_physics" ]]; then
+       echo ${f} >> gl1.list
+       echo Add ${f} to gl1.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "physics_intt" ]]; then
+       l=${b#*physics_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "physics_mvtx" ]]; then
+       l=${b#*physics_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
     
 done
 
@@ -157,18 +178,18 @@ echo "script done"
 } > ${logbase}.out 2>${logbase}.err 
 
 
-find ${logbase}.out -size +5MB -print -exec mv '{}' '{}'_yuge
-find ${logbase}.err -size +5MB -print -exec mv '{}' '{}'_yuge
+find ${logbase}.out -size +1MB -print -exec mv '{}' '{}'_yuge
+find ${logbase}.err -size +1MB -print -exec mv '{}' '{}'_yuge
 
 if [ test -f ${logbase}.out_yuge ]; then
-   head -c 2MB ${logbase}.out_yuge >   ${logbase}.out
+   head -c 1MB ${logbase}.out_yuge >   ${logbase}.out
    echo "============================================================================================================================= [snip] ==============================" >> ${logbase}.out  
-   tail -c 2MB ${logbase}.out_yuge >>  ${logbase}.out 
+   tail -c 1MB ${logbase}.out_yuge >>  ${logbase}.out 
 fi
 
 
 if [ test -f ${logbase}.err_yuge ]; then
-   head -c 2MB ${logbase}.err_yuge >   ${logbase}.err
+   head -c 1MB ${logbase}.err_yuge >   ${logbase}.err
    echo "============================================================================================================================= [snip] ==============================" >> ${logbase}.out  
-   tail -c 2MB ${logbase}.err_yuge >>  ${logbase}.err 
+   tail -c 1MB ${logbase}.err_yuge >>  ${logbase}.err 
 fi
