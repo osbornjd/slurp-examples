@@ -17,7 +17,7 @@ export USER="$(id -u -n)"
 export LOGNAME=${USER}
 export HOME=/sphenix/u/${USER}
 
-source /opt/sphenix/core/bin/sphenix_setup.sh -n ${5}
+source /opt/sphenix/core/bin/sphenix_setup.sh -n ${7}
 
 export ODBCINI=./odbc.ini
 
@@ -38,6 +38,7 @@ echo dbtag:   $dbtag
 echo inputs:  ${inputs[@]}
 echo nper:    $neventsper
 echo .............................................................................................. 
+
 inputlist=""
 for f in "${inputs[@]}"; do
     echo "File $f"
@@ -73,3 +74,19 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${stat
 
 echo "script done"
 } > ${logbase}.out 2>${logbase}.err 
+
+find ${logbase}.out -size +1MB -print -exec mv '{}' '{}'_yuge
+find ${logbase}.err -size +1MB -print -exec mv '{}' '{}'_yuge
+
+if [ test -f ${logbase}.out_yuge ]; then
+   head -c 1MB ${logbase}.out_yuge >   ${logbase}.out
+   echo "============================================================================================================================= [snip] ==============================" >> ${logbase}.out  
+   tail -c 1MB ${logbase}.out_yuge >>  ${logbase}.out 
+fi
+
+
+if [ test -f ${logbase}.err_yuge ]; then
+   head -c 1MB ${logbase}.err_yuge >   ${logbase}.err
+   echo "============================================================================================================================= [snip] ==============================" >> ${logbase}.out  
+   tail -c 1MB ${logbase}.err_yuge >>  ${logbase}.err 
+fi
