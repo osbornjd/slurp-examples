@@ -11,13 +11,14 @@ DST_TRIGGERED:
      name:       DST_TRIGGERED_RAW_cosmics
      build:      new
      build_name: new
-     dbtag:      2023p014
+     dbtag:      2023p015
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/triggers/
      mem     :   8192MB
      neventsper: 10000
+
 
    #
    # input query:
@@ -94,4 +95,52 @@ DST_TRIGGERED:
      accounting_group_user : "sphnxpro"
      transfer_output_files : '{logbase}.out,{logbase}.err'
      priority : '3800'
+
+
+
+DST_HCAL_cosmics:
+   params:
+     name:       DST_HCAL_TOWERS_cosmics
+     build:      new
+     build_name: new
+     dbtag:      2023p015
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run.sh
+     payload :   ./slurp-examples/sPHENIX/CaloProduction/
+     mem     :   8192MB
+     neventsper: 10000
+   input:
+     db: filecatalog
+     query: |-
+         select 
+                'filecatalog/datasets'                                                                                    as source      , 
+                runnumber                                                                                                          , 
+                segment                                                                                                            ,
+                filename                                                                                            as files       ,
+                filename || ':' || 0 || ':' || events                                                   as fileranges 
+         from  
+                datasets
+         where 
+                filename like 'DST_TRIGGERED_RAW_cosmics_new_2023p015-%'
+                and runnumber>40100
+                limit 1
+         ;
+   job:
+     executable            : "{payload}/run.sh"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : '{logbase}.out,{logbase}.err'
+     priority : '3800'
+   filesystem:  
+     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/hcalcosmicsTest/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/hcallogsTest/run_$(rungroup)"
+     condor :        "/tmp/hcallogsTest/run_$(rungroup)"
+
 
