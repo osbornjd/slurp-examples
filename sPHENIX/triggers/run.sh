@@ -73,20 +73,9 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${stat
      ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents 0 --inc 
 
 echo "script done"
-} > ${logbase}.out 2>${logbase}.err 
+} > stdout.log 2>stderr.log
 
-find ${logbase}.out -size +1MB -print -exec mv '{}' '{}'_yuge
-find ${logbase}.err -size +1MB -print -exec mv '{}' '{}'_yuge
+# Write only first 25MB to output logfiles
+dd if=stdout.log of=${logbase}.out seek=1 bs=25M
+dd if=stderr.log of=${logbase}.err seek=1 bs=25M
 
-if [ test -f ${logbase}.out_yuge ]; then
-   head -c 1MB ${logbase}.out_yuge >   ${logbase}.out
-   echo "============================================================================================================================= [snip] ==============================" >> ${logbase}.out  
-   tail -c 1MB ${logbase}.out_yuge >>  ${logbase}.out 
-fi
-
-
-if [ test -f ${logbase}.err_yuge ]; then
-   head -c 1MB ${logbase}.err_yuge >   ${logbase}.err
-   echo "============================================================================================================================= [snip] ==============================" >> ${logbase}.out  
-   tail -c 1MB ${logbase}.err_yuge >>  ${logbase}.err 
-fi
