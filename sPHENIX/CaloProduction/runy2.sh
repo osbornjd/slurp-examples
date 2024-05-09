@@ -47,7 +47,7 @@ ls ${inputs[@]} > input.list
 
 #______________________________________________________________________________________ running __
 #
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files ${inputlist}
+./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files input.list
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
 #_________________________________________________________________________________________________
 
