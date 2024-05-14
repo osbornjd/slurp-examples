@@ -80,11 +80,8 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${stat
 
 
 echo "bdee bdee bdee, That's All Folks!"
-}  > stdout.log 2>stderr.log
+}  >${logbase}.out 2>${logbase}.err
 
-# Write only first 25MB to output logfiles
-dd if=stdout.log of=${logbase}.out seek=1 bs=25M
-dd if=stderr.log of=${logbase}.err seek=1 bs=25M
 
 
 
