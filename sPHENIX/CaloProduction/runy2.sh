@@ -11,7 +11,8 @@ dbtag=${8}
 inputs=(`echo ${9} | tr "," " "`)  # array of input files 
 ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 neventsper=${11:-1000}
-
+logdir=${12:-.}
+histdir=${13:-.}
 {
 
 export USER="$(id -u -n)"
@@ -41,6 +42,8 @@ echo build:   $build
 echo dbtag:   $dbtag
 echo inputs:  ${inputs[@]}
 echo nper:    $neventsper
+echo logdir:  $logdir
+echo histdir: $histdir
 echo .............................................................................................. 
 
 ls ${inputs[@]} > input.list
@@ -56,15 +59,23 @@ ls ${inputs[@]} > input.list
 out0=${logbase}.root
 out1=HIST_${logbase#DST_}.root
 
+status_f4a=0
 
 for infile in ${inputs[@]}; do
-    root.exe -q -b Fun4All_Year2.C\(${nevents},\"${infile}\",\"${out0}\",\"${out1}\"\);
+    root.exe -q -b Fun4All_Year2.C\(${nevents},\"${infile}\",\"${out0}\",\"${out1}\"\);  status_f4a=$?
     # Stageout the (single) DST created in the macro run
     for rfile in `ls DST_*.root`; do 
 	echo Stageout ${rfile} to ${outdir}
         ./stageout.sh ${rfile} ${outdir}
     done
+    for hfile in `ls HIST_*.root`; do
+	echo Stageout ${hfile} to ${histdir}
+        ./stageout.sh ${hfile} ${histdir}
+    done
 done
+
+# In principle, stageout should have moved the files to their final location
+rm *.root
 
 ls -lah
 
@@ -76,8 +87,9 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${stat
 
 
 echo "bdee bdee bdee, That's All Folks!"
-} >& ${logbase}.out 
-touch ${logbase}.err 
-#2>${logbase}.err 
+} > ${logbase}.out 2>${logbase}.err
+
+mv ${logbase}.out ${logdir#file:/}
+mv ${logbase}.err ${logdir#file:/}
 
 
