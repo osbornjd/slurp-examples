@@ -11,6 +11,8 @@ dbtag=${8}
 inputs=(`echo ${9} | tr "," " "`)  # array of input files 
 ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 neventsper=${11:-1000}
+logdir=${12}
+histdir=${13:-/dev/null}
 {
 
 export USER="$(id -u -n)"
@@ -37,6 +39,8 @@ echo build:   $build
 echo dbtag:   $dbtag
 echo inputs:  ${inputs[@]}
 echo nper:    $neventsper
+echo logdir:  $logdir
+echo histdir: $histdir
 echo .............................................................................................. 
 
 inputlist=""
@@ -44,6 +48,21 @@ for f in "${inputs[@]}"; do
     echo "File $f"
     b=$( basename $f )
     if [[ $b =~ "GL1_cosmics" ]]; then
+       echo ${f} >> gl1.list
+       echo Add ${f} to gl1.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "GL1_physics" ]]; then
+       echo ${f} >> gl1.list
+       echo Add ${f} to gl1.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "GL1_beam" ]]; then
+       echo ${f} >> gl1.list
+       echo Add ${f} to gl1.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "GL1_calib" ]]; then
        echo ${f} >> gl1.list
        echo Add ${f} to gl1.list
        inputlist="${f} ${inputlist}"
@@ -73,9 +92,13 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${stat
      ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents 0 --inc 
 
 echo "script done"
-} > stdout.log 2>stderr.log
+} >${logbase}.out 2>${logbase}.err
+
+# Direct stageout
+mv ${logbase}.out ${logdir#file:/}
+mv ${logbase}.err ${logdir#file:/}
 
 # Write only first 25MB to output logfiles
-dd if=stdout.log of=${logbase}.out seek=1 bs=25M
-dd if=stderr.log of=${logbase}.err seek=1 bs=25M
+#dd if=stdout.log of=${logbase}.out seek=1 bs=25M
+#dd if=stderr.log of=${logbase}.err seek=1 bs=25M
 
