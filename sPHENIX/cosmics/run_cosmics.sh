@@ -175,21 +175,6 @@ echo $logbase
 ls -la
 
 echo "script done"
-} > ${logbase}.out 2>${logbase}.err 
+} > ${logbase}.out 2>${logbase}.err
 
 
-find ${logbase}.out -size +1MB -print -exec mv '{}' '{}'_yuge
-find ${logbase}.err -size +1MB -print -exec mv '{}' '{}'_yuge
-
-if [ test -f ${logbase}.out_yuge ]; then
-   head -c 1MB ${logbase}.out_yuge >   ${logbase}.out
-   echo "============================================================================================================================= [snip] ==============================" >> ${logbase}.out  
-   tail -c 1MB ${logbase}.out_yuge >>  ${logbase}.out 
-fi
-
-
-if [ test -f ${logbase}.err_yuge ]; then
-   head -c 1MB ${logbase}.err_yuge >   ${logbase}.err
-   echo "============================================================================================================================= [snip] ==============================" >> ${logbase}.out  
-   tail -c 1MB ${logbase}.err_yuge >>  ${logbase}.err 
-fi
