@@ -48,23 +48,23 @@ for f in "${inputs[@]}"; do
     echo "File $f"
     b=$( basename $f )
     if [[ $b =~ "GL1_cosmics" ]]; then
-       echo ${f} >> gl1.list
-       echo Add ${f} to gl1.list
+       echo ${f} >> gl1daq.list
+       echo Add ${f} to gl1daq.list
        inputlist="${f} ${inputlist}"
     fi
     if [[ $b =~ "GL1_physics" ]]; then
-       echo ${f} >> gl1.list
-       echo Add ${f} to gl1.list
+       echo ${f} >> gl1daq.list
+       echo Add ${f} to gl1daq.list
        inputlist="${f} ${inputlist}"
     fi
     if [[ $b =~ "GL1_beam" ]]; then
-       echo ${f} >> gl1.list
-       echo Add ${f} to gl1.list
+       echo ${f} >> gl1daq.list
+       echo Add ${f} to gl1daq.list
        inputlist="${f} ${inputlist}"
     fi
     if [[ $b =~ "GL1_calib" ]]; then
-       echo ${f} >> gl1.list
-       echo Add ${f} to gl1.list
+       echo ${f} >> gl1daq.list
+       echo Add ${f} to gl1daq.list
        inputlist="${f} ${inputlist}"
     fi
     # NOTE:  No seb19 ??
