@@ -11,6 +11,7 @@ dbtag=${8}
 inputs=(`echo ${9} | tr "," " "`)  # array of input files 
 ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 neventsper=${11:-1000}
+logdir=${12:-.}
 {
 
 export USER="$(id -u -n)"
@@ -172,9 +173,13 @@ echo $logbase
 #cp stderr.log ${logbase}.err
 #cp stdout.log ${logbase}.out
 
+# Cleanup any stray root files leftover from stageout
+rm *.root
+
 ls -la
 
 echo "script done"
 } > ${logbase}.out 2>${logbase}.err
 
-
+mv ${logbase}.out ${logdir#file:/}
+mv ${logbase}.err ${logdir#file:/}
