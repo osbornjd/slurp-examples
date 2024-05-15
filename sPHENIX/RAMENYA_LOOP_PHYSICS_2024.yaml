@@ -11,8 +11,8 @@ DST_STREAMING_EVENT_run2pp:
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
-     mem     :   8192MB
-     neventsper: 50000
+     mem     :   4096MB
+     neventsper: 500
 
    input:
       db: daqdb
@@ -53,8 +53,8 @@ DST_STREAMING_EVENT_run2pp:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/streaming/physics/run_$(rungroup)"
-     logdir : "file:///sphenix/data/data02/sphnxpro/streaminglogs/run_$(rungroup)"
+     outdir  : "/sphenix/lustre01/sphnxpro/commissioning/slurp/streaming/physics/run_$(rungroup)"
+     logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
    #
@@ -63,7 +63,7 @@ DST_STREAMING_EVENT_run2pp:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -71,7 +71,8 @@ DST_STREAMING_EVENT_run2pp:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : '{logbase}.out,{logbase}.err'
+#    transfer_output_files : '{logbase}.out,{logbase}.err'
+     transfer_output_files : ""
 #    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
 
@@ -82,7 +83,7 @@ DST_STREAMING_EVENT_run2pp:
 # kaedama.py --rule DST_EVENT --config examples/sPHENIX/DST_EVENT_aua23.yaml --runs ...
 #
 DST_TPCCALIB:
- 
+
    # DST_EVENT works from a pre-built set of run lists.
    params:
      name:       DST_TPC_EVENT_run2pp
@@ -92,7 +93,7 @@ DST_TPCCALIB:
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
-     payload :   /direct/sphenix+u/sphnxpro/slurp-examples/sPHENIX/cosmics/
+     payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   2048MB
      neventsper: 50000
 #    mem     :   8192MB
@@ -145,7 +146,7 @@ DST_TPCCALIB:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -153,7 +154,8 @@ DST_TPCCALIB:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : '{logbase}.out,{logbase}.err'
+     transfer_output_files : ""
+#    transfer_output_files : '{logbase}.out,{logbase}.err'
 #    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
 
@@ -162,7 +164,7 @@ DST_TPCCALIB:
 
 
 DST_INTT_EVENT:
- 
+
    # At the moment, an extra _ in here will throw off cups b/c it parses out 
    # run, build, dsttype, etc... from the output filename... so DST_PHYSICS_run1aua
    # will need to wait...
@@ -243,7 +245,7 @@ DST_INTT_EVENT:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -251,7 +253,8 @@ DST_INTT_EVENT:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : '{logbase}.out,{logbase}.err'
+     transfer_output_files : ""
+#    transfer_output_files : '{logbase}.out,{logbase}.err'
 #    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
 
@@ -261,7 +264,7 @@ DST_INTT_EVENT:
 #______________________________________________________________________________________________DST_PHYSICS_TRIGGERED__
 #
 DST_PHYSICS_TRIGGERED:
- 
+
    # At the moment, an extra _ in here will throw off cups b/c it parses out 
    # run, build, dsttype, etc... from the output filename... so DST_PHYSICS_run1aua
    # will need to wait...
@@ -275,7 +278,7 @@ DST_PHYSICS_TRIGGERED:
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/triggers/
      mem     :   8192MB
-     neventsper: 50000
+     neventsper: 10000
 
    #
    # input query:
@@ -334,6 +337,7 @@ DST_PHYSICS_TRIGGERED:
    filesystem:  
      outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/calophysics/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/calologs/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/calohist/run_$(rungroup)"
      condor :        "/tmp/calologs/run_$(rungroup)"
 
    #
@@ -342,7 +346,7 @@ DST_PHYSICS_TRIGGERED:
    #
    job:
      executable            : "{payload}/run.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {histdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -350,8 +354,8 @@ DST_PHYSICS_TRIGGERED:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : '{logbase}.out,{logbase}.err'
      priority : '3800'
+     transfer_output_files : ""
 
 #___________________________________________________________________________________________________DST_CALO_run2pp __     
 # Downstream production of the 2024 calorimeter data
@@ -386,7 +390,7 @@ DST_CALO_Y2:
          ;
    job:
      executable            : "{payload}/runy2.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {histdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -394,11 +398,66 @@ DST_CALO_Y2:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : '{logbase}.out,{logbase}.err'
      priority : '3800'
+     transfer_output_files : ""
+
+
    filesystem:  
      outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/caloy2test/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/caloy2test/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/calohist/run_$(rungroup)"
      condor :        "/tmp/caloy2test/run_$(rungroup)"
+
+
+
+DST_TRKR_HIT_SET_physics:
+   # DST_EVENT works from a pre-built set of run lists.
+   params:
+     name:       DST_TRKR_HIT_run2pp
+     build:      new
+     build_name: new
+     dbtag:      2024p001
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run.sh
+     payload :   ./slurp-examples/sPHENIX/TrackingProduction/
+     mem     :   2048MB
+
+   input:
+      db: fc
+      query: |-
+         select 
+                'filecatalog/datasets'   as source       ,
+                runnumber                                ,
+                segment                                  ,
+                filename                    as files     ,
+                filename || ':0:' || events as fileranges
+         from  
+                datasets
+         where
+                filename like 'DST_STREAMING_EVENT_run2pp_new_2024p001%'
+                {run_condition}
+         order by runnumber
+                {limit_condition}
+              ;              
+   filesystem:  
+     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tracking/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/run_$(rungroup)"
+     condor :        "/tmp/testlogs/run_$(rungroup)"
+
+   job:
+     executable            : "{payload}/run.sh"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : ""
+     priority : '3800'
+
+
 
 
