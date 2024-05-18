@@ -1,12 +1,12 @@
 #________________________________________________________________________________________________________DST_BEAM__
 #
-DST_BEAM:
+BEAM_DST_STREAMING_EVENT_run2pp:
  
    # At the moment, an extra _ in here will throw off cups b/c it parses out 
    # run, build, dsttype, etc... from the output filename... so DST_BEAM_run1aua
    # will need to wait...
    params:
-     name:       DST_BEAM_run2pp
+     name:       DST_STREAMING_EVENT_run2pp
      build:      new
      build_name: new
      dbtag:      2024p001
@@ -15,7 +15,9 @@ DST_BEAM:
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     neventsper: 100
+     neventsper: 5000
+     comment:    "---"
+
 
    #
    # input query:
@@ -85,7 +87,7 @@ DST_BEAM:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -448,16 +450,16 @@ DST_BEAM_NO_INTT:
 
 #______________________________________________________________________________________________DST_BEAM_TRIGGERED__
 #
-DST_BEAM_TRIGGERED:
+BEAM_DST_TRIGGERED_EVENT_run2pp:
  
    # At the moment, an extra _ in here will throw off cups b/c it parses out 
    # run, build, dsttype, etc... from the output filename... so DST_BEAM_run1aua
    # will need to wait...
    params:
-     name:       DST_TRIGGERED_RAW_beam
+     name:       DST_TRIGGERED_EVENT_run2pp
      build:      new
      build_name: new
-     dbtag:      2023p015
+     dbtag:      2024p001
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh

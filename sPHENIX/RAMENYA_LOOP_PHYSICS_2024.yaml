@@ -1,6 +1,6 @@
 #________________________________________________________________________________________________________DST_PHYSICS__
 #
-DST_STREAMING_EVENT_run2pp:
+PHYS_DST_STREAMING_EVENT_run2pp:
 
    params:
      name:       DST_STREAMING_EVENT_run2pp
@@ -12,7 +12,8 @@ DST_STREAMING_EVENT_run2pp:
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     neventsper: 500
+     neventsper: 5000
+     comment:    "---"
 
    input:
       db: daqdb
@@ -63,7 +64,7 @@ DST_STREAMING_EVENT_run2pp:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -263,13 +264,13 @@ DST_INTT_EVENT:
 
 #______________________________________________________________________________________________DST_PHYSICS_TRIGGERED__
 #
-DST_PHYSICS_TRIGGERED:
+PHYS_DST_TRIGGERED_EVENT_run2pp:
 
    # At the moment, an extra _ in here will throw off cups b/c it parses out 
    # run, build, dsttype, etc... from the output filename... so DST_PHYSICS_run1aua
    # will need to wait...
    params:
-     name:       DST_TRIGGERED_EVENT_physics
+     name:       DST_TRIGGERED_EVENT_run2pp
      build:      new
      build_name: new
      dbtag:      2024p001
@@ -383,7 +384,7 @@ DST_CALO_Y2:
          from  
                 datasets
          where 
-                filename like 'DST_TRIGGERED_EVENT_physics%'
+                filename like 'DST_TRIGGERED_EVENT_run2pp%'
                 {run_condition}
            
          {limit_condition}
