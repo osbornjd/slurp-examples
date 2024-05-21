@@ -43,15 +43,25 @@ echo inputs:  ${inputs[@]}
 echo .............................................................................................. 
 
 ls ${inputs[@]} # there should be only one here... 
+for i in ${inputs[@]}; do
+   echo $i >> inlist
+done
 
-echo root.exe -q -b Fun4All_TrkrHitSet_Unpacker.C\(${nevents},${runnumber},\"${logbase}.root\",\"${dbtag}\",\"${inputs[0]}\",\"\"\)
-     root.exe -q -b Fun4All_TrkrHitSet_Unpacker.C\(${nevents},${runnumber},\"${logbase}.root\",\"${dbtag}\",\"${inputs[0]}\",\"\"\)
+./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files "${inputs[@]}"
+./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
+
+echo root.exe -q -b Fun4All_TrkrHitSet_Unpacker.C\(${nevents},${runnumber},\"${logbase}.root\",\"${dbtag}\",\"inlist\"\)
+     root.exe -q -b Fun4All_TrkrHitSet_Unpacker.C\(${nevents},${runnumber},\"${logbase}.root\",\"${dbtag}\",\"inlist\"\);  status_f4a=$?
 
 ls -la
 
 ./stageout.sh ${logbase}.root ${outdir}
 
 ls -la
+
+# Flag run as finished. 
+echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents ${nevents}  
+     ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents ${nevents}
 
 echo "bdee bdee bdee, That's All Folks!"
 
