@@ -12,12 +12,12 @@ PHYS_DST_STREAMING_EVENT_run2pp:
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     neventsper: 5000
+     neventsper: 10000
      comment:    "---"
 
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/physics/
+      direct_path: /sphenix/lustre01/sphnxpro/physics/*/physics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -54,7 +54,7 @@ PHYS_DST_STREAMING_EVENT_run2pp:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir  : "/sphenix/lustre01/sphnxpro/commissioning/slurp/streaming/physics/run_$(rungroup)"
+     outdir  : "/sphenix/lustre01/sphnxpro/physics/slurp/streaming/physics/run_$(rungroup)"
      logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
@@ -115,7 +115,7 @@ DST_TPCCALIB:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/tpc/calib/
+      direct_path: /sphenix/lustre01/sphnxpro/physics/tpc/calib/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -137,7 +137,7 @@ DST_TPCCALIB:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/streaming/calib/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/streaming/calib/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/streaming/caliblogs/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
@@ -200,7 +200,7 @@ DST_INTT_EVENT:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/physics/
+      direct_path: /sphenix/lustre01/sphnxpro/physics/*/physics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -236,7 +236,7 @@ DST_INTT_EVENT:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/inttphysics/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/inttphysics/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
@@ -298,7 +298,7 @@ PHYS_DST_TRIGGERED_EVENT_run2pp:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/physics/
+      direct_path: /sphenix/lustre01/sphnxpro/physics/*/physics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -336,7 +336,7 @@ PHYS_DST_TRIGGERED_EVENT_run2pp:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/calophysics/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/calophysics/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/calologs/run_$(rungroup)"
      histdir :       "/sphenix/data/data02/sphnxpro/calohist/run_$(rungroup)"
      condor :        "/tmp/calologs/run_$(rungroup)"
@@ -404,7 +404,7 @@ DST_CALO_Y2:
 
 
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/caloy2test/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/caloy2test/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/caloy2test/run_$(rungroup)"
      histdir :       "/sphenix/data/data02/sphnxpro/calohist/run_$(rungroup)"
      condor :        "/tmp/caloy2test/run_$(rungroup)"
@@ -442,7 +442,7 @@ DST_TRKR_HIT_SET_physics:
                 {limit_condition}
               ;              
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tracking/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tracking/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 

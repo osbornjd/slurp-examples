@@ -8,10 +8,10 @@ DST_COSMICS:
    # run, build, dsttype, etc... from the output filename... so DST_COSMICS_run1aua
    # will need to wait...
    params:
-     name:       DST_COSMICS_run2pp
+     name:       DST_STREAMING_EVENT_cosmics
      build:      new
      build_name: new
-     dbtag:      2023p013
+     dbtag:      2024p001
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -35,7 +35,7 @@ DST_COSMICS:
    # For now, require GL1 files...
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/cosmics/
+      direct_path: /sphenix/lustre01/sphnxpro/physics/*/cosmics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -72,7 +72,7 @@ DST_COSMICS:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccosmics/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tpccosmics/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
@@ -105,7 +105,7 @@ DST_TPCCALIB:
      name:       DST_TPCCALIB_run2pp
      build:      new
      build_name: new
-     dbtag:      2023p011
+     dbtag:      2024p001
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -130,7 +130,7 @@ DST_TPCCALIB:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/tpc/calib/
+      direct_path: /sphenix/lustre01/sphnxpro/physics/tpc/calib/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -152,7 +152,7 @@ DST_TPCCALIB:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccalib/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tpccalib/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
@@ -184,10 +184,10 @@ DST_COSMICS_INTT_RAW:
    # run, build, dsttype, etc... from the output filename... so DST_COSMICS_run1aua
    # will need to wait...
    params:
-     name:       DST_INTT_RAW_cosmics
+     name:       DST_STREAMING_EVENT_cosmics
      build:      new
      build_name: new
-     dbtag:      2023p011
+     dbtag:      2024p001
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -214,7 +214,7 @@ DST_COSMICS_INTT_RAW:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/cosmics/
+      direct_path: /sphenix/lustre01/sphnxpro/physics/*/cosmics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -250,7 +250,7 @@ DST_COSMICS_INTT_RAW:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/inttcosmics/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/inttcosmics/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
@@ -280,10 +280,10 @@ DST_COSMICS_NO_INTT:
    # run, build, dsttype, etc... from the output filename... so DST_COSMICS_run1aua
    # will need to wait...
    params:
-     name:       DST_COSMICS_run2pp
+     name:       DST_STREAMING_EVENT_cosmics
      build:      new
      build_name: new
-     dbtag:      2023p013
+     dbtag:      2024p001
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -309,7 +309,7 @@ DST_COSMICS_NO_INTT:
    #                   sum( case when filename like '/bbox%/cosmics%mvtx%' then 1 else 0 end )>0 
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/cosmics/
+      direct_path: /sphenix/lustre01/sphnxpro/physics/*/cosmics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -344,7 +344,7 @@ DST_COSMICS_NO_INTT:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccosmics/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tpccosmics/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
@@ -379,7 +379,7 @@ DST_TRIGGERED:
      name:       DST_TRIGGERED_RAW_cosmics
      build:      new
      build_name: new
-     dbtag:      2023p015
+     dbtag:      2024p001
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
@@ -404,7 +404,7 @@ DST_TRIGGERED:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/cosmics/
+      direct_path: /sphenix/lustre01/sphnxpro/physics/*/cosmics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -442,7 +442,7 @@ DST_TRIGGERED:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/calocosmics/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/calocosmics/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/calologs/run_$(rungroup)"
      condor :        "/tmp/calologs/run_$(rungroup)"
 
@@ -491,13 +491,13 @@ DST_TRKR_HIT_SET_cosmics:
          from  
                 datasets
          where
-                filename like 'DST_COSMICS_run2pp_new_2023p013%'
+                filename like 'DST_STREAMING_EVENT_cosmics_new_2024p001%'
                 {run_condition}
          order by runnumber
                 {limit_condition}
               ;              
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/tracking/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tracking/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 

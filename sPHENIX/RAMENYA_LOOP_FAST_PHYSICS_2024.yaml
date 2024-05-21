@@ -17,7 +17,7 @@ PHYS_DST_STREAMING_EVENT_run2ppfast:
 
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/physics/
+      direct_path: /sphenix/lustre01/sphnxpro/physics/*/physics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -54,8 +54,8 @@ PHYS_DST_STREAMING_EVENT_run2ppfast:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir  : "/sphenix/lustre01/sphnxpro/commissioning/slurp/streaming/fast/run_$(rungroup)"
-     logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/run_$(rungroup)"
+     outdir  : "/sphenix/lustre01/sphnxpro/physics/slurp/streaming/fast/run_$(rungroup)"
+     logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/fast/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
    #
@@ -96,7 +96,7 @@ BEAM_DST_STREAMING_EVENT_run2ppfast:
 
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/commissioning/*/beam/
+      direct_path: /sphenix/lustre01/sphnxpro/physics/*/beam/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -133,8 +133,8 @@ BEAM_DST_STREAMING_EVENT_run2ppfast:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir  : "/sphenix/lustre01/sphnxpro/commissioning/slurp/streaming/fast/run_$(rungroup)"
-     logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/run_$(rungroup)"
+     outdir  : "/sphenix/lustre01/sphnxpro/physics/slurp/streaming/fast/run_$(rungroup)"
+     logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/fast/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
    #
@@ -189,6 +189,7 @@ DST_TRKR_HIT_SET_run2ppfast:
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
+     nevents :  100
 
    input:
       db: fc
@@ -208,13 +209,13 @@ DST_TRKR_HIT_SET_run2ppfast:
                 {limit_condition}
               ;              
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/commissioning/slurp/fast_tracking/run_$(rungroup)"
-     logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/fast_tracking/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/fast/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
    job:
      executable            : "{payload}/run.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
