@@ -5,7 +5,8 @@
  */
 #include <GlobalVariables.C>
 #include <Trkr_Clustering.C>
-
+#include <Trkr_RecoInit.C>
+#include <Trkr_Reco.C>
 #include <fun4all/Fun4AllDstInputManager.h>
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllInputManager.h>
@@ -27,10 +28,11 @@ R__LOAD_LIBRARY(libmvtx.so)
 R__LOAD_LIBRARY(libintt.so)
 R__LOAD_LIBRARY(libtpc.so)
 R__LOAD_LIBRARY(libmicromegas.so)
-void Fun4All_TrkrHitSet_Unpacker(
+R__LOAD_LIBRARY(libtrack_reco.so)
+void Fun4All_JobC(
     const int nEvents = 2,
     const int runnumber = 41626,
-    const std::string outfilename = "cosmics",
+    const std::string outfilename = "cosmictrack",
     const std::string dbtag = "2024p001",
     const std::string filelist = "filelist.list")
 {
@@ -48,16 +50,18 @@ void Fun4All_TrkrHitSet_Unpacker(
   Enable::CDB = true;
   rc->set_StringFlag("CDB_GLOBALTAG", dbtag ); //"ProdA_2023");
   rc->set_uint64Flag("TIMESTAMP", CDB::timestamp);
-
+  
   FlagHandler *flag = new FlagHandler();
   se->registerSubsystem(flag);
+  
+  G4TRACKING::convert_seeds_to_svtxtracks = false;
 
   std::string geofile = CDBInterface::instance()->getUrl("Tracking_Geometry");
   Fun4AllRunNodeInputManager *ingeo = new Fun4AllRunNodeInputManager("GeoIn");
   ingeo->AddFile(geofile);
   se->registerInputManager(ingeo);
 
-  se->registerSubsystem(new SyncReco);
+se->registerSubsystem(new SyncReco);
 
   std::ifstream ifs(filelist);
   std::string filepath;
@@ -71,16 +75,53 @@ void Fun4All_TrkrHitSet_Unpacker(
       i++;
     }
 
-  Mvtx_HitUnpacking();
-  Intt_HitUnpacking();
-  Tpc_HitUnpacking();
-  Micromegas_HitUnpacking();
+  TrackingInit();
+
+
+ if (G4TRACKING::convert_seeds_to_svtxtracks)
+  {
+    auto converter = new TrackSeedTrackMapConverter;
+    // Default set to full SvtxTrackSeeds. Can be set to
+    // SiliconTrackSeedContainer or TpcTrackSeedContainer
+    converter->setTrackSeedName("TpcTrackSeedContainer");
+    converter->setFieldMap(G4MAGNET::magfield_tracking);
+    converter->Verbosity(0);
+    se->registerSubsystem(converter);
+  }
+  else
+  {
+    auto deltazcorr = new PHTpcDeltaZCorrection;
+    deltazcorr->Verbosity(0);
+    se->registerSubsystem(deltazcorr);
+
+    // perform final track fit with ACTS
+    auto actsFit = new PHActsTrkFitter;
+    actsFit->Verbosity(0);
+    actsFit->commissioning(G4TRACKING::use_alignment);
+    // in calibration mode, fit only Silicons and Micromegas hits
+    actsFit->fitSiliconMMs(G4TRACKING::SC_CALIBMODE);
+    actsFit->setUseMicromegas(G4TRACKING::SC_USE_MICROMEGAS);
+    actsFit->set_pp_mode(TRACKING::pp_mode);
+    actsFit->set_use_clustermover(true);  // default is true for now
+    actsFit->useActsEvaluator(false);
+    actsFit->useOutlierFinder(false);
+    actsFit->setFieldMap(G4MAGNET::magfield_tracking);
+    se->registerSubsystem(actsFit);
+  }
+
+  PHSimpleVertexFinder *finder = new PHSimpleVertexFinder;
+  finder->Verbosity(0);
+  finder->setDcaCut(0.5);
+  finder->setTrackPtCut(-99999.);
+  finder->setBeamLineCut(1);
+  finder->setTrackQualityCut(1000000000);
+  finder->setNmvtxRequired(3);
+  finder->setOutlierPairCut(0.1);
+  se->registerSubsystem(finder);
 
   Fun4AllOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outfilename);
-
-  out->AddNode("Sync");
-  out->AddNode("EventHeader");
-  out->AddNode("TRKR_HITSET");
+  out->AddNode("SvtxTrackMap");
+out->AddNode("SvtxVertexMap");
   se->registerOutputManager(out);
 
   se->run(nEvents);

@@ -13,8 +13,9 @@
 #include <fun4all/Fun4AllOutputManager.h>
 #include <fun4all/Fun4AllRunNodeInputManager.h>
 #include <fun4all/Fun4AllServer.h>
-
+#include <ffamodules/SyncReco.h>
 #include <ffamodules/CDBInterface.h>
+#include <ffamodules/FlagHandler.h>
 
 #include <phool/recoConsts.h>
 
@@ -47,12 +48,17 @@ void Fun4All_JobA(
 
   Enable::CDB = true;
   rc->set_StringFlag("CDB_GLOBALTAG", dbtag ); //"ProdA_2023");
-  rc->set_uint64Flag("TIMESTAMP", 6);
+  rc->set_uint64Flag("TIMESTAMP", CDB::timestamp);
+
+  FlagHandler *flag = new FlagHandler();
+  se->registerSubsystem(flag);
 
   std::string geofile = CDBInterface::instance()->getUrl("Tracking_Geometry");
   Fun4AllRunNodeInputManager *ingeo = new Fun4AllRunNodeInputManager("GeoIn");
   ingeo->AddFile(geofile);
   se->registerInputManager(ingeo);
+
+  se->registerSubsystem(new SyncReco);
 
   std::ifstream ifs(filelist);
   std::string filepath;
@@ -73,7 +79,7 @@ void Fun4All_JobA(
    */
   auto silicon_Seeding = new PHActsSiliconSeeding;
   silicon_Seeding->Verbosity(0);
-  silicon_Seeding->seedAnalysis(true);
+  silicon_Seeding->seedAnalysis(false);
   se->registerSubsystem(silicon_Seeding);
 
   auto merger = new PHSiliconSeedMerger;
@@ -151,10 +157,12 @@ void Fun4All_JobA(
   se->registerSubsystem(mm_match);
 
   Fun4AllOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outfilename);
-  out->StripNode("TRKR_CLUSTER");
-  out->StripNode("TRKR_CLUSTERHITASSOC");
-  out->StripNode("TRKR_CLUSTERCROSSINGASSOC");
-  out->StripNode("TRAINING_HITSET");
+  out->AddNode("Sync");
+  out->AddNode("EventHeader");
+  out->AddNode("SiliconTrackSeedContainer");
+  out->AddNode("TpcTrackSeedContainer");
+  out->AddNode("SvtxTrackSeedContainer");
+
   se->registerOutputManager(out);
 
   se->run(nEvents);

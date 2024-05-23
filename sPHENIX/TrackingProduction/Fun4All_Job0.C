@@ -7,6 +7,7 @@
 #include <Trkr_Clustering.C>
 #include <Trkr_RecoInit.C>
 
+#include <ffamodules/SyncReco.h>
 #include <fun4all/Fun4AllDstInputManager.h>
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllInputManager.h>
@@ -14,6 +15,7 @@
 #include <fun4all/Fun4AllRunNodeInputManager.h>
 #include <fun4all/Fun4AllServer.h>
 
+#include <ffamodules/FlagHandler.h>
 #include <ffamodules/CDBInterface.h>
 
 #include <phool/recoConsts.h>
@@ -46,12 +48,17 @@ void Fun4All_Job0(
 
   Enable::CDB = true;
   rc->set_StringFlag("CDB_GLOBALTAG", dbtag ); //"ProdA_2023");
-  rc->set_uint64Flag("TIMESTAMP", 6);
+  rc->set_uint64Flag("TIMESTAMP", CDB::timestamp);
+ 
+  FlagHandler *flag = new FlagHandler();
+  se->registerSubsystem(flag);
 
   std::string geofile = CDBInterface::instance()->getUrl("Tracking_Geometry");
   Fun4AllRunNodeInputManager *ingeo = new Fun4AllRunNodeInputManager("GeoIn");
   ingeo->AddFile(geofile);
   se->registerInputManager(ingeo);
+
+  se->registerSubsystem(new SyncReco);
 
   std::ifstream ifs(filelist);
   std::string filepath;
@@ -80,8 +87,10 @@ void Fun4All_Job0(
   Micromegas_Clustering();
 
   Fun4AllOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outfilename);
-  out->StripNode("TRKR_HITSET");
-
+  //out->StripNode("TRKR_HITSET");
+  out->AddNode("Sync");
+  out->AddNode("EventHeader");
+  out->AddNode("TRKR_CLUSTER");
   se->registerOutputManager(out);
 
   se->run(nEvents);
