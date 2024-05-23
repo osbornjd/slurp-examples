@@ -358,7 +358,7 @@ DST_TRKR_TRACKS_SET_run2ppfast:
                runnumber                                ,
                segment                                  ,
                string_agg( distinct split_part(filename,'/',-1), ' ' )                                             as files       ,   
-               string_agg( distinct split_part(filename,'/',-1) || ':' || firstevent || ':' || lastevent, ' ' )    as fileranges  
+               string_agg( distinct split_part(filename,'/',-1) || ':' || 0 || ':' || -1, ' ' )                    as fileranges  
          from
                datasets
          where
