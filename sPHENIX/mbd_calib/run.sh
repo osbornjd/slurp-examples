@@ -120,7 +120,7 @@ echo "T0 offsets and mip fits"
 ls -la *.root
 
 for r in *.root; do
-    ./stageout.sh ${r} ${logdir} ${outbase}-$(printf "%08d" ${runnumber})-$(printf "%04d" ${segment}).root
+    ./stageout.sh ${r} ${outdir} ${outbase}-$(printf "%08d" ${runnumber})-$(printf "%04d" ${segment}).root
 done
 
 ################################################
