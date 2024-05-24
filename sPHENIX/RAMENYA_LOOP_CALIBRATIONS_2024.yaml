@@ -4,7 +4,7 @@
 #
 MBD_CALIBRATION:
    params:
-     name:       DST_MBD_CALIBRATION_output
+     name:       DST_MBD_CALIBRATION_run2pp
      build:      new
      build_name: new
      dbtag:      2024p001
@@ -13,10 +13,13 @@ MBD_CALIBRATION:
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/mbd_calib/
      mem     :   2048MB
-     neventsper: 1000000
+     nevents:    20000
+     neventsper: 20000
+     pass0dir: /sphenix/user/chiu/sphenix_bbc/CDB/PASS0/
+
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/mbd/beam
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/mbd/beam
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -50,13 +53,14 @@ MBD_CALIBRATION:
      logdir : "file:///sphenix/data/data02/sphnxpro/mbdcalib/run_$(rungroup)"
      condor :        "/tmp/mbdcalib/run_$(rungroup)"
 
+
    #
    # Again I note the need to ensure that the arguments are properly specified given the
    # definition of the payload script.
    #
    job:
      executable            : "{payload}/run.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {pass0dir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -64,6 +68,6 @@ MBD_CALIBRATION:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : '{logbase}.out,{logbase}.err'
+     transfer_output_files : ""
      priority : '3800'
 
