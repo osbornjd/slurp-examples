@@ -185,7 +185,7 @@ DST_COSMICS_INTT_RAW:
    # run, build, dsttype, etc... from the output filename... so DST_COSMICS_run1aua
    # will need to wait...
    params:
-     name:       DST_INTT_RAW_cosmics
+     name:       DST_INTT_RAW_testcosmics
      build:      new
      build_name: new
      dbtag:      2023p011

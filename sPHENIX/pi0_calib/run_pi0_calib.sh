@@ -4,13 +4,15 @@ echo $@
 
 nevents=${1}
 runnumber=${2}
-segment=${3}
-outbase=${4}
-logbase=${5}
-outdir=${6}
-build=${7/./}
-dbtag=${8}
-inputs=(`echo ${9} | tr "," " "`)  # array of input files 
+lastrun=${3}
+segment=${4}
+iteration=${5}
+outbase=${7}
+logbase=${6}
+outdir=${8}
+build=${9/./}
+dbtag=${10}
+inputs=(`echo ${11} | tr "," " "`)  # array of input files 
 {
 
 export USER="$(id -u -n)"
@@ -21,23 +23,52 @@ source /opt/sphenix/core/bin/sphenix_setup.sh -n ${5}
 
 export ODBCINI=./odbc.ini
  
-echo nevents ${1}
-echo runnumber ${2}
-echo segment ${3}
-echo outbase ${4}
-echo logbase ${5}
-echo outdir ${6}
-echo build ${7/./}
-echo dbtag ${8}
+echo $nevents
+echo $runnumber
+echo $lastrun
+echo $segment
+echo $iteration
+echo $outbase
+echo $logbase
+echo $outdir
+echo $build
+echo $dbtag
+echo ${inputs[@]}  # array of input files 
 
-sleep 60
+# Add towers to the input list
+for i in ${inputs[@]}; do
+    if [[ $i =~ "DST_TRIGG" ]]; then
+	echo $i >> inputs.list
+	echo Add $i to inputs.list
+    fi
+    if [[ $i =~ "CDB_" ]]; then
+	echo Local calibration file = $i
+	LOCAL_CALIBRATION_FILE=$i
+    fi
+done
 
-ls > ${outbase}-${runnumber}-${segment}.root
-
-ls -la
+outputfilename=${logbase}.root
 
 #./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
+echo ./cups.py -r ${runnumber} -s ${segment} -d PI0_CALIB --dstfile ${logbase} started --nsegments ${iteration}
+     ./cups.py -r ${runnumber} -s ${segment} -d PI0_CALIB --dstfile ${logbase} started --nsegments ${iteration}
 
-} > stdout.log 2> stderr.log
-#> ${logbase}.out 2>${logbase}.err 
+echo root.exe -q -b Fun4All_EMCal\(0,\"inputs.list\",${iteratopn},\"${LOCAL_CALIBRATION_FILE}\"\)
+     root.exe -q -b Fun4All_EMCal\(0,\"inputs.list\",${iteratopn},\"${LOCAL_CALIBRATION_FILE}\"\)
+
+
+#ls > ${outbase}-${runnumber}-${segment}.root
+#ls > ${logbase}.root
+# ./stageout.sh ${logbase}.root ${outdir}/
+
+ls -la 
+
+echo ./cups.py -r ${runnumber} -s ${segment} -d none --dstfile ${logbase} finished -e 0 --nsegments ${iteration}
+     ./cups.py -r ${runnumber} -s ${segment} -d none --dstfile ${logbase} finished -e 0 --nsegments ${iteration}
+
+touch ${logbase}.err
+
+} >& ${logbase}.out 
+#2>${logbase}.err 
+
 
