@@ -1,0 +1,405 @@
+#________________________________________________________________________________________________________DST_PHYSICS__
+PHYS_DST_STREAMING_EVENT_run2ppfast:
+
+   params:
+     name:       DST_STREAMING_EVENT_run2ppfast
+     build:      new
+     build_name: new
+     dbtag:      2024p001
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run_cosmics.sh
+     payload :   ./slurp-examples/sPHENIX/cosmics/
+     mem     :   4096MB
+     nevents :   1000
+     neventsper: 100
+     comment:    "neventsper output set for non zero supressed data"
+
+   input:
+      db: daqdb
+      direct_path: /sphenix/lustre01/sphnxpro/physics/*/physics/
+      query: |-
+         select 
+                'daqdb/filelist'                                                                                    as source      , 
+                runnumber                                                                                                          , 
+                0                                                                                                   as segment     , 
+                string_agg( distinct split_part(filename,'/',-1), ' ' )                                             as files       ,   
+                string_agg( distinct split_part(filename,'/',-1) || ':' || firstevent || ':' || lastevent, ' ' )    as fileranges  
+         from  
+                filelist
+         where 
+           ( 
+             (filename  like '/bbox%/TPC%physics%.evt'   and lastevent>2 ) or
+             (filename  like '/bbox%/TPOT%physics%.evt'  and lastevent>2 ) or
+             (filename  like '/bbox%/physics_intt%.evt'  and lastevent>2 ) or
+             (filename  like '/bbox%/GL1_physics%'       and lastevent>2 ) or
+             (filename  like '/bbox%/physics_mvtx%.evt'  and lastevent>2 )
+           )
+                {run_condition}
+
+         group by runnumber
+         having
+                every(transferred_to_sdcc)   and
+                max(lastevent)>1000          and
+                sum( case when filename like '/bbox%/GL1_physics%' then 1 else 0 end )>0 and
+                (
+                   sum( case when filename like '/bbox%/TPC%physics%' then 1 else 0 end )>0 or
+                   sum( case when filename like '/bbox%/TPOT%physics%' then 1 else 0 end )>0 or
+                   sum( case when filename like '/bbox%/physics%intt%' then 1 else 0 end )>0 or
+                   sum( case when filename like '/bbox%/physics_mvtx%.evt' then 1 else 0 end )>0 
+                )
+         order by runnumber
+                {limit_condition}
+              ;
+
+   # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
+   filesystem:  
+     outdir  : "/sphenix/lustre01/sphnxpro/physics/slurp/streaming/fast/run_$(rungroup)"
+     logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/fast/run_$(rungroup)"
+     condor :        "/tmp/testlogs/run_$(rungroup)"
+
+   #
+   # Again I note the need to ensure that the arguments are properly specified given the
+   # definition of the payload script.
+   #
+   job:
+     executable            : "{payload}/run_cosmics.sh"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : ""
+     priority : '3800'
+
+
+
+#________________________________________________________________________________________________________DST_PHYSICS__
+BEAM_DST_STREAMING_EVENT_run2ppfast:
+
+   params:
+     name:       DST_STREAMING_EVENT_run2ppfast
+     build:      new
+     build_name: new
+     dbtag:      2024p001
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run_cosmics.sh
+     payload :   ./slurp-examples/sPHENIX/cosmics/
+     mem     :   4096MB
+     nevents :   1000
+     neventsper: 100
+     comment:    "neventsper output set for non zero supressed data"
+
+   input:
+      db: daqdb
+      direct_path: /sphenix/lustre01/sphnxpro/physics/*/beam/
+      query: |-
+         select 
+                'daqdb/filelist'                                                                                    as source      , 
+                runnumber                                                                                                          , 
+                0                                                                                                   as segment     , 
+                string_agg( distinct split_part(filename,'/',-1), ' ' )                                             as files       ,   
+                string_agg( distinct split_part(filename,'/',-1) || ':' || firstevent || ':' || lastevent, ' ' )    as fileranges  
+         from  
+                filelist
+         where 
+           ( 
+             (filename  like '/bbox%/TPC%beam%.evt'   and lastevent>2 ) or
+             (filename  like '/bbox%/TPOT%beam%.evt'  and lastevent>2 ) or
+             (filename  like '/bbox%/beam_intt%.evt'  and lastevent>2 ) or
+             (filename  like '/bbox%/GL1_beam%'       and lastevent>2 ) or
+             (filename  like '/bbox%/beam_mvtx%.evt'  and lastevent>2 )
+           )
+                {run_condition}
+
+         group by runnumber
+         having
+                every(transferred_to_sdcc)   and
+                max(lastevent)>1000          and
+                sum( case when filename like '/bbox%/GL1_beam%' then 1 else 0 end )>0 and
+                (
+                   sum( case when filename like '/bbox%/TPC%beam%' then 1 else 0 end )>0 or
+                   sum( case when filename like '/bbox%/TPOT%beam%' then 1 else 0 end )>0 or
+                   sum( case when filename like '/bbox%/beam%intt%' then 1 else 0 end )>0 or
+                   sum( case when filename like '/bbox%/beam_mvtx%.evt' then 1 else 0 end )>0 
+                )
+         order by runnumber
+                {limit_condition}
+              ;
+
+   # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
+   filesystem:  
+     outdir  : "/sphenix/lustre01/sphnxpro/physics/slurp/streaming/fast/run_$(rungroup)"
+     logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/fast/run_$(rungroup)"
+     condor :        "/tmp/testlogs/run_$(rungroup)"
+
+   #
+   # Again I note the need to ensure that the arguments are properly specified given the
+   # definition of the payload script.
+   #
+   job:
+     executable            : "{payload}/run_cosmics.sh"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : ""
+     priority : '3800'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#_________________________________________________________________________________________________________________________________________
+DST_TRKR_HIT_SET_run2ppfast:
+   # DST_EVENT works from a pre-built set of run lists.
+   params:
+     name:       DST_TRKR_HIT_run2ppfast
+     build:      new
+     build_name: new
+     dbtag:      2024p001
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run.sh
+     payload :   ./slurp-examples/sPHENIX/TrackingProduction/
+     mem     :   2048MB
+     nevents :  100
+
+   input:
+      db: fc
+      query: |-
+         select 
+                'filecatalog/datasets'   as source       ,
+                runnumber                                ,
+                segment                                  ,
+                filename                    as files     ,
+                filename || ':0:' || events as fileranges
+         from  
+                datasets
+         where
+                filename like 'DST_STREAMING_EVENT_run2ppfast_new_2024p001%'
+                {run_condition}
+         order by runnumber
+                {limit_condition}
+              ;              
+   filesystem:  
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/fast_tracking/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/fast/run_$(rungroup)"
+     condor :        "/tmp/testlogs/run_$(rungroup)"
+
+   job:
+     executable            : "{payload}/run.sh"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : ""
+     priority : '3800'
+
+
+
+
+
+
+#_________________________________________________________________________________________________________________________________________
+DST_TRKR_CLUSTER_SET_run2ppfast:
+   # DST_EVENT works from a pre-built set of run lists.
+   params:
+     name:       DST_TRKR_CLUSTER_run2ppfast
+     build:      new
+     build_name: new
+     dbtag:      2024p001
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run_job0.sh
+     payload :   ./slurp-examples/sPHENIX/TrackingProduction/
+     mem     :   2048MB
+     nevents :  100
+
+   input:
+      db: fc
+      query: |-
+         select 
+                'filecatalog/datasets'   as source       ,
+                runnumber                                ,
+                segment                                  ,
+                filename                    as files     ,
+                filename || ':0:' || events as fileranges
+         from  
+                datasets
+         where
+                filename like 'DST_TRKR_HIT_run2ppfast_new_2024p001%'
+                {run_condition}
+         order by runnumber
+                {limit_condition}
+              ;              
+   filesystem:  
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/fast_tracking/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/fast/run_$(rungroup)"
+     condor :        "/tmp/testlogs/run_$(rungroup)"
+
+   job:
+     executable            : "{payload}/run_job0.sh"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : ""
+     priority : '3800'
+
+
+
+#_________________________________________________________________________________________________________________________________________
+DST_TRKR_SEED_SET_run2ppfast:
+   # DST_EVENT works from a pre-built set of run lists.
+   params:
+     name:       DST_TRKR_SEED_run2ppfast
+     build:      new
+     build_name: new
+     dbtag:      2024p001
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run_jobA.sh
+     payload :   ./slurp-examples/sPHENIX/TrackingProduction/
+     mem     :   2048MB
+     nevents :  100
+
+   input:
+      db: fc
+      query: |-
+         select 
+                'filecatalog/datasets'   as source       ,
+                runnumber                                ,
+                segment                                  ,
+                filename                    as files     ,
+                filename || ':0:' || events as fileranges
+         from  
+                datasets
+         where
+                filename like 'DST_TRKR_CLUSTER_run2ppfast_new_2024p001%'
+                {run_condition}
+         order by runnumber
+                {limit_condition}
+              ;              
+   filesystem:  
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/fast_tracking/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/fast/run_$(rungroup)"
+     condor :        "/tmp/testlogs/run_$(rungroup)"
+
+   job:
+     executable            : "{payload}/run_jobA.sh"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : ""
+     priority : '3800'
+
+
+
+#_________________________________________________________________________________________________________________________________________
+DST_TRKR_TRACKS_SET_run2ppfast:
+   # DST_EVENT works from a pre-built set of run lists.
+   params:
+     name:       DST_TRKR_TRACKS_run2ppfast
+     build:      new
+     build_name: new
+     dbtag:      2024p001
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run_jobC.sh
+     payload :   ./slurp-examples/sPHENIX/TrackingProduction/
+     mem     :   2048MB
+     nevents :  100
+
+   input:
+      db: fc
+      query: |-
+         select
+               'filecatalog/datasets'   as source       ,
+               runnumber                                ,
+               segment                                  ,
+               string_agg( distinct split_part(filename,'/',-1), ' ' )                                             as files       ,   
+               string_agg( distinct split_part(filename,'/',-1) || ':' || 0 || ':' || -1, ' ' )                    as fileranges  
+         from
+               datasets
+         where
+           ( 
+              filename like 'DST_TRKR_SEED_run2ppfast_new_2024p001%' or
+              filename like 'DST_TRKR_CLUSTER_run2ppfast_new_2024p001%' 
+           )
+           {run_condition}
+
+         group by runnumber,segment 
+
+         having (
+
+            sum( case when filename like 'DST_TRKR_SEED_run2ppfast_new_2024p001%' then 1 else 0 end )>0    and
+            sum( case when filename like 'DST_TRKR_CLUSTER_run2ppfast_new_2024p001%' then 1 else 0 end )>0 
+
+         )
+
+         order by runnumber
+ 
+         {limit_condition}
+         ;
+              ;              
+   filesystem:  
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/fast_tracking/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/fast/run_$(rungroup)"
+     condor :        "/tmp/testlogs/run_$(rungroup)"
+
+   job:
+     executable            : "{payload}/run_jobC.sh"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : ""
+     priority : '3800'
+
+
+
+

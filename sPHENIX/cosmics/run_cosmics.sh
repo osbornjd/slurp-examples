@@ -11,6 +11,7 @@ dbtag=${8}
 inputs=(`echo ${9} | tr "," " "`)  # array of input files 
 ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 neventsper=${11:-1000}
+logdir=${12:-.}
 {
 
 export USER="$(id -u -n)"
@@ -25,6 +26,7 @@ echo ${inputs[@]}
 
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
 
+
 #______________________________________________________________________________________________
 # Map TPC input files into filelists
 # TPC_ebdc23_cosmics-00030117-0009.evt test%%_cosmics*
@@ -33,8 +35,10 @@ for f in "${inputs[@]}"; do
     b=$( basename $f )
     # TPC files
     if [[ $b =~ "TPC_ebdc" ]]; then
-       l=${b%%_cosmics*}  # handle either cosmic events or calibrations
+       l=${b%%_cosmics*}  # handle either cosmic events or calibrations or beam...
        l=${l%%_calib*}
+       l=${l%%_beam*}
+       l=${l%%_physics*}
        echo ${f} >> ${l/TPC_ebdc/tpc}.list
        echo Add ${f} to ${l/TPC_ebdc/tpc}.list
        inputlist="${f} ${inputlist}"
@@ -59,6 +63,66 @@ for f in "${inputs[@]}"; do
     fi
     if [[ $b =~ "cosmics_mvtx" ]]; then
        l=${b#*cosmics_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+
+    if [[ $b =~ "GL1_beam" ]]; then
+       echo ${f} >> gl1.list
+       echo Add ${f} to gl1.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "beam_intt" ]]; then
+       l=${b#*beam_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "beam_mvtx" ]]; then
+       l=${b#*beam_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+
+    if [[ $b =~ "GL1_calib" ]]; then
+       echo ${f} >> gl1.list
+       echo Add ${f} to gl1.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "calib_intt" ]]; then
+       l=${b#*calib_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "calib_mvtx" ]]; then
+       l=${b#*calib_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+
+    if [[ $b =~ "GL1_physics" ]]; then
+       echo ${f} >> gl1.list
+       echo Add ${f} to gl1.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "physics_intt" ]]; then
+       l=${b#*physics_}
+       l=${l%%-*}
+       echo ${f} >> ${l}.list
+       echo Add ${f} to ${l}.list
+       inputlist="${f} ${inputlist}"
+    fi
+    if [[ $b =~ "physics_mvtx" ]]; then
+       l=${b#*physics_}
        l=${l%%-*}
        echo ${f} >> ${l}.list
        echo Add ${f} to ${l}.list
@@ -109,8 +173,13 @@ echo $logbase
 #cp stderr.log ${logbase}.err
 #cp stdout.log ${logbase}.out
 
+# Cleanup any stray root files leftover from stageout
+rm *.root
+
 ls -la
 
 echo "script done"
-} > ${logbase}.out 2>${logbase}.err 
+} > ${logbase}.out 2>${logbase}.err
 
+mv ${logbase}.out ${logdir#file:/}
+mv ${logbase}.err ${logdir#file:/}

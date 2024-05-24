@@ -83,15 +83,11 @@ cat <<EOF > qatest.json
 }
 EOF
 
-#./cups.py -r ${2} -s ${3} -d DST_CALOR_auau23_${build}_${dbtag} quality --qafile qatest.json
-
-touch stderr.log
-cp stdout.log ${dstfile}.out
-cp stderr.log ${dstfile}.err
-
 ls -la
 
-} >&stdout.log 
-#2>stderr.log
+}  > stdout.log 2>stderr.log
 
-echo "script done"
+# Write only first 25MB to output logfiles
+dd if=stdout.log of=${dstfile}.out seek=1 bs=25M
+dd if=stderr.log of=${dstfile}.err seek=1 bs=25M
+
