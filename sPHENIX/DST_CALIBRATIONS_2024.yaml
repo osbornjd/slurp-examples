@@ -1,0 +1,108 @@
+# run2 pp pi0 calibration make histograms
+HST_CALO_PI0CALIB_run2pp:
+    params:
+        name:       HST_CALO_PI0CALIB_run2pp
+        build:      new
+        build_name: new
+        dbtag:      2024p001
+        logbase:    $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(lastrun,%08d)-$INT(seg,%04d)-$INT(iteration,%02d)
+        outbase:    $(name)_$(build)_$(tag)
+        script:     run_pi0_calib.sh
+        payload:    ./slurp-examples/sPHENIX/pi0_calib/
+        mem:        2048MB
+        nevents:       5000000
+        neventsperjob:   50000
+        minrun:     42100
+
+
+
+    job:
+        executable             : "{payload}/run_pi0_calib.sh"
+        arguments              : "$(nevents) $(run) $(lastrun) $(seg) $(iteration) {logbase} {outbase} $(outdir) $(buildarg) $(tag) $(inputs) {logdir}"
+        output_destination     : '{logdir}'
+        transfer_input_files   : "{payload},cups.py,pull.py,odbc.ini"
+        output                 : "{logbase}.condor.stdout"
+        error                  : "{logbase}.condor.stderr"
+        log                    : "{condor}/{logbase}.condor"
+        accounting_group       : "group_sphenix.mdc2"
+        accounting_group_user  : "sphnxpro"
+        transfer_output_files  : ''
+
+    filesystem:
+        outdir :        "/sphenix/data/data02/sphnxpro/calocalib/pi0hist/run_$(rungroup)"
+        logdir : "file:///sphenix/data/data02/sphnxpro/calocalib/pi0logs/run_$(rungroup)"
+        condor :        "/tmp/calocalib/"
+
+    input: 
+        db: filecatalog
+        query: |-
+           with config as (
+
+           select 
+                {nevents}             as nevents
+           ,    {neventsperjob}       as nevents_per_job
+           ,    {minrun}              as minrun
+           ,   'DST_CALO_run2pp_new_2024p001%'           as inputfiles
+
+
+           ),
+
+           allruns as ( 
+             select filename,runnumber,segment,events,  sum(events) over ( order by runnumber, segment ) as sumevents
+
+             from datasets,config
+
+             where 
+              datasets.runnumber >=    config.minrun and 
+              datasets.filename  like  config.inputfiles
+
+             order by runnumber,segment
+
+           ),
+
+           runlist as ( 
+
+             select allruns.filename as filename
+           ,          allruns.runnumber as runnumber
+           ,          allruns.segment as segment
+           ,          allruns.events as events
+           ,          allruns.sumevents as sumevents
+           ,          floor( (allruns.sumevents-1)/config.nevents_per_job ) as event_group
+           ,          ( select runnumber from allruns order by runnumber      limit 1 ) as firstrun
+
+
+             from allruns,config where allruns.sumevents < config.nevents
+           ),
+
+           calibration as (
+
+             select datasets.filename  as filename, 
+                datasets.runnumber as runnumber, 
+                datasets.segment   as iteration
+      
+             from datasets , runlist 
+
+             where 
+               datasets.filename like 'CDB_PI0CALIB_run2pp%'  and
+               datasets.runnumber = runlist.firstrun
+
+             order by iteration desc, runnumber desc
+
+             limit 1
+
+           )
+
+
+           select 'filecatalog/datasets'    as source
+           ,       runlist.firstrun         as runnumber
+           ,       (select runlist.runnumber from runlist order by runnumber desc limit 1) as lastrun
+           ,       runlist.event_group      as segment
+           ,       calibration.iteration    as iteration
+           ,       string_agg(distinct split_part(runlist.filename,'/',-1),' '      )||' '||string_agg(distinct calibration.filename,' ') as files
+           ,       string_agg(distinct split_part(runlist.filename,'/',-1),':0:-1 ' )                                                     as ranges
+
+           from runlist,calibration
+
+           group by firstrun, calibration.iteration, lastrun, runlist.event_group
+      
+           ;
