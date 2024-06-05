@@ -67,8 +67,8 @@ for f in "${inputs[@]}"; do
        echo Add ${f} to gl1daq.list
        inputlist="${f} ${inputlist}"
     fi
-    # NOTE:  No seb19 ??
-    if [[ $b =~ seb(00|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|20) ]]; then
+    
+    if [[ $b =~ seb(00|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20) ]]; then
        nn=${BASH_REMATCH[1]}
        echo ${f} >> seb${nn}.list
        echo Add ${f} to seb${nn}.list
