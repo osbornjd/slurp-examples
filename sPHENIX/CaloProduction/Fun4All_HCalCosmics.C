@@ -9,7 +9,6 @@
 #include <ffamodules/CDBInterface.h>
 #include <ffamodules/FlagHandler.h>
 #include <ffamodules/HeadReco.h>
-#include <ffamodules/SyncReco.h>
 
 #include <fun4allraw/Fun4AllPrdfInputManager.h>
 
@@ -80,13 +79,6 @@ void Fun4All_HCalCosmics(int nEvents = 0,
   // // 64 bit timestamp
   rc->set_uint64Flag("TIMESTAMP", runnumber);
   CDBInterface::instance()->Verbosity(1);
-
-  // Sync Headers and Flags
-  SyncReco *sync = new SyncReco();
-  se->registerSubsystem(sync);
-
-  HeadReco *head = new HeadReco();
-  se->registerSubsystem(head);
 
   FlagHandler *flag = new FlagHandler();
   se->registerSubsystem(flag);
