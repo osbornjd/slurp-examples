@@ -6,6 +6,7 @@
 #include <GlobalVariables.C>
 #include <Trkr_Clustering.C>
 #include <Trkr_RecoInit.C>
+#include <QA.C>
 
 #include <ffamodules/SyncReco.h>
 #include <fun4all/Fun4AllDstInputManager.h>
@@ -18,6 +19,11 @@
 #include <ffamodules/FlagHandler.h>
 #include <ffamodules/CDBInterface.h>
 
+#include <trackingqa/InttClusterQA.h>
+#include <trackingqa/MicromegasClusterQA.h>
+#include <trackingqa/MvtxClusterQA.h>
+#include <trackingqa/TpcClusterQA.h>
+
 #include <phool/recoConsts.h>
 
 #include <stdio.h>
@@ -28,6 +34,7 @@ R__LOAD_LIBRARY(libmvtx.so)
 R__LOAD_LIBRARY(libintt.so)
 R__LOAD_LIBRARY(libtpc.so)
 R__LOAD_LIBRARY(libmicromegas.so)
+R__LOAD_LIBRARY(libtrackingqa.so)
 void Fun4All_Job0(
     const int nEvents = 2,
     const int runnumber = 26048,
@@ -86,6 +93,12 @@ void Fun4All_Job0(
 
   Micromegas_Clustering();
 
+  se->registerSubsystem(new MvtxClusterQA);
+  se->registerSubsystem(new InttClusterQA);
+  se->registerSubsystem(new TpcClusterQA);
+  se->registerSubsystem(new MicromegasClusterQA);
+
+
   Fun4AllOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outfilename);
   //out->StripNode("TRKR_HITSET");
   out->AddNode("Sync");
@@ -96,6 +109,10 @@ void Fun4All_Job0(
   se->run(nEvents);
   se->End();
   se->PrintTimer();
+  
+  TString qaname = "HIST_" + outfilename + "_qa.root";
+  std::string qaOutputFileName(qaname.Data());
+  QAHistManagerDef::saveQARootFile(qaOutputFileName);
 
   delete se;
   std::cout << "Finished" << std::endl;
