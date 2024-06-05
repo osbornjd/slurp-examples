@@ -7,7 +7,6 @@
 #include <Trkr_Clustering.C>
 #include <Trkr_RecoInit.C>
 
-#include <ffamodules/SyncReco.h>
 #include <fun4all/Fun4AllDstInputManager.h>
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllInputManager.h>
@@ -57,8 +56,6 @@ void Fun4All_Job0(
   Fun4AllRunNodeInputManager *ingeo = new Fun4AllRunNodeInputManager("GeoIn");
   ingeo->AddFile(geofile);
   se->registerInputManager(ingeo);
-
-  se->registerSubsystem(new SyncReco);
 
   std::ifstream ifs(filelist);
   std::string filepath;

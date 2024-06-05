@@ -14,7 +14,6 @@
 #include <fun4all/Fun4AllRunNodeInputManager.h>
 #include <fun4all/Fun4AllServer.h>
 
-#include <ffamodules/SyncReco.h>
 #include <ffamodules/CDBInterface.h>
 #include <ffamodules/FlagHandler.h>
 
@@ -60,8 +59,6 @@ void Fun4All_JobC(
   Fun4AllRunNodeInputManager *ingeo = new Fun4AllRunNodeInputManager("GeoIn");
   ingeo->AddFile(geofile);
   se->registerInputManager(ingeo);
-
-se->registerSubsystem(new SyncReco);
 
   std::ifstream ifs(filelist);
   std::string filepath;
