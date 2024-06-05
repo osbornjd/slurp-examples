@@ -20,7 +20,6 @@
 #include <ffamodules/CDBInterface.h>
 #include <ffamodules/FlagHandler.h>
 #include <ffamodules/HeadReco.h>
-#include <ffamodules/SyncReco.h>
 
 #include <fun4allraw/Fun4AllPrdfInputManager.h>
 
