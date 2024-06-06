@@ -17,7 +17,7 @@ PHYS_DST_STREAMING_EVENT_run2pp:
 
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/*/physics/
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/physics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -115,7 +115,7 @@ DST_TPCCALIB:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/tpc/calib/
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/tpc/calib/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -200,7 +200,7 @@ DST_INTT_EVENT:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/*/physics/
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/physics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -298,7 +298,7 @@ PHYS_DST_TRIGGERED_EVENT_run2pp:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/*/physics/
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/physics/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -312,6 +312,7 @@ PHYS_DST_TRIGGERED_EVENT_run2pp:
            ( 
              (filename  like '/bbox%/%emcal%physics%'    and lastevent>2 ) or 
              (filename  like '/bbox%/%HCal%physics%'     and lastevent>2 ) or
+             (filename  like '/bbox%/%LL1%physics%'      and lastevent>2 ) or
              (filename  like '/bbox%/GL1_physics%'       and lastevent>2 ) or
              (filename  like '/bbox%/%mbd%physics%'      and lastevent>2 ) or
              (filename  like '/bbox%/%ZDC%physics%'      and lastevent>2 )
@@ -497,11 +498,12 @@ DST_TRKR_CLUSTER_SET_run2pp:
    filesystem:  
      outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tracking/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/clusterhist/run_$(rungroup)"
      condor :        "/tmp/trkrlogs/run_$(rungroup)"
 
    job:
      executable            : "{payload}/run_job0.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
