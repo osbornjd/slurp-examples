@@ -59,8 +59,8 @@ outputfilename=${logbase}.root
 echo ./cups.py -r ${runnumber} -s ${segment} -d PI0_CALIB --dstfile ${logbase} started 
      ./cups.py -r ${runnumber} -s ${segment} -d PI0_CALIB --dstfile ${logbase} started 
 
-echo root.exe -q -b Fun4All_EMCal\(0,\"inputs.list\",${iteratopn},\"${LOCAL_CALIBRATION_FILE}\"\)
- #    root.exe -q -b Fun4All_EMCal\(0,\"inputs.list\",${iteratopn},\"${LOCAL_CALIBRATION_FILE}\"\)
+echo root.exe -q -b Fun4All_EMCal\(100,\"inputs.list\",${iteration},\"${LOCAL_CALIBRATION_FILE}\"\)
+     root.exe -q -b Fun4All_EMCal\(100,\"inputs.list\",${iteration},\"${LOCAL_CALIBRATION_FILE}\"\)
 #
 
 #ls > ${outbase}-${runnumber}-${segment}.root

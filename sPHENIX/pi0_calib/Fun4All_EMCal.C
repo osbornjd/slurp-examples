@@ -46,7 +46,7 @@ void createLocalEMCalCalibFile(const string fname, int runNumber);
 
 
 
-void Fun4All_EMCal(int nevents = 1, const std::string &fname = "inputdata.txt",int iter = 4, const std::string &calib_fname="local_calib_copy.root")
+void Fun4All_EMCal(int nevents = 1, const std::string &fname = "inputs.list",int iter = 0, const std::string &calib_fname="local_calib_copy.root")
 {
   bool enableMasking = 0;
 
