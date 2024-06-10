@@ -40,7 +40,7 @@ BEAM_DST_STREAMING_EVENT_run2pp:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/*/beam/
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/beam/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -96,7 +96,7 @@ BEAM_DST_STREAMING_EVENT_run2pp:
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
-     transfer_output_files : '{logbase}.out,{logbase}.err'
+     transfer_output_files : ''
 #    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
 
@@ -116,7 +116,7 @@ __DST_BEAM_nogl1__:
      neventsper: 5000
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/*/beam/
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/beam/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -205,7 +205,7 @@ BEAM_DST_TPCCALIB_run2pp:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/tpc/calib/
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/tpc/calib/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -288,7 +288,7 @@ DST_BEAM_INTT_RAW:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/*/beam/
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/beam/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -384,7 +384,7 @@ DST_BEAM_NO_INTT:
    #                   sum( case when filename like '/bbox%/beam%mvtx%' then 1 else 0 end )>0 
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/*/beam/
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/beam/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -481,7 +481,7 @@ BEAM_DST_TRIGGERED_EVENT_run2pp:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/*/beam/
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/beam/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -578,7 +578,7 @@ __DST_BEAM_TRIGGERED_nogl1__:
    #
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/physics/*/beam/
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/beam/
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
