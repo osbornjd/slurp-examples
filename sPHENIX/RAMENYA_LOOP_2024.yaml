@@ -2,7 +2,7 @@
 #
 # kaedama.py --rule DST_EVENT --config examples/sPHENIX/DST_EVENT_aua23.yaml --runs ...
 #
-DST_COSMICS:
+DST_STREAMING_EVENT_cosmics:
  
    # At the moment, an extra _ in here will throw off cups b/c it parses out 
    # run, build, dsttype, etc... from the output filename... so DST_COSMICS_run1aua
@@ -376,7 +376,7 @@ DST_TRIGGERED:
    # run, build, dsttype, etc... from the output filename... so DST_COSMICS_run1aua
    # will need to wait...
    params:
-     name:       DST_TRIGGERED_RAW_cosmics
+     name:       DST_TRIGGERED_EVENT_cosmics
      build:      new
      build_name: new
      dbtag:      2024p001
@@ -418,6 +418,7 @@ DST_TRIGGERED:
            ( 
              (filename  like '/bbox%/%emcal%cosmics%'    and lastevent>2 ) or 
              (filename  like '/bbox%/%HCal%cosmics%'     and lastevent>2 ) or
+             (filename  like '/bbox%/%LL1%physics%'      and lastevent>2 ) or
              (filename  like '/bbox%/GL1_cosmics%'       and lastevent>2 ) or
              (filename  like '/bbox%/%mbd%cosmics%'      and lastevent>2 ) or
              (filename  like '/bbox%/%ZDC%cosmics%'      and lastevent>2 )
