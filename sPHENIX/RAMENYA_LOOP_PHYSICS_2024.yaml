@@ -12,6 +12,7 @@ PHYS_DST_STREAMING_EVENT_run2pp:
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
+#    mem     :   16384MB
      neventsper: 10000
      comment:    "---"
 
