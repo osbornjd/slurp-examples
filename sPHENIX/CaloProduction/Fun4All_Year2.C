@@ -48,6 +48,32 @@ R__LOAD_LIBRARY(libmbd.so)
 R__LOAD_LIBRARY(libglobalvertex.so)
 R__LOAD_LIBRARY(libcalovalid.so)
 
+// Helper function to extract the DB tag
+std::string dbregex( const std::string input ) {
+
+  const char* regex_dsttype_run="([A-Z]+_[A-Z_]+[a-z0-9]+)_([a-z0-9]+)_(202[345]p[0-9][0-9][0-9])-([0-9]+)-([0-9]+)";
+  const char* regex_dsttype_rng="([A-Z]+_[A-Z_]+[a-z0-9]+)_([a-z0-9]+)_(202[345]p[0-9][0-9][0-9])-([0-9]+)-([0-9]+)-([0-9]+)";
+
+  std::regex runtype( regex_dsttype_run );
+  std::regex rngtype( regex_dsttype_rng );
+  std::smatch matches;
+
+  std::string result = "- nope -";
+
+  if (std::regex_search(input, matches, runtype)) {
+    std::cout << input << " is a run type | dbtag = " << matches[3] << std::endl;
+    result = matches[3];
+  }
+
+  else if (std::regex_search(input, matches, rngtype)) {
+    std::cout << input << " is a range type | dbtag = " << matches[3] << std::endl;
+    result = matches[3];
+  };
+
+  return result;
+  
+};
+
 void Fun4All_Year2(int nEvents=0,
 		   const std::string &fname = "/sphenix/lustre01/sphnxpro/commissioning/slurp/calobeam/run_00040700_00040800/DST_TRIGGERED_RAW_beam_new_2023p015-00040797-0001.root",
 		   const std::string& outfile="",
@@ -81,7 +107,7 @@ void Fun4All_Year2(int nEvents=0,
   //===============
   // ENABLE::CDB = true;
   // global tag
-  rc->set_StringFlag("CDB_GLOBALTAG", "ProdA_2024");
+  rc->set_StringFlag("CDB_GLOBALTAG", dbregex(outfile) );
   // // 64 bit timestamp
   rc->set_uint64Flag("TIMESTAMP", runnumber);
   CDBInterface::instance()->Verbosity(1);
