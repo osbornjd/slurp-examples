@@ -72,12 +72,15 @@ ls ${inputs[@]} > input.list
 out0=${logbase}.root
 out1=HIST_${logbase#DST_}.root
 
+nevents=-1
 status_f4a=0
 
 for infile in ${inputs[@]}; do
-    root.exe -q -b Fun4All_Year2.C\(${nevents},\"${infile}\",\"${out0}\",\"${out1}\"\);  status_f4a=$?
+    root.exe -q -b Fun4All_Year2.C\(${nevents},\"${infile}\",\"${out0}\",\"${out1}\",\"${dbtag}\"\);  status_f4a=$?
     # Stageout the (single) DST created in the macro run
     for rfile in `ls DST_*.root`; do 
+        nevents_=$( root.exe -q -b GetEntries.C\(\"${filename}\"\) | awk '/Number of Entries/{ print $4; }' )
+        nevents=${nevents_:--1}
 	echo Stageout ${rfile} to ${outdir}
         ./stageout.sh ${rfile} ${outdir}
     done
@@ -93,8 +96,8 @@ rm *.root
 ls -lah
 
 #______________________________________________________________________________________ finished __
-echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents 0 --inc 
-     ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents 0 --inc 
+echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents ${nevents} --inc 
+     ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents ${nevents} --inc 
 #_________________________________________________________________________________________________
 
 
