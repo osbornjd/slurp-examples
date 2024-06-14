@@ -1,3 +1,5 @@
+#include <QA.C>
+
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllInputManager.h>
 #include <fun4all/Fun4AllOutputManager.h>
@@ -171,8 +173,8 @@ void Fun4All_Stream_Combiner(int nEvents = 100,
     {
     SingleMvtxPoolInput *mvtx_sngl = new SingleMvtxPoolInput("MVTX_" + to_string(i));
     //    mvtx_sngl->Verbosity(3);
-    mvtx_sngl->SetBcoRange(1000);
-    mvtx_sngl->SetNegativeBco(1000);
+    mvtx_sngl->SetBcoRange(100);
+    mvtx_sngl->SetNegativeBco(100);
     mvtx_sngl->AddListFile(iter);
     in->registerStreamingInput(mvtx_sngl, InputManagerType::MVTX);
     i++;
@@ -186,7 +188,7 @@ void Fun4All_Stream_Combiner(int nEvents = 100,
     SingleTpcPoolInput *tpc_sngl = new SingleTpcPoolInput("TPC_" + to_string(i));
 //    tpc_sngl->Verbosity(2);
     //   tpc_sngl->DryRun();
-    tpc_sngl->SetBcoRange(130);
+    tpc_sngl->SetBcoRange(5);
     tpc_sngl->AddListFile(iter);
     in->registerStreamingInput(tpc_sngl, InputManagerType::TPC);
     i++;
@@ -200,7 +202,7 @@ void Fun4All_Stream_Combiner(int nEvents = 100,
     {
     SingleMicromegasPoolInput *mm_sngl = new SingleMicromegasPoolInput("MICROMEGAS_" + to_string(i));
     //   sngl->Verbosity(3);
-    mm_sngl->SetBcoRange(100);
+    mm_sngl->SetBcoRange(5);
     mm_sngl->SetNegativeBco(2);
     mm_sngl->AddListFile(iter);
     in->registerStreamingInput(mm_sngl, InputManagerType::MICROMEGAS);
@@ -241,6 +243,10 @@ void Fun4All_Stream_Combiner(int nEvents = 100,
   se->run(nEvents);
 
   se->End();
+
+  std::string qaOutputFileName = "./HIST_" + type + "_qa.root";
+  QAHistManagerDef::saveQARootFile(qaOutputFileName);
+
   delete se;
   cout << "all done" << endl;
   gSystem->Exit(0);
