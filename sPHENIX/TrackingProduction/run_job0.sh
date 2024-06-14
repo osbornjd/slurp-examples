@@ -12,6 +12,17 @@ inputs=(`echo ${9} | tr "," " "`)  # array of input files
 ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 logdir=${11:-.}
 histdir=${12:-.}
+
+sighandler()
+{
+echo "Signal handler"
+echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e 255 --nevents 0
+     ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e 255 --nevents 0
+mv ${logbase}.out ${logdir#file:/}
+mv ${logbase}.err ${logdir#file:/}
+}
+trap sighandler SIGTERM SIGSTP SIGINT SIGKILL
+
 {
 
 export USER="$(id -u -n)"

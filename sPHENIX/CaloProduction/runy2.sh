@@ -13,6 +13,19 @@ ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 neventsper=${11:-1000}
 logdir=${12:-.}
 histdir=${13:-.}
+
+sighandler()
+{
+echo "signal handler"
+mv ${logbase}.out ${logdir#file:/}
+mv ${logbase}.err ${logdir#file:/}
+echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents 0 --inc 
+     ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e 255 --nevents 0 
+}
+
+# On evict (term,stp) or hold (kill) branch to signal handler
+trap sighandler SIGTERM SIGSTP SIGINT SIGKILL  
+
 {
 
 export USER="$(id -u -n)"
