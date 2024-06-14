@@ -1,3 +1,5 @@
+#include <QA.C>
+
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllInputManager.h>
 #include <fun4all/Fun4AllOutputManager.h>
@@ -241,6 +243,10 @@ void Fun4All_Stream_Combiner(int nEvents = 100,
   se->run(nEvents);
 
   se->End();
+
+  std::string qaOutputFileName = "./HIST_" + type + "_qa.root";
+  QAHistManagerDef::saveQARootFile(qaOutputFileName);
+
   delete se;
   cout << "all done" << endl;
   gSystem->Exit(0);
