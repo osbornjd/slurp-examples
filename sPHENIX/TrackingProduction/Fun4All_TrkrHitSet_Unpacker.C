@@ -45,7 +45,7 @@ void Fun4All_TrkrHitSet_Unpacker(
   rc->set_IntFlag("RUNNUMBER", runnumber);
 
   Enable::CDB = true;
-  rc->set_StringFlag("CDB_GLOBALTAG", dbtag ); //"ProdA_2023");
+  rc->set_StringFlag("CDB_GLOBALTAG", dbtag );
   rc->set_uint64Flag("TIMESTAMP", CDB::timestamp);
 
   FlagHandler *flag = new FlagHandler();
