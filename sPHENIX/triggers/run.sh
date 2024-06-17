@@ -13,6 +13,14 @@ ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 neventsper=${11:-1000}
 logdir=${12}
 histdir=${13:-/dev/null}
+
+sighandler()
+{
+mv ${logbase}.out ${logdir#file:/}
+mv ${logbase}.err ${logdir#file:/}
+}
+trap sighandler SIGTERM SIGSTP SIGINT SIGKILL
+
 {
 
 export USER="$(id -u -n)"
