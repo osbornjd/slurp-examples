@@ -12,14 +12,18 @@ inputs=(`echo ${9} | tr "," " "`)  # array of input files
 ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 neventsper=${11:-1000}
 logdir=${12:-.}
-
+comment=${13}
+histdir=${14:-.}
 
 sighandler()
 {
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
 }
-trap sighandler SIGTERM SIGSTP SIGINT SIGKILL
+trap sighandler SIGTERM 
+trap sighandler SIGSTOP 
+trap sighandler SIGINT 
+trap sighandler SIGKILL
 
 
 {
@@ -183,6 +187,8 @@ echo $logbase
 #cp stderr.log ${logbase}.err
 #cp stdout.log ${logbase}.out
 
+mv HIST_*.qa.root ${histdir}
+
 # Cleanup any stray root files leftover from stageout
 rm *.root
 
@@ -195,3 +201,5 @@ echo "script done"
 
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
+
+
