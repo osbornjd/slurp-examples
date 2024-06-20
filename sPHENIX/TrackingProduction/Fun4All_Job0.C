@@ -101,6 +101,7 @@ void Fun4All_Job0(
   out->AddNode("Sync");
   out->AddNode("EventHeader");
   out->AddNode("TRKR_CLUSTER");
+  out->AddNode("TRKR_CLUSTERCROSSINGASSOC");
   se->registerOutputManager(out);
 
   se->run(nEvents);
