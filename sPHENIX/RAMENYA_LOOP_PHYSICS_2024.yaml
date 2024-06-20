@@ -57,6 +57,7 @@ PHYS_DST_STREAMING_EVENT_run2pp:
    filesystem:  
      outdir  : "/sphenix/lustre01/sphnxpro/physics/slurp/streaming/physics/run_$(rungroup)"
      logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/streamhist/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
    #
@@ -65,7 +66,7 @@ PHYS_DST_STREAMING_EVENT_run2pp:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -91,7 +92,7 @@ DST_TPCCALIB:
      name:       DST_TPC_EVENT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -174,7 +175,7 @@ DST_INTT_EVENT:
      name:       DST_INTT_EVENT_physics
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -367,7 +368,7 @@ DST_CALO_Y2:
      name:       DST_CALO_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   runy2.sh
@@ -419,7 +420,7 @@ DST_TRKR_HIT_SET_physics:
      name:       DST_TRKR_HIT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
@@ -471,7 +472,7 @@ DST_TRKR_CLUSTER_SET_run2pp:
      name:       DST_TRKR_CLUSTER_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_job0.sh
@@ -491,7 +492,7 @@ DST_TRKR_CLUSTER_SET_run2pp:
          from  
                 datasets
          where
-                filename like 'DST_TRKR_HIT_run2pp_new_2024p001%'
+                filename like 'DST_TRKR_HIT_run2pp_new_2024p002%'
                 {run_condition}
          order by runnumber
                 {limit_condition}
@@ -524,7 +525,7 @@ DST_TRKR_SEED_SET_run2pp:
      name:       DST_TRKR_SEED_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_jobA.sh
@@ -544,7 +545,7 @@ DST_TRKR_SEED_SET_run2pp:
          from  
                 datasets
          where
-                filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p001%'
+                filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p002%'
                 {run_condition}
          order by runnumber
                 {limit_condition}
@@ -577,7 +578,7 @@ DST_TRKR_TRACKS_SET_run2pp:
      name:       DST_TRKR_TRACKS_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_jobC.sh
@@ -598,8 +599,8 @@ DST_TRKR_TRACKS_SET_run2pp:
                datasets
          where
            ( 
-              filename like 'DST_TRKR_SEED_run2pp_new_2024p001%' or
-              filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p001%' 
+              filename like 'DST_TRKR_SEED_run2pp_new_2024p002%' or
+              filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p002%' 
            )
            {run_condition}
 
@@ -607,8 +608,8 @@ DST_TRKR_TRACKS_SET_run2pp:
 
          having (
 
-            sum( case when filename like 'DST_TRKR_SEED_run2pp_new_2024p001%' then 1 else 0 end )>0    and
-            sum( case when filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p001%' then 1 else 0 end )>0 
+            sum( case when filename like 'DST_TRKR_SEED_run2pp_new_2024p002%' then 1 else 0 end )>0    and
+            sum( case when filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p002%' then 1 else 0 end )>0 
 
          )
 
