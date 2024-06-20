@@ -3,6 +3,8 @@
  * example showing how to unpack the raw hits into the offline tracker hit
  * format. No other reconstruction or analysis is performed
  */
+#include <QA.C>
+
 #include <GlobalVariables.C>
 #include <Trkr_Clustering.C>
 #include <Trkr_RecoInit.C>
@@ -19,6 +21,8 @@
 
 #include <phool/recoConsts.h>
 
+#include <trackingqa/SiliconSeedsQA.h>
+
 #include <stdio.h>
 
 R__LOAD_LIBRARY(libfun4all.so)
@@ -28,6 +32,7 @@ R__LOAD_LIBRARY(libintt.so)
 R__LOAD_LIBRARY(libtpc.so)
 R__LOAD_LIBRARY(libmicromegas.so)
 R__LOAD_LIBRARY(libtrack_reco.so)
+R__LOAD_LIBRARY(libtrackingqa.so)
 void Fun4All_JobA(
     const int nEvents = 2,
     const int runnumber = 26048,
@@ -170,8 +175,24 @@ void Fun4All_JobA(
 
   se->registerOutputManager(out);
 
+  auto converter = new TrackSeedTrackMapConverter;
+  // Default set to full SvtxTrackSeeds. Can be set to
+  // SiliconTrackSeedContainer or TpcTrackSeedContainer
+  converter->setTrackSeedName("SiliconTrackSeedContainer");
+  converter->setFieldMap(G4MAGNET::magfield_tracking);
+  converter->Verbosity(0);
+  se->registerSubsystem(converter);
+
+  se->registerSubsystem(new SiliconSeedsQA);
+
   se->run(nEvents);
   se->End();
+
+  TString qaname = "HIST_" + outfilename + "_qa.root";
+  std::string qaOutputFileName(qaname.Data());
+  QAHistManagerDef::saveQARootFile(qaOutputFileName);
+
+
   se->PrintTimer();
 
   delete se;
