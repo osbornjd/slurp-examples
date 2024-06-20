@@ -181,7 +181,7 @@ BEAM_DST_TPCCALIB_run2pp:
      name:       DST_TPCCALIB_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -638,13 +638,13 @@ __DST_BEAM_TRIGGERED_nogl1__:
      priority : '3800'
 
 
-DST_TRKR_HIT_SET_beam:
+__DST_TRKR_HIT_SET_beam__:
    # DST_EVENT works from a pre-built set of run lists.
    params:
      name:       DST_TRKR_HIT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
