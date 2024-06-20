@@ -11,9 +11,9 @@ PHYS_DST_STREAMING_EVENT_run2ppfast:
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     nevents :   1000
+     nevents :   5000
      neventsper: 100
-     comment:    "neventsper output set for non zero supressed data"
+     comment:    meh
 
    input:
       db: daqdb
@@ -56,6 +56,7 @@ PHYS_DST_STREAMING_EVENT_run2ppfast:
    filesystem:  
      outdir  : "/sphenix/lustre01/sphnxpro/physics/slurp/streaming/fast/run_$(rungroup)"
      logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/fast/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/streamhist/fast/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
    #
@@ -64,7 +65,7 @@ PHYS_DST_STREAMING_EVENT_run2ppfast:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -90,9 +91,9 @@ BEAM_DST_STREAMING_EVENT_run2ppfast:
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     nevents :   1000
+     nevents :   5000
      neventsper: 100
-     comment:    "neventsper output set for non zero supressed data"
+     comment:    meh
 
    input:
       db: daqdb
@@ -135,6 +136,7 @@ BEAM_DST_STREAMING_EVENT_run2ppfast:
    filesystem:  
      outdir  : "/sphenix/lustre01/sphnxpro/physics/slurp/streaming/fast/run_$(rungroup)"
      logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/fast/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/streamhist/fast/run_$(rungroup)"
      condor :        "/tmp/testlogs/run_$(rungroup)"
 
    #
@@ -143,7 +145,7 @@ BEAM_DST_STREAMING_EVENT_run2ppfast:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -183,7 +185,7 @@ DST_TRKR_HIT_SET_run2ppfast:
      name:       DST_TRKR_HIT_run2ppfast
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
@@ -238,7 +240,7 @@ DST_TRKR_CLUSTER_SET_run2ppfast:
      name:       DST_TRKR_CLUSTER_run2ppfast
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_job0.sh
@@ -258,7 +260,7 @@ DST_TRKR_CLUSTER_SET_run2ppfast:
          from  
                 datasets
          where
-                filename like 'DST_TRKR_HIT_run2ppfast_new_2024p001%'
+                filename like 'DST_TRKR_HIT_run2ppfast_new_2024p002%'
                 {run_condition}
          order by runnumber
                 {limit_condition}
@@ -290,7 +292,7 @@ DST_TRKR_SEED_SET_run2ppfast:
      name:       DST_TRKR_SEED_run2ppfast
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_jobA.sh
@@ -310,7 +312,7 @@ DST_TRKR_SEED_SET_run2ppfast:
          from  
                 datasets
          where
-                filename like 'DST_TRKR_CLUSTER_run2ppfast_new_2024p001%'
+                filename like 'DST_TRKR_CLUSTER_run2ppfast_new_2024p002%'
                 {run_condition}
          order by runnumber
                 {limit_condition}
@@ -342,7 +344,7 @@ DST_TRKR_TRACKS_SET_run2ppfast:
      name:       DST_TRKR_TRACKS_run2ppfast
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_jobC.sh
@@ -363,8 +365,8 @@ DST_TRKR_TRACKS_SET_run2ppfast:
                datasets
          where
            ( 
-              filename like 'DST_TRKR_SEED_run2ppfast_new_2024p001%' or
-              filename like 'DST_TRKR_CLUSTER_run2ppfast_new_2024p001%' 
+              filename like 'DST_TRKR_SEED_run2ppfast_new_2024p002%' or
+              filename like 'DST_TRKR_CLUSTER_run2ppfast_new_2024p002%' 
            )
            {run_condition}
 
@@ -372,8 +374,8 @@ DST_TRKR_TRACKS_SET_run2ppfast:
 
          having (
 
-            sum( case when filename like 'DST_TRKR_SEED_run2ppfast_new_2024p001%' then 1 else 0 end )>0    and
-            sum( case when filename like 'DST_TRKR_CLUSTER_run2ppfast_new_2024p001%' then 1 else 0 end )>0 
+            sum( case when filename like 'DST_TRKR_SEED_run2ppfast_new_2024p002%' then 1 else 0 end )>0    and
+            sum( case when filename like 'DST_TRKR_CLUSTER_run2ppfast_new_2024p002%' then 1 else 0 end )>0 
 
          )
 
