@@ -183,6 +183,16 @@ void Fun4All_JobA(
   converter->Verbosity(0);
   se->registerSubsystem(converter);
 
+  PHSimpleVertexFinder *finder = new PHSimpleVertexFinder;
+  finder->Verbosity(0);
+  finder->setDcaCut(0.5);
+  finder->setTrackPtCut(-99999.);
+  finder->setBeamLineCut(1);
+  finder->setTrackQualityCut(1000000000);
+  finder->setNmvtxRequired(3);
+  finder->setOutlierPairCut(0.1);
+  se->registerSubsystem(finder);
+
   se->registerSubsystem(new SiliconSeedsQA);
 
   se->run(nEvents);
