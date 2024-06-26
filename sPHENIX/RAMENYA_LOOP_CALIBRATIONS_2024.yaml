@@ -7,8 +7,8 @@ MBD_CALIBRATION:
      name:       DST_MBD_CALIBRATION_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/mbd_calib/
@@ -62,7 +62,7 @@ MBD_CALIBRATION:
      executable            : "{payload}/run.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {pass0dir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'

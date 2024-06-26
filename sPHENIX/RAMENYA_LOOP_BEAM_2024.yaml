@@ -9,8 +9,8 @@ BEAM_DST_STREAMING_EVENT_run2pp:
      name:       DST_STREAMING_EVENT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
@@ -89,7 +89,7 @@ BEAM_DST_STREAMING_EVENT_run2pp:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -108,7 +108,7 @@ __DST_BEAM_nogl1__:
      build:      new
      build_name: new
      dbtag:      2023p013
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
@@ -158,7 +158,7 @@ __DST_BEAM_nogl1__:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -182,7 +182,7 @@ BEAM_DST_TPCCALIB_run2pp:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
@@ -239,7 +239,7 @@ BEAM_DST_TPCCALIB_run2pp:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -262,7 +262,7 @@ DST_BEAM_INTT_RAW:
      build:      new
      build_name: new
      dbtag:      2023p011
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
@@ -336,7 +336,7 @@ DST_BEAM_INTT_RAW:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -359,7 +359,7 @@ DST_BEAM_NO_INTT:
      build:      new
      build_name: new
      dbtag:      2023p013
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
@@ -431,7 +431,7 @@ DST_BEAM_NO_INTT:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -456,8 +456,8 @@ BEAM_DST_TRIGGERED_EVENT_run2pp:
      name:       DST_TRIGGERED_EVENT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p003
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/triggers/
@@ -531,7 +531,7 @@ BEAM_DST_TRIGGERED_EVENT_run2pp:
      executable            : "{payload}/run.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -554,7 +554,7 @@ __DST_BEAM_TRIGGERED_nogl1__:
      build:      new
      build_name: new
      dbtag:      2023p015
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/triggers/
@@ -627,7 +627,7 @@ __DST_BEAM_TRIGGERED_nogl1__:
      executable            : "{payload}/run.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -645,7 +645,7 @@ __DST_TRKR_HIT_SET_beam__:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
@@ -677,7 +677,7 @@ __DST_TRKR_HIT_SET_beam__:
      executable            : "{payload}/run.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'

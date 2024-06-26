@@ -6,13 +6,13 @@ PHYS_DST_STREAMING_EVENT_run2pp:
      name:       DST_STREAMING_EVENT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     neventsper: 1000
+     neventsper: 2500
      comment:    "---"
 
    input:
@@ -67,7 +67,7 @@ PHYS_DST_STREAMING_EVENT_run2pp:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -77,6 +77,7 @@ PHYS_DST_STREAMING_EVENT_run2pp:
      transfer_output_files : ""
 #    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
+     request_xferslots: '2'
 
 
 
@@ -92,7 +93,7 @@ DST_TPCCALIB:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
@@ -150,7 +151,7 @@ DST_TPCCALIB:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -175,7 +176,7 @@ DST_INTT_EVENT:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
@@ -249,7 +250,7 @@ DST_INTT_EVENT:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -259,7 +260,7 @@ DST_INTT_EVENT:
 #    transfer_output_files : '{logbase}.out,{logbase}.err'
 #    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
-
+     request_xferslots: '2'
 
 
 
@@ -274,8 +275,8 @@ PHYS_DST_TRIGGERED_EVENT_run2pp:
      name:       DST_TRIGGERED_EVENT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p003
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/triggers/
@@ -351,7 +352,7 @@ PHYS_DST_TRIGGERED_EVENT_run2pp:
      executable            : "{payload}/run.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -359,6 +360,7 @@ PHYS_DST_TRIGGERED_EVENT_run2pp:
      accounting_group_user : "sphnxpro"
      priority : '3800'
      transfer_output_files : ""
+     request_xferslots: '2'
 
 #___________________________________________________________________________________________________DST_CALO_run2pp __     
 # Downstream production of the 2024 calorimeter data
@@ -367,8 +369,8 @@ DST_CALO_Y2:
      name:       DST_CALO_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p003
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   runy2.sh
      payload :   ./slurp-examples/sPHENIX/CaloProduction/
@@ -386,7 +388,7 @@ DST_CALO_Y2:
          from  
                 datasets
          where 
-                filename like 'DST_TRIGGERED_EVENT_run2pp%'
+                filename like 'DST_TRIGGERED_EVENT_run2pp%2024p003%'
                 {run_condition}
            
          {limit_condition}
@@ -395,7 +397,7 @@ DST_CALO_Y2:
      executable            : "{payload}/runy2.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -420,7 +422,7 @@ DST_TRKR_HIT_SET_physics:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
@@ -438,7 +440,7 @@ DST_TRKR_HIT_SET_physics:
          from  
                 datasets
          where
-                filename like 'DST_STREAMING_EVENT_run2pp_new_2024p001%'
+                filename like 'DST_STREAMING_EVENT_run2pp_new_2024p002%'
                 {run_condition}
          order by runnumber
                 {limit_condition}
@@ -452,7 +454,7 @@ DST_TRKR_HIT_SET_physics:
      executable            : "{payload}/run.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -472,7 +474,7 @@ DST_TRKR_CLUSTER_SET_run2pp:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_job0.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
@@ -506,7 +508,7 @@ DST_TRKR_CLUSTER_SET_run2pp:
      executable            : "{payload}/run_job0.sh"
      arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -525,7 +527,7 @@ DST_TRKR_SEED_SET_run2pp:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_jobA.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
@@ -559,7 +561,7 @@ DST_TRKR_SEED_SET_run2pp:
      executable            : "{payload}/run_jobA.sh"
      arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -579,7 +581,7 @@ DST_TRKR_TRACKS_SET_run2pp:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_jobC.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
@@ -628,7 +630,7 @@ DST_TRKR_TRACKS_SET_run2pp:
      executable            : "{payload}/run_jobC.sh"
      arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -657,14 +659,14 @@ PHYS_DST_STREAMING_EVENT_run2pp_nomvtx:
      name:       DST_STREAMING_EVENT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
 #    mem     :   16384MB
-     neventsper: 10000
+     neventsper: 2500
      comment:    "---"
 
    input:
@@ -717,7 +719,7 @@ PHYS_DST_STREAMING_EVENT_run2pp_nomvtx:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -727,7 +729,7 @@ PHYS_DST_STREAMING_EVENT_run2pp_nomvtx:
      transfer_output_files : ""
 #    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
-
+     request_xferslots: '2'
 
 
 
@@ -737,13 +739,13 @@ PHYS_DST_TPC_EVENT_run2pp:
      name:       DST_TPC_EVENT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     neventsper: 1000
+     neventsper: 2500
      comment:    "---"
    input:
       db: daqdb
@@ -771,6 +773,7 @@ PHYS_DST_TPC_EVENT_run2pp:
                 sum( case when filename like '/bbox%/TPC%physics%' then 1 else 0 end )>0 
          order by runnumber                
          {limit_condition};
+
    filesystem:  
      outdir  : "/sphenix/lustre01/sphnxpro/physics/slurp/streaming/physics/tpconlyrun_$(rungroup)"
      logdir  : "file:///sphenix/data/data02/sphnxpro/streaminglogs/tpconly/run_$(rungroup)"
@@ -781,7 +784,7 @@ PHYS_DST_TPC_EVENT_run2pp:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -789,6 +792,7 @@ PHYS_DST_TPC_EVENT_run2pp:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
+     request_xferslots: '2'
 
 #_______________________________________________________________________________________________________________________________________________________
 PHYS_DST_TPOT_EVENT_run2pp:
@@ -796,13 +800,13 @@ PHYS_DST_TPOT_EVENT_run2pp:
      name:       DST_TPOT_EVENT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     neventsper: 1000
+     neventsper: 2500
      comment:    "---"
    input:
       db: daqdb
@@ -840,7 +844,7 @@ PHYS_DST_TPOT_EVENT_run2pp:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -848,6 +852,7 @@ PHYS_DST_TPOT_EVENT_run2pp:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
+     request_xferslots: '2'
 
 #_______________________________________________________________________________________________________________________________________________________
 PHYS_DST_INTT_EVENT_run2pp:
@@ -855,13 +860,13 @@ PHYS_DST_INTT_EVENT_run2pp:
      name:       DST_INTT_EVENT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     neventsper: 1000
+     neventsper: 2500
      comment:    "---"
    input:
       db: daqdb
@@ -899,7 +904,7 @@ PHYS_DST_INTT_EVENT_run2pp:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -907,6 +912,7 @@ PHYS_DST_INTT_EVENT_run2pp:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
+     request_xferslots: '2'
 
 
 #_______________________________________________________________________________________________________________________________________________________
@@ -915,13 +921,13 @@ PHYS_DST_MVTX_EVENT_run2pp:
      name:       DST_MVTX_EVENT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     neventsper: 1000
+     neventsper: 2500
      comment:    "---"
    input:
       db: daqdb
@@ -959,7 +965,7 @@ PHYS_DST_MVTX_EVENT_run2pp:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -967,3 +973,4 @@ PHYS_DST_MVTX_EVENT_run2pp:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
+     request_xferslots: '2'

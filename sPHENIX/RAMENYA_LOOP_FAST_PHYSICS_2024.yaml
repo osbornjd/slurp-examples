@@ -5,8 +5,8 @@ PHYS_DST_STREAMING_EVENT_run2ppfast:
      name:       DST_STREAMING_EVENT_run2ppfast
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
@@ -67,7 +67,7 @@ PHYS_DST_STREAMING_EVENT_run2ppfast:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -75,6 +75,7 @@ PHYS_DST_STREAMING_EVENT_run2ppfast:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
+     request_xferslots: '2'
 
 
 
@@ -85,8 +86,8 @@ BEAM_DST_STREAMING_EVENT_run2ppfast:
      name:       DST_STREAMING_EVENT_run2ppfast
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
@@ -147,7 +148,7 @@ BEAM_DST_STREAMING_EVENT_run2ppfast:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -155,7 +156,7 @@ BEAM_DST_STREAMING_EVENT_run2ppfast:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
-
+     request_xferslots: '2'
 
 
 
@@ -186,7 +187,7 @@ DST_TRKR_HIT_SET_run2ppfast:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
@@ -205,7 +206,7 @@ DST_TRKR_HIT_SET_run2ppfast:
          from  
                 datasets
          where
-                filename like 'DST_STREAMING_EVENT_run2ppfast_new_2024p001%'
+                filename like 'DST_STREAMING_EVENT_run2ppfast_new_2024p002%'
                 {run_condition}
          order by runnumber
                 {limit_condition}
@@ -219,7 +220,7 @@ DST_TRKR_HIT_SET_run2ppfast:
      executable            : "{payload}/run.sh"
      arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -241,7 +242,7 @@ DST_TRKR_CLUSTER_SET_run2ppfast:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_job0.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
@@ -275,7 +276,7 @@ DST_TRKR_CLUSTER_SET_run2ppfast:
      executable            : "{payload}/run_job0.sh"
      arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -294,7 +295,7 @@ DST_TRKR_SEED_SET_run2ppfast:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_jobA.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
@@ -328,7 +329,7 @@ DST_TRKR_SEED_SET_run2ppfast:
      executable            : "{payload}/run_jobA.sh"
      arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -347,7 +348,7 @@ DST_TRKR_TRACKS_SET_run2ppfast:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_jobC.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
@@ -396,7 +397,7 @@ DST_TRKR_TRACKS_SET_run2ppfast:
      executable            : "{payload}/run_jobC.sh"
      arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -438,8 +439,8 @@ PHYS_DST_STREAMING_EVENT_run2ppfast_nomvtx:
      name:       DST_STREAMING_EVENT_run2ppfast
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
@@ -498,7 +499,7 @@ PHYS_DST_STREAMING_EVENT_run2ppfast_nomvtx:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -506,6 +507,7 @@ PHYS_DST_STREAMING_EVENT_run2ppfast_nomvtx:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
+     request_xferslots: '2'
 
 
 
@@ -516,8 +518,8 @@ BEAM_DST_STREAMING_EVENT_run2ppfast_nomvtx:
      name:       DST_STREAMING_EVENT_run2ppfast
      build:      new
      build_name: new
-     dbtag:      2024p001
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     dbtag:      2024p002
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
@@ -576,7 +578,7 @@ BEAM_DST_STREAMING_EVENT_run2ppfast_nomvtx:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -584,4 +586,4 @@ BEAM_DST_STREAMING_EVENT_run2ppfast_nomvtx:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
-
+     request_xferslots: '2'
