@@ -108,7 +108,7 @@ void Fun4All_Job0(
   se->End();
   se->PrintTimer();
   
-  TString qaname = "HIST_" + outfilename + "_qa.root";
+  TString qaname = "HIST_" + outfilename;
   std::string qaOutputFileName(qaname.Data());
   QAHistManagerDef::saveQARootFile(qaOutputFileName);
 

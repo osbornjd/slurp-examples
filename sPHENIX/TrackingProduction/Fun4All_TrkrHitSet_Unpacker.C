@@ -3,6 +3,7 @@
  * example showing how to unpack the raw hits into the offline tracker hit
  * format. No other reconstruction or analysis is performed
  */
+#include <QA.C>
 #include <GlobalVariables.C>
 #include <Trkr_Clustering.C>
 
@@ -73,6 +74,13 @@ void Fun4All_TrkrHitSet_Unpacker(
   Tpc_HitUnpacking();
   Micromegas_HitUnpacking();
 
+  auto mvtx = new MvtxRawHitQA;
+  se->registerSubsystem(mvtx);
+
+  auto intt = new InttRawHitQA;
+  se->registerSubsystem(intt);
+  
+
   Fun4AllOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outfilename);
 
   out->AddNode("Sync");
@@ -82,6 +90,11 @@ void Fun4All_TrkrHitSet_Unpacker(
 
   se->run(nEvents);
   se->End();
+
+  TString qaname = "HIST_" + outfilename;
+  std::string qaOutputFileName(qaname.Data());
+  QAHistManagerDef::saveQARootFile(qaOutputFileName);
+
   se->PrintTimer();
 
   delete se;
