@@ -16,7 +16,8 @@
 
 #include <ffamodules/CDBInterface.h>
 #include <ffamodules/FlagHandler.h>
-
+#include <mvtxrawhitqa/MvtxRawHitQA.h>
+#include <inttrawhitqa/InttRawHitQA.h>
 #include <phool/recoConsts.h>
 
 #include <stdio.h>
@@ -27,6 +28,8 @@ R__LOAD_LIBRARY(libmvtx.so)
 R__LOAD_LIBRARY(libintt.so)
 R__LOAD_LIBRARY(libtpc.so)
 R__LOAD_LIBRARY(libmicromegas.so)
+R__LOAD_LIBRARY(libinttrawhitqa.so)
+R__LOAD_LIBRARY(libmvtxrawhitqa.so)
 void Fun4All_TrkrHitSet_Unpacker(
     const int nEvents = 2,
     const int runnumber = 41626,
