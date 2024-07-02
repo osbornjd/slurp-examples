@@ -22,6 +22,7 @@
 #include <phool/recoConsts.h>
 
 #include <trackingqa/SiliconSeedsQA.h>
+#include <trackingqa/TpcSeedsQA.h>
 
 #include <stdio.h>
 
@@ -175,15 +176,16 @@ void Fun4All_JobA(
 
   se->registerOutputManager(out);
 
-  auto converter = new TrackSeedTrackMapConverter;
+  auto converter = new TrackSeedTrackMapConverter("SiliconSeedConverter");
   // Default set to full SvtxTrackSeeds. Can be set to
   // SiliconTrackSeedContainer or TpcTrackSeedContainer
   converter->setTrackSeedName("SiliconTrackSeedContainer");
+  converter->setTrackMapName("SiliconSvtxTrackMap");
   converter->setFieldMap(G4MAGNET::magfield_tracking);
   converter->Verbosity(0);
   se->registerSubsystem(converter);
 
-  PHSimpleVertexFinder *finder = new PHSimpleVertexFinder;
+  auto finder = new PHSimpleVertexFinder("SiliconVertexFinder");
   finder->Verbosity(0);
   finder->setDcaCut(0.5);
   finder->setTrackPtCut(-99999.);
@@ -191,14 +193,45 @@ void Fun4All_JobA(
   finder->setTrackQualityCut(1000000000);
   finder->setNmvtxRequired(3);
   finder->setOutlierPairCut(0.1);
+  finder->setTrackMapName("SiliconSvtxTrackMap");
+  finder->setVertexMapName("SiliconSvtxVertexMap");
   se->registerSubsystem(finder);
 
-  se->registerSubsystem(new SiliconSeedsQA);
+  auto siliconqa = new SiliconSeedsQA;
+  siliconqa->setTrackMapName("SiliconSvtxTrackMap");
+  siliconqa->setVertexMapName("SiliconSvtxVertexMap");
+  se->registerSubsystem(siliconqa);
+
+  auto convertertpc = new TrackSeedTrackMapConverter("TpcSeedConverter");
+  // Default set to full SvtxTrackSeeds. Can be set to
+  // SiliconTrackSeedContainer or TpcTrackSeedContainer
+  convertertpc->setTrackSeedName("TpcTrackSeedContainer");
+  convertertpc->setTrackMapName("TpcSvtxTrackMap");
+  convertertpc->setFieldMap(G4MAGNET::magfield_tracking);
+  convertertpc->Verbosity(0);
+  se->registerSubsystem(convertertpc);
+
+  auto findertpc = new PHSimpleVertexFinder("TpcSimpleVertexFinder");
+  findertpc->Verbosity(0);
+  findertpc->setDcaCut(0.5);
+  findertpc->setTrackPtCut(-99999.);
+  findertpc->setBeamLineCut(1);
+  findertpc->setTrackQualityCut(1000000000);
+  findertpc->setNmvtxRequired(3);
+  findertpc->setOutlierPairCut(0.1);
+  findertpc->setTrackMapName("TpcSvtxTrackMap");
+  findertpc->setVertexMapName("TpcSvtxVertexMap");
+  se->registerSubsystem(findertpc);
+
+  auto tpcqa = new TpcSeedsQA;
+  tpcqa->setTrackMapName("TpcSvtxTrackMap");
+  tpcqa->setVertexMapName("TpcSvtxVertexMap");
+  se->registerSubsystem(tpcqa);
 
   se->run(nEvents);
   se->End();
 
-  TString qaname = "HIST_" + outfilename + "_qa.root";
+  TString qaname = "HIST_" + outfilename;
   std::string qaOutputFileName(qaname.Data());
   QAHistManagerDef::saveQARootFile(qaOutputFileName);
 
