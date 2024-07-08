@@ -167,7 +167,16 @@ touch tpot.list
 
 ls -la *.list
 
+# Flag job as running in production status
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
+
+# Flag the creation of a new dataset in dataset_status
+dstname=${logbase%%-*}
+echo ./bachi.py --blame cups created ${dstname} ${runnumber} 
+     ./bachi.py --blame cups created ${dstname} ${runnumber} 
+
+
+
 
 echo root.exe -q -b Fun4All_Stream_Combiner.C\(${nevents},${runnumber},\"${outbase}\",\"${outdir}\",${neventsper}\);
      root.exe -q -b Fun4All_Stream_Combiner.C\(${nevents},${runnumber},\"${outbase}\",\"${outdir}\",${neventsper}\); status_f4a=$?
@@ -178,6 +187,12 @@ ls -la
 # Flag run as finished.  Increment nevents by zero
 echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents 0 --inc 
      ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents 0 --inc 
+
+
+if [ "${status_f4a}" -eq 0 ]; then
+  echo ./bachi.py --blame cups finalized ${dstname} ${runnumber} 
+       ./bachi.py --blame cups finalized ${dstname} ${runnumber} 
+fi
 
 #???outputname="cosmics-${runnumber}-${segment}";
 
@@ -195,11 +210,9 @@ rm *.root
 ls -la
 
 echo "script done"
-} > ${logbase}.out 2>${logbase}.err
+} >& ${logdir#file:/}/${logbase}.out 
 
-
-
-mv ${logbase}.out ${logdir#file:/}
-mv ${logbase}.err ${logdir#file:/}
+#mv ${logbase}.out ${logdir#file:/}
+#mv ${logbase}.err ${logdir#file:/}
 
 
