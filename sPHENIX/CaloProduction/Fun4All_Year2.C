@@ -15,6 +15,8 @@
 
 #include <mbd/MbdReco.h>
 
+#include <zdcinfo/ZdcReco.h>
+
 #include <globalvertex/GlobalVertexReco.h>
 
 #include <ffamodules/CDBInterface.h>
@@ -45,6 +47,7 @@ R__LOAD_LIBRARY(libcalotrigger.so)
 R__LOAD_LIBRARY(libcentrality.so)
 R__LOAD_LIBRARY(libffamodules.so)
 R__LOAD_LIBRARY(libmbd.so)
+R__LOAD_LIBRARY(libzdcinfo.so)
 R__LOAD_LIBRARY(libglobalvertex.so)
 R__LOAD_LIBRARY(libcalovalid.so)
 
@@ -94,6 +97,18 @@ void Fun4All_Year2(int nEvents=0,
   MbdReco *mbdreco = new MbdReco();
   se->registerSubsystem(mbdreco);
 
+  CaloTowerBuilder *caZDC = new CaloTowerBuilder("ZDCBUILDER");
+  caZDC->set_detector_type(CaloTowerDefs::ZDC);
+  caZDC->set_builder_type(buildertype);
+  caZDC->set_processing_type(CaloWaveformProcessing::FAST);
+  caZDC->set_nsamples(16);
+  caZDC->set_offlineflag();
+  se->registerSubsystem(caZDC);
+
+  //ZDC Reconstruction--Calib Info
+  ZdcReco *zdcreco = new ZdcReco();
+  se->registerSubsystem(zdcreco);
+
   // Official vertex storage
   GlobalVertexReco *gvertex = new GlobalVertexReco();
   se->registerSubsystem(gvertex);
@@ -123,14 +138,6 @@ void Fun4All_Year2(int nEvents=0,
   ctbOHCal->set_offlineflag();
   ctbOHCal->set_nsamples(12);
   se->registerSubsystem(ctbOHCal);
-
-  CaloTowerBuilder *caZDC = new CaloTowerBuilder("ZDCBUILDER");
-  caZDC->set_detector_type(CaloTowerDefs::ZDC);
-  caZDC->set_builder_type(buildertype);
-  caZDC->set_processing_type(CaloWaveformProcessing::FAST);
-  caZDC->set_nsamples(16);
-  caZDC->set_offlineflag();
-  se->registerSubsystem(caZDC);
 
   CaloTowerBuilder *caEPD = new CaloTowerBuilder("SEPDBUILDER");
   caEPD->set_detector_type(CaloTowerDefs::SEPD);
