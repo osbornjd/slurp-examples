@@ -202,7 +202,7 @@ echo $logbase
 #cp stderr.log ${logbase}.err
 #cp stdout.log ${logbase}.out
 
-mv HIST_*.qa.root ${histdir}
+mv HIST_*.root ${histdir}
 
 # Cleanup any stray root files leftover from stageout
 rm *.root
