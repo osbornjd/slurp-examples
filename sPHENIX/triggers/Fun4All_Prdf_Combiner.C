@@ -203,6 +203,7 @@ void Fun4All_Prdf_Combiner(int nEvents = 0,
   */
   ClockDiffCheck *clkchk = new ClockDiffCheck();
   // clkchk->Verbosity(3);
+  clkchk->set_delBadPkts(true);
   se->registerSubsystem(clkchk);
 
   string outfilename = "./" + type + ".root";
