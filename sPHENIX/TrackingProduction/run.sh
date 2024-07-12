@@ -11,6 +11,7 @@ dbtag=${8}
 inputs=(`echo ${9} | tr "," " "`)  # array of input files 
 ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 logdir=${11:-.}
+histdir=${12:-.}
 {
 
 export USER="$(id -u -n)"
@@ -70,4 +71,4 @@ echo "bdee bdee bdee, That's All Folks!"
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
 
-
+mv HIST_*.root ${histdir}/
