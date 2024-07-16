@@ -7,19 +7,19 @@ MBD_CALIBRATION:
      name:       DST_MBD_CALIBRATION_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p002
+     dbtag:      2024p005
      logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/mbd_calib/
      mem     :   2048MB
-     nevents:    20000
+     nevents:    0
      neventsper: 20000
      pass0dir: /sphenix/user/chiu/sphenix_bbc/CDB/PASS0/
 
    input:
       db: daqdb
-      direct_path: /sphenix/lustre01/sphnxpro/{mode}/mbd/beam
+      direct_path: /sphenix/lustre01/sphnxpro/{mode}/mbd/physics
       query: |-
          select 
                 'daqdb/filelist'                                                                                    as source      , 
@@ -49,9 +49,9 @@ MBD_CALIBRATION:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/physics/TEST/mbdcalib/run_$(rungroup)"
-     logdir : "file:///sphenix/data/data02/sphnxpro/mbdcalib/run_$(rungroup)"
-     condor :        "/tmp/mbdcalib/run_$(rungroup)"
+     outdir : "/sphenix/lustre01/sphnxpro/physics/TEST/mbdcalib/$(build)_$(tag)/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/mbdcalib/$(build)_$(tag)/run_$(rungroup)"
+     condor :        "/tmp/mbdcalib/$(build)_$(tag)/run_$(rungroup)"
 
 
    #

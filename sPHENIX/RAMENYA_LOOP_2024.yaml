@@ -11,7 +11,7 @@ DST_STREAMING_EVENT_cosmics:
      name:       DST_STREAMING_EVENT_cosmics
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -84,7 +84,7 @@ DST_STREAMING_EVENT_cosmics:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -105,7 +105,7 @@ DST_TPCCALIB:
      name:       DST_TPCCALIB_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -164,7 +164,7 @@ DST_TPCCALIB:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -187,7 +187,7 @@ DST_COSMICS_INTT_RAW:
      name:       DST_STREAMING_EVENT_cosmics
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -262,7 +262,7 @@ DST_COSMICS_INTT_RAW:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -283,7 +283,7 @@ DST_COSMICS_NO_INTT:
      name:       DST_STREAMING_EVENT_cosmics
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -356,7 +356,7 @@ DST_COSMICS_NO_INTT:
      executable            : "{payload}/run_cosmics.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -379,7 +379,7 @@ DST_TRIGGERED:
      name:       DST_TRIGGERED_EVENT_cosmics
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
@@ -455,7 +455,7 @@ DST_TRIGGERED:
      executable            : "{payload}/run.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
@@ -473,7 +473,7 @@ DST_TRKR_HIT_SET_cosmics:
      name:       DST_TRKR_HIT_cosmics
      build:      new
      build_name: new
-     dbtag:      2024p001
+     dbtag:      2024p002
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_trkrhitset.sh
@@ -492,7 +492,7 @@ DST_TRKR_HIT_SET_cosmics:
          from  
                 datasets
          where
-                filename like 'DST_STREAMING_EVENT_cosmics_new_2024p001%'
+                filename like 'DST_STREAMING_EVENT_cosmics_new_2024p002%'
                 {run_condition}
          order by runnumber
                 {limit_condition}
@@ -506,7 +506,7 @@ DST_TRKR_HIT_SET_cosmics:
      executable            : "{payload}/run.sh"
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,odbc.ini"
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
      error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'

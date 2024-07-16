@@ -77,7 +77,7 @@ PHYS_DST_STREAMING_EVENT_run2pp:
      transfer_output_files : ""
 #    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
-     request_xferslots: '2'
+     request_xferslots: '0'
 
 
 
@@ -260,7 +260,7 @@ DST_INTT_EVENT:
 #    transfer_output_files : '{logbase}.out,{logbase}.err'
 #    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
-     request_xferslots: '2'
+     request_xferslots: '0'
 
 
 
@@ -360,7 +360,7 @@ PHYS_DST_TRIGGERED_EVENT_run2pp:
      accounting_group_user : "sphnxpro"
      priority : '3800'
      transfer_output_files : ""
-     request_xferslots: '2'
+     request_xferslots: '0'
 
 #___________________________________________________________________________________________________DST_CALO_run2pp __     
 # Downstream production of the 2024 calorimeter data
@@ -369,7 +369,7 @@ DST_CALO_Y2:
      name:       DST_CALO_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p003
+     dbtag:      2024p004
      logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   runy2.sh
@@ -390,6 +390,7 @@ DST_CALO_Y2:
          where 
                 filename like 'DST_TRIGGERED_EVENT_run2pp%2024p003%'
                 {run_condition}
+                and runnumber<=48098
            
          {limit_condition}
          ;
@@ -414,6 +415,59 @@ DST_CALO_Y2:
      condor :        "/tmp/caloy2test/run_$(rungroup)"
 
 
+#___________________________________________________________________________________________________DST_CALO_run2pp __     
+# Downstream production of the 2024 calorimeter data
+DST_CALO_Y2_2024p005:
+   params:
+     name:       DST_CALO_run2pp
+     build:      new
+     build_name: new
+     dbtag:      2024p005
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   runy2.sh
+     payload :   ./slurp-examples/sPHENIX/CaloProduction/
+     mem     :   4096MB
+     neventsper: 50000
+   input:
+     db: filecatalog
+     query: |-
+         select 
+                'filecatalog/datasets'                                                                                    as source      , 
+                runnumber                                                                                                          , 
+                segment                                                                                                            ,
+                filename                                                                                            as files       ,
+                filename || ':' || 0 || ':' || events                                                   as fileranges 
+         from  
+                datasets
+         where 
+                filename like 'DST_TRIGGERED_EVENT_run2pp%2024p003%'
+                {run_condition}
+                and runnumber>48098
+           
+         {limit_condition}
+         ;
+   job:
+     executable            : "{payload}/runy2.sh"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {histdir}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     priority : '3800'
+     transfer_output_files : ""
+
+
+   filesystem:  
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/caloy2test/$(build)_$(tag)/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/caloy2test/$(build)_$(tag)/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/calohist/run_$(rungroup)"
+     condor :        "/tmp/caloy2test/$(build)_$(tag)/run_$(rungroup)"
+
+
 
 DST_TRKR_HIT_SET_physics:
    # DST_EVENT works from a pre-built set of run lists.
@@ -421,7 +475,7 @@ DST_TRKR_HIT_SET_physics:
      name:       DST_TRKR_HIT_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p002
+     dbtag:      2024p004
      logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
@@ -442,17 +496,19 @@ DST_TRKR_HIT_SET_physics:
          where
                 filename like 'DST_STREAMING_EVENT_run2pp_new_2024p002%'
                 {run_condition}
+                and runnumber<=48098
          order by runnumber
                 {limit_condition}
               ;              
    filesystem:  
      outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tracking/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/hitsethist/run_$(rungroup)"
      condor :        "/tmp/trkrogs/run_$(rungroup)"
 
    job:
      executable            : "{payload}/run.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      output                : '{logbase}.condor.stdout'
@@ -473,7 +529,7 @@ DST_TRKR_CLUSTER_SET_run2pp:
      name:       DST_TRKR_CLUSTER_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p002
+     dbtag:      2024p004
      logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_job0.sh
@@ -493,8 +549,9 @@ DST_TRKR_CLUSTER_SET_run2pp:
          from  
                 datasets
          where
-                filename like 'DST_TRKR_HIT_run2pp_new_2024p002%'
+                filename like 'DST_TRKR_HIT_run2pp_new_2024p004%'
                 {run_condition}
+                and runnumber<=48098
          order by runnumber
                 {limit_condition}
               ;              
@@ -526,7 +583,7 @@ DST_TRKR_SEED_SET_run2pp:
      name:       DST_TRKR_SEED_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p002
+     dbtag:      2024p004
      logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_jobA.sh
@@ -546,8 +603,9 @@ DST_TRKR_SEED_SET_run2pp:
          from  
                 datasets
          where
-                filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p002%'
+                filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p004%'
                 {run_condition}
+                and runnumber<=48098
          order by runnumber
                 {limit_condition}
               ;              
@@ -580,7 +638,7 @@ DST_TRKR_TRACKS_SET_run2pp:
      name:       DST_TRKR_TRACKS_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p002
+     dbtag:      2024p004
      logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_jobC.sh
@@ -601,17 +659,18 @@ DST_TRKR_TRACKS_SET_run2pp:
                datasets
          where
            ( 
-              filename like 'DST_TRKR_SEED_run2pp_new_2024p002%' or
-              filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p002%' 
+              filename like 'DST_TRKR_SEED_run2pp_new_2024p004%' or
+              filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p004%' 
            )
            {run_condition}
+           and runnumber<=48098
 
          group by runnumber,segment 
 
          having (
 
-            sum( case when filename like 'DST_TRKR_SEED_run2pp_new_2024p002%' then 1 else 0 end )>0    and
-            sum( case when filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p002%' then 1 else 0 end )>0 
+            sum( case when filename like 'DST_TRKR_SEED_run2pp_new_2024p004%' then 1 else 0 end )>0    and
+            sum( case when filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p004%' then 1 else 0 end )>0 
 
          )
 
@@ -623,6 +682,244 @@ DST_TRKR_TRACKS_SET_run2pp:
    filesystem:  
      outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tracking/run_$(rungroup)"
      logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs//run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/trackhist/run_$(rungroup)"
+     condor :        "/tmp/trkrlogs/run_$(rungroup)"
+
+   job:
+     executable            : "{payload}/run_jobC.sh"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : ""
+     priority : '3800'
+
+
+
+
+
+
+
+
+
+
+DST_TRKR_HIT_SET_physics_2024p005:
+   # DST_EVENT works from a pre-built set of run lists.
+   params:
+     name:       DST_TRKR_HIT_run2pp
+     build:      new
+     build_name: new
+     dbtag:      2024p005
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run.sh
+     payload :   ./slurp-examples/sPHENIX/TrackingProduction/
+     mem     :   2048MB
+
+   input:
+      db: fc
+      query: |-
+         select 
+                'filecatalog/datasets'   as source       ,
+                runnumber                                ,
+                segment                                  ,
+                filename                    as files     ,
+                filename || ':0:' || events as fileranges
+         from  
+                datasets
+         where
+                filename like 'DST_STREAMING_EVENT_run2pp_new_2024p002%'
+                {run_condition}
+                and runnumber>48098
+         order by runnumber
+                {limit_condition}
+              ;              
+   filesystem:  
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tracking/$(build)_$(tag)/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/$(build)_$(tag)/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/hitsethist/run_$(rungroup)"
+     condor :        "/tmp/trkrogs/run_$(rungroup)"
+
+   job:
+     executable            : "{payload}/run.sh"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : ""
+     priority : '3800'
+
+
+
+
+#_________________________________________________________________________________________________________________________________________
+DST_TRKR_CLUSTER_SET_run2pp_2024p005:
+   # DST_EVENT works from a pre-built set of run lists.
+   params:
+     name:       DST_TRKR_CLUSTER_run2pp
+     build:      new
+     build_name: new
+     dbtag:      2024p005
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run_job0.sh
+     payload :   ./slurp-examples/sPHENIX/TrackingProduction/
+     mem     :   2048MB
+     nevents :  0
+
+   input:
+      db: fc
+      query: |-
+         select 
+                'filecatalog/datasets'   as source       ,
+                runnumber                                ,
+                segment                                  ,
+                filename                    as files     ,
+                filename || ':0:' || events as fileranges
+         from  
+                datasets
+         where
+                filename like 'DST_TRKR_HIT_run2pp_new_2024p005%'
+                {run_condition}
+                and runnumber>48098
+         order by runnumber
+                {limit_condition}
+              ;              
+   filesystem:  
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tracking/$(build)_$(tag)/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/$(build)_$(tag)/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/clusterhist/run_$(rungroup)"
+     condor :        "/tmp/trkrlogs/run_$(rungroup)"
+
+   job:
+     executable            : "{payload}/run_job0.sh"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : ""
+     priority : '3800'
+
+
+
+#_________________________________________________________________________________________________________________________________________
+DST_TRKR_SEED_SET_run2pp_2024p005:
+   # DST_EVENT works from a pre-built set of run lists.
+   params:
+     name:       DST_TRKR_SEED_run2pp
+     build:      new
+     build_name: new
+     dbtag:      2024p005
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run_jobA.sh
+     payload :   ./slurp-examples/sPHENIX/TrackingProduction/
+     mem     :   2048MB
+     nevents :  0
+
+   input:
+      db: fc
+      query: |-
+         select 
+                'filecatalog/datasets'   as source       ,
+                runnumber                                ,
+                segment                                  ,
+                filename                    as files     ,
+                filename || ':0:' || events as fileranges
+         from  
+                datasets
+         where
+                filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p005'
+                {run_condition}
+                and runnumber>48098
+         order by runnumber
+                {limit_condition}
+              ;              
+   filesystem:  
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tracking/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/seedhist/run_$(rungroup)"
+     condor :        "/tmp/trkrlogs/run_$(rungroup)"
+
+   job:
+     executable            : "{payload}/run_jobA.sh"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     output_destination    : '{logdir}'
+     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
+     output                : '{logbase}.condor.stdout'
+     error                 : '{logbase}.condor.stderr'
+     log                   : '{condor}/{logbase}.condor'
+     accounting_group      : "group_sphenix.mdc2"
+     accounting_group_user : "sphnxpro"
+     transfer_output_files : ""
+     priority : '3800'
+
+
+
+
+
+DST_TRKR_TRACKS_SET_run2pp_2024p005:
+   # DST_EVENT works from a pre-built set of run lists.
+   params:
+     name:       DST_TRKR_TRACKS_run2pp
+     build:      new
+     build_name: new
+     dbtag:      2024p005
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
+     outbase :   $(name)_$(build)_$(tag)
+     script  :   run_jobC.sh
+     payload :   ./slurp-examples/sPHENIX/TrackingProduction/
+     mem     :   2048MB
+     nevents :   0
+
+   input:
+      db: fc
+      query: |-
+         select
+               'filecatalog/datasets'   as source       ,
+               runnumber                                ,
+               segment                                  ,
+               string_agg( distinct split_part(filename,'/',-1), ' ' )                                             as files       ,   
+               string_agg( distinct split_part(filename,'/',-1) || ':' || 0 || ':' || -1, ' ' )    as fileranges  
+         from
+               datasets
+         where
+           ( 
+              filename like 'DST_TRKR_SEED_run2pp_new_2024p005%' or
+              filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p005%' 
+           )
+           {run_condition}
+                and runnumber>48098
+
+         group by runnumber,segment 
+
+         having (
+
+            sum( case when filename like 'DST_TRKR_SEED_run2pp_new_2024p005%' then 1 else 0 end )>0    and
+            sum( case when filename like 'DST_TRKR_CLUSTER_run2pp_new_2024p005%' then 1 else 0 end )>0 
+
+         )
+
+         order by runnumber
+ 
+         {limit_condition}
+         ;
+              ;              
+   filesystem:  
+     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tracking/$(build)_$(tag)/run_$(rungroup)"
+     logdir : "file:///sphenix/data/data02/sphnxpro/trackinglogs/$(build)_$(tag)/run_$(rungroup)"
      histdir :       "/sphenix/data/data02/sphnxpro/trackhist/run_$(rungroup)"
      condor :        "/tmp/trkrlogs/run_$(rungroup)"
 
@@ -729,7 +1026,7 @@ PHYS_DST_STREAMING_EVENT_run2pp_nomvtx:
      transfer_output_files : ""
 #    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
-     request_xferslots: '2'
+     request_xferslots: '0'
 
 
 
@@ -792,7 +1089,7 @@ PHYS_DST_TPC_EVENT_run2pp:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
-     request_xferslots: '2'
+     request_xferslots: '0'
 
 #_______________________________________________________________________________________________________________________________________________________
 PHYS_DST_TPOT_EVENT_run2pp:
@@ -852,7 +1149,7 @@ PHYS_DST_TPOT_EVENT_run2pp:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
-     request_xferslots: '2'
+     request_xferslots: '0'
 
 #_______________________________________________________________________________________________________________________________________________________
 PHYS_DST_INTT_EVENT_run2pp:
@@ -912,7 +1209,7 @@ PHYS_DST_INTT_EVENT_run2pp:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
-     request_xferslots: '2'
+     request_xferslots: '0'
 
 
 #_______________________________________________________________________________________________________________________________________________________
@@ -973,4 +1270,4 @@ PHYS_DST_MVTX_EVENT_run2pp:
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
      priority : '3800'
-     request_xferslots: '2'
+     request_xferslots: '0'
