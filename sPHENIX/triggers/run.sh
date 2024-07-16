@@ -34,6 +34,7 @@ export ODBCINI=./odbc.ini
 # Set state to started
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
 
+
 echo ..............................................................................................
 echo $@
 echo .............................................................................................. 
@@ -91,6 +92,11 @@ done
 #echo "ls -l *.list"
 #ls -l *.list
 
+# Flag the creation of a new dataset in dataset_status
+dstname=${logbase%%-*}
+echo ./bachi.py --blame cups created ${dstname} ${runnumber} 
+     ./bachi.py --blame cups created ${dstname} ${runnumber}
+
 echo root.exe -q -b Fun4All_Prdf_Combiner.C\(${nevents},\"${ouddir}\",\"${outbase}\",${neventsper}\)
      root.exe -q -b Fun4All_Prdf_Combiner.C\(${nevents},\"${outdir}\",\"${outbase}\",${neventsper}\); status_f4a=$?
 
@@ -99,12 +105,17 @@ echo root.exe -q -b Fun4All_Prdf_Combiner.C\(${nevents},\"${ouddir}\",\"${outbas
 echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents 0 --inc 
      ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents 0 --inc 
 
+if [ "${status_f4a}" -eq 0 ]; then
+   echo   ./bachi.py --blame cups finalized ${dstname} ${runnumber}
+          ./bachi.py --blame cups finalized ${dstname} ${runnumber}
+fi
+
 echo "script done"
-} >${logbase}.out 2>${logbase}.err
+} >& ${logdir#file:/}/${logbase}.out 
 
 # Direct stageout
-mv ${logbase}.out ${logdir#file:/}
-mv ${logbase}.err ${logdir#file:/}
+#mv ${logbase}.out ${logdir#file:/}
+#mv ${logbase}.err ${logdir#file:/}
 
 # Write only first 25MB to output logfiles
 #dd if=stdout.log of=${logbase}.out seek=1 bs=25M
