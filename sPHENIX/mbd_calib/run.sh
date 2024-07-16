@@ -68,24 +68,26 @@ done
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
 
 ################################################
-# Pass 1 calibrations @ 20k events
+# Pass 1 calibrations
 echo "###############################################################################################################"
 echo "Running pass1 calibration"
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} message "Running PASS 1 calibration"
-root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs[0]}\",1,${nevents}\) 
+./cups.py -r ${runnumber} -s ${segment} -d ${outbase} message "Running PASS 1 calibration (hardcoded 100k events pass1)"
+echo root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs[0]}\",1,-1\) 
+root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs[0]}\",1,-1\) 
 
-echo "Pass 1 calibration done (20k)"
+echo "Pass 1 calibration done"
 ls -la *.root
 
 # Flag as started
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
 
 ################################################
-# Pass 1 calibrations waveforms
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} message "Running PASS 1 calibration waveforms"
+# Pass 2 calibrations waveforms
+./cups.py -r ${runnumber} -s ${segment} -d ${outbase} message "Running PASS 2 calibration, process waveforms"
+echo root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs[0]}\",2,${nevents}\)
 root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs[0]}\",2,${nevents}\)
 
-echo "Pass 1 calibration done (waveforms)"
+echo "Pass 2 calibration done (waveforms processed)"
 ls -la *.root
 
 # Flag as started
@@ -94,16 +96,13 @@ ls -la *.root
 ################################################
 # Pass 2 calibrations (t0 offsets)
 # Pass 2 calibrations mip fits
-#for prdf in ${inputs[@]}; do
-prdf=${inputs[0]}
-
-    fname=${prdf%.prdf}.root 
-    fname=DST_UNCALMBD-${fname#*-}
+fname=$(ls -tr DST_UNCALMBD*.root | tail -1)
 
 echo "###############################################################################################################"
 echo "Running pass2.1 calibration"
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} message "Running PASS 2.1 calibration"
     pass=0
+    echo root.exe -q -b cal_mbd.C\(\"${fname}\",${pass},${nevents}\)
     root.exe -q -b cal_mbd.C\(\"${fname}\",${pass},${nevents}\)
 
 echo "###############################################################################################################"
@@ -111,6 +110,7 @@ echo "Running pass2.2 calibration"
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} message "Running PASS 2.2 calibration"
     pass=3
     runtype=1 # pp200
+    echo root.exe -q -b cal_mbd.C\(\"${fname}\",${pass},${nevents},${runtype}\)
     root.exe -q -b cal_mbd.C\(\"${fname}\",${pass},${nevents},${runtype}\)
 
 #done
@@ -122,9 +122,15 @@ echo "Running pass2.2 calibration"
 echo "T0 offsets and mip fits"
 ls -la *.root
 
+# Copy the entire results directory to outdir
+cp -R results/${runnumber} ${outdir}/
+
 for r in *.root; do
-    ./stageout.sh ${r} ${outdir} ${outbase}-$(printf "%08d" ${runnumber})-$(printf "%04d" ${segment}).root
+    ./stageout.sh ${r} ${outdir} ${outbase}-$(printf "%08d" ${runnumber})-$(printf "%05d" ${segment}).root
 done
+
+exit
+
 
 ################################################
 
@@ -136,10 +142,10 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e 0 --ne
      ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e 0 --nevents 0 --inc 
 
 
-}  > ${logbase}.out 2>${logbase}.err 
+} >& ${logdir#file:/}/${logbase}.out 
 
-cp ${logbase}.out  ${logdir}
-cp ${logbase}.err  ${logdir}
+#cp ${logbase}.out  ${logdir}
+#cp ${logbase}.err  ${logdir}
 
 
 

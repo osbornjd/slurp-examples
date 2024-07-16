@@ -35,8 +35,9 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
   read_dstmbd( tfname );
 
   //== Create output directory (should already exist)
+  int runnumber = get_runnumber(tfname);
   TString dir = "results/";
-  dir += get_runnumber(tfname);
+  dir += runnumber;
   dir += "/";
   TString name = "mkdir -p " + dir;
   gSystem->Exec( name );
@@ -44,7 +45,7 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
   cout << name << endl;
 
   //== Load in calib constants
-  //Float_t tq_t0_offsets[NUM_PMT] = {};
+  //Float_t tq_t0_offsets[MbdDefs::MBD_N_PMT] = {};
 
   MbdCalib *mcal = new MbdCalib();
   TString calfile = dir + "/mbd_sampmax.calib";
@@ -53,17 +54,17 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
   TString savefname = dir;
   if ( pass==0 )
   {
-    savefname += "calmbdtime_pass"; savefname += pass; savefname += ".root";
+    savefname += "calmbdpass2."; savefname += pass; savefname += "_time_"; savefname += runnumber; savefname += ".root";
   }
   else if ( pass==1 || pass==2 )
   {
-    savefname += "calmbdslew_pass"; savefname += pass; savefname += ".root";
+    savefname += "calmbdpass2."; savefname += pass; savefname += "_slew_"; savefname += runnumber; savefname += ".root";
   }
   else if ( pass==3 )
   {
-    savefname += "calmbdq_pass"; savefname += pass; savefname += ".root";
-    cout << "saving to " << savefname << endl;
+    savefname += "calmbdpass2."; savefname += pass; savefname += "_q_"; savefname += runnumber; savefname += ".root";
   }
+  cout << "saving to " << savefname << endl;
 
   // Load whatever calibrations are available at each pass
   if ( pass>0 )
@@ -88,14 +89,14 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
 
   TFile *savefile = new TFile(savefname,"RECREATE");
 
-  TH1 *h_q[NUM_PMT];
-  TH1 *h_tt[NUM_PMT];
-  TH1 *h_tq[NUM_PMT];
+  TH1 *h_q[MbdDefs::MBD_N_PMT];
+  TH1 *h_tt[MbdDefs::MBD_N_PMT];
+  TH1 *h_tq[MbdDefs::MBD_N_PMT];
 
-  TH2 *h2_slew[NUM_PMT];
+  TH2 *h2_slew[MbdDefs::MBD_N_PMT];
 
   TString title;
-  for (int ipmt=0; ipmt<NUM_PMT; ipmt++)
+  for (int ipmt=0; ipmt<MbdDefs::MBD_N_PMT; ipmt++)
   {
     name = "h_q"; name += ipmt;
     title = "q"; title += ipmt;
@@ -116,8 +117,12 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
       h2_slew[ipmt] = new TH2F(name,title,4000,-0.5,16000-0.5,1100,-5,6);
     }
   }
-  TH2 *h2_tq = new TH2F("h2_tq","ch vs tq",900,-150,150,NUM_PMT,-0.5,NUM_PMT-0.5);
-  TH2 *h2_tt = new TH2F("h2_tt","ch vs tt",900,-150,150,NUM_PMT,-0.5,NUM_PMT-0.5);
+  TH2 *h2_tq = new TH2F("h2_tq","ch vs tq",900,-150,150,MbdDefs::MBD_N_PMT,-0.5,MbdDefs::MBD_N_PMT-0.5);
+  h2_tq->SetXTitle("pmt ch");
+  h2_tq->SetYTitle("tq [ns]");
+  TH2 *h2_tt = new TH2F("h2_tt","ch vs tt",900,-150,150,MbdDefs::MBD_N_PMT,-0.5,MbdDefs::MBD_N_PMT-0.5);
+  h2_tt->SetXTitle("pmt ch");
+  h2_tt->SetYTitle("tt [ns]");
 
   // Event loop, each ientry is one triggered event
   int nentries = tree->GetEntries();
@@ -149,7 +154,7 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
       nhit[1] = 0.;
     }
 
-    for (int ipmt=0; ipmt<NUM_PMT; ipmt++)
+    for (int ipmt=0; ipmt<MbdDefs::MBD_N_PMT; ipmt++)
     {
       int arm = ipmt/64;
 
@@ -187,7 +192,8 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
       {
         h_q[ipmt]->Fill( f_q[ipmt] );
       }
-      else if ( pass>0 && fabs(ttcorr[ipmt])<26. )
+      //else if ( pass>0 && fabs(ttcorr[ipmt])<26. )
+      else if ( pass>0 && (fabs(ttcorr[ipmt])<26.||f_q[ipmt]>40.) )  // to get around high threshold
       {
         h_q[ipmt]->Fill( f_q[ipmt] );
 
@@ -223,7 +229,7 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
       //cout << "aaa " << iarm << "\t" << nhit[iarm] << "\t" << armtime[iarm] << endl;
     }
 
-    for (int ipmt=0; ipmt<NUM_PMT; ipmt++)
+    for (int ipmt=0; ipmt<MbdDefs::MBD_N_PMT; ipmt++)
     {
       //int ifeech = (ipmt/8)*16 + 8 + ipmt%8;  // time ifeech only
       int arm = ipmt/64;
@@ -240,22 +246,29 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
   TCanvas *ac[100];
   int cvindex = 0;
 
+  TString pdfname;  // output pdf
+
   //== Calculate tq_t0 and tt_t0 on pass0, or apply tt_t0 if pass>0
   ac[cvindex] = new TCanvas("cal_tt","ch vs tt",425*1.5,550*1.5);
   h2_tt->Draw("colz");
   if ( pass==0 )
   {
-    name = dir + "h2_tt.png";
+    //name = dir + "h2_tt.png";
+    pdfname = dir; pdfname += "calmbdpass2."; pdfname += pass; pdfname += "_time_"; pdfname += runnumber; pdfname += ".pdf";
+    title = "t0, Timing Ch's";
   }
   else if ( pass>0 )
   {
-    name = dir + "h2_ttcorr.png";
-    h2_tt->GetXaxis()->SetRangeUser( -5.,25 );
+    //name = dir + "h2_ttcorr.png";
+    pdfname = dir; pdfname += "calmbdpass2."; pdfname += pass; pdfname += "_time_"; pdfname += runnumber; pdfname += ".pdf";
+    title = "t0 corrected, Timing Ch's";
+    h2_tt->GetXaxis()->SetRangeUser( -12.5, 12.5 );
     gPad->Modified();
     gPad->Update();
   }
-  cout << name << endl;
-  ac[cvindex]->Print( name );
+  cout << pdfname << endl;
+  ac[cvindex]->Print( pdfname + "[");
+  ac[cvindex]->Print( pdfname, title );
   ++cvindex;
 
   // now tq_t0
@@ -263,17 +276,19 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
   h2_tq->Draw("colz");
   if ( pass==0 )
   {
-    name = dir + "h2_tq.png";
+    //name = dir + "h2_tq.png";
+    title = "t0, Charge Ch's";
   }
   else if ( pass>0 )
   {
-    name = dir + "h2_tqcorr.png";
+    //name = dir + "h2_tqcorr.png";
+    title = "t0 corrected, Charge Ch's";
     h2_tq->GetXaxis()->SetRangeUser( -20,20 );
     gPad->Modified();
     gPad->Update();
   }
-  cout << name << endl;
-  ac[cvindex]->Print( name );
+  cout << pdfname << endl;
+  ac[cvindex]->Print( pdfname, title );
   ++cvindex;
 
   // Here we calculate tt_t0 and tq_t0, starting with tt_t0 first
@@ -292,7 +307,7 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
   double min_twindow = -25.;
   double max_twindow = 25.;
 
-  for (int ipmt=0; ipmt<NUM_PMT && pass==0; ipmt++)
+  for (int ipmt=0; ipmt<MbdDefs::MBD_N_PMT && pass==0; ipmt++)
   {
     // only look in the middle
     if ( ipmt==0 || ipmt==64 )
@@ -310,6 +325,7 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
     int peakbin = h_tt[ipmt]->GetMaximumBin();
     Double_t mean = h_tt[ipmt]->GetBinCenter( peakbin );
     Double_t sigma = 1.0;
+    //Double_t sigma = 3.0;
     gaussian->SetParameters( peak, mean, 5 );
     gaussian->SetRange( mean-3*sigma, mean+3*sigma );
 
@@ -327,17 +343,31 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
     sigma = gaussian->GetParameter(2);
     Double_t sigmaerr = gaussian->GetParError(2);
 
+    // normalize th2 histogram
+    int nbinsx = h2_tt->GetNbinsX();
+    for (int ibinx=1; ibinx<=nbinsx; ibinx++)
+    {
+      Double_t fitpeak = gaussian->GetParameter(0);
+      if ( fitpeak!=0 )
+      {
+        Float_t bincontent = h2_tt->GetBinContent(ibinx,ipmt+1);
+        h2_tt->SetBinContent(ibinx,ipmt+1,bincontent/fitpeak);
+      }
+    }
+
     if ( pass==0 )
     {
       cal_tt_t0_file << ipmt << "\t" << mean << "\t" << meanerr << "\t" << sigma << "\t" << sigmaerr << endl;
-      name = dir + "h_tt"; name += ipmt; name += ".png";
+      //name = dir + "h_tt"; name += ipmt; name += ".png";
+      title = "h_tt"; title += ipmt;
     }
     else if ( pass==1 || pass==2 )
     {
-      name = dir + "h_ttcorr"; name += ipmt; name += ".png";
+      //name = dir + "h_ttcorr"; name += ipmt; name += ".png";
+      title = "h_ttcorr"; title += ipmt;
     }
-    cout << name << endl;
-    ac[cvindex]->Print( name );
+    cout << title << endl;
+    ac[cvindex]->Print( pdfname, title );
   }
   if ( pass==0 )
   {
@@ -356,7 +386,7 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
     cal_tq_t0_file.open( name );
   }
 
-  for (int ipmt=0; ipmt<NUM_PMT && pass==0; ipmt++)
+  for (int ipmt=0; ipmt<MbdDefs::MBD_N_PMT && pass==0; ipmt++)
   {
     // only look in the middle
     if ( ipmt==0 || ipmt==64 )
@@ -373,7 +403,8 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
     Double_t peak = h_tq[ipmt]->GetMaximum();
     int peakbin = h_tq[ipmt]->GetMaximumBin();
     Double_t mean = h_tq[ipmt]->GetBinCenter( peakbin );
-    Double_t sigma = 1.0;
+    //Double_t sigma = 1.0;
+    Double_t sigma = 3.0;
     gaussian->SetParameters( peak, mean, 5 );
     gaussian->SetRange( mean-3*sigma, mean+3*sigma );
 
@@ -391,22 +422,38 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
     sigma = gaussian->GetParameter(2);
     Double_t sigmaerr = gaussian->GetParError(2);
 
+    // normalize th2 histogram
+    int nbinsx = h2_tq->GetNbinsX();
+    for (int ibinx=1; ibinx<=nbinsx; ibinx++)
+    {
+      Double_t fitpeak = gaussian->GetParameter(0);
+      if ( fitpeak!=0 )
+      {
+        Float_t bincontent = h2_tq->GetBinContent(ibinx,ipmt+1);
+        h2_tq->SetBinContent(ibinx,ipmt+1,bincontent/fitpeak);
+      }
+    }
+
     if ( pass==0 )
     {
       cal_tq_t0_file << ipmt << "\t" << mean << "\t" << meanerr << "\t" << sigma << "\t" << sigmaerr << endl;
-      name = dir + "h_tq"; name += ipmt; name += ".png";
+      //name = dir + "h_tq"; name += ipmt; name += ".png";
+      title = "h_tq"; title += ipmt;
     }
     else if ( pass==1 || pass==2 )
     {
-      name = dir + "h_tqcorr"; name += ipmt; name += ".png";
+      //name = dir + "h_tqcorr"; name += ipmt; name += ".png";
+      title = "h_tqcorr"; title += ipmt;
     }
     cout << name << endl;
-    ac[cvindex]->Print( name );
+    ac[cvindex]->Print( pdfname, title );
   }
   if ( pass==0 )
   {
     cal_tq_t0_file.close();
   }
+
+  ac[0]->Print( pdfname + "]" );
   ++cvindex;
 
   if ( pass==1 || pass==2 )
@@ -414,7 +461,7 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
     //== Draw the slewcorr histograms
     ac[cvindex] = new TCanvas("cal_slew","slew",425*1.5,550*1.5);
 
-    for (int ipmt=0; ipmt<NUM_PMT; ipmt++)
+    for (int ipmt=0; ipmt<MbdDefs::MBD_N_PMT; ipmt++)
     {
       h2_slew[ipmt]->Draw("colz");
 
@@ -427,19 +474,25 @@ void cal_mbd(const char *tfname = "DST_MBDUNCAL-00020869-0000.root", const int p
 
   //== Draw the charge histograms
   ac[cvindex] = new TCanvas("cal_q","q",425*1.5,550*1.5);
+
+  pdfname = dir; pdfname += "calmbdpass2."; pdfname += pass; pdfname += "_adc_"; pdfname += runnumber; pdfname += ".pdf";
+  ac[cvindex]->Print( pdfname + "[" );
+
   if ( pass==0 )
   {
     gPad->SetLogy(1);
   }
 
-  for (int ipmt=0; ipmt<NUM_PMT && pass==0; ipmt++)
+  for (int ipmt=0; ipmt<MbdDefs::MBD_N_PMT && pass==0; ipmt++)
   {
     h_q[ipmt]->Draw();
 
-    name = dir + "h_adc"; name += ipmt; name += ".png";
-    cout << name << endl;
-    ac[cvindex]->Print( name );
+    //name = dir + "h_adc"; name += ipmt; name += ".png";
+    title = "h_adc"; title += ipmt;
+    //cout << pdfname << " " << title << endl;
+    ac[cvindex]->Print( pdfname, title );
   }
+  ac[cvindex]->Print( pdfname + "]" );
   ++cvindex;
 
   savefile->Write();
