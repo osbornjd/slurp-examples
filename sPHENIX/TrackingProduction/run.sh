@@ -58,6 +58,8 @@ ls -la
 
 ./stageout.sh ${logbase}.root ${outdir}
 
+mv HIST_*.root ${histdir}/
+
 ls -la
 
 # Flag run as finished. 
@@ -71,4 +73,4 @@ echo "bdee bdee bdee, That's All Folks!"
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
 
-mv HIST_*.root ${histdir}/
+
