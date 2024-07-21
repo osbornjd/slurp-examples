@@ -176,8 +176,6 @@ echo ./bachi.py --blame cups created ${dstname} ${runnumber}
      ./bachi.py --blame cups created ${dstname} ${runnumber} 
 
 
-
-
 echo root.exe -q -b Fun4All_Stream_Combiner.C\(${nevents},${runnumber},\"${outbase}\",\"${outdir}\",${neventsper}\);
      root.exe -q -b Fun4All_Stream_Combiner.C\(${nevents},${runnumber},\"${outbase}\",\"${outdir}\",${neventsper}\); status_f4a=$?
 
@@ -204,13 +202,25 @@ echo $logbase
 
 mv HIST_*.root ${histdir}
 
-# Cleanup any stray root files leftover from stageout
-rm *.root
+# Cleanup any stray root and/or list files leftover from stageout
+rm *.root *.list
 
 ls -la
 
 echo "script done"
-} >& ${logdir#file:/}/${logbase}.out 
+} 2>&1 | head -c 1G > ${logdir#file:/}/${logbase}.out 
+
+
+logsize=$( du -s ${logdir#file:/}/${logbase}.out )
+if (( $logsize > 10240 ))
+then
+   echo "Normal termination with large log file: " ${logsize} "kB"
+   ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} message "Normal termination with large log file" --flags 10 --logsize ${logsize}
+else
+   echo "Normal termination"
+   ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} message "Normal termination" --flags 0 --logsize ${logsize}
+fi
+
 
 #mv ${logbase}.out ${logdir#file:/}
 #mv ${logbase}.err ${logdir#file:/}
