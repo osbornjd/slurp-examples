@@ -45,10 +45,10 @@ void Fun4All_JobC(
   se->Verbosity(1);
   auto rc = recoConsts::instance();
   rc->set_IntFlag("RUNNUMBER", runnumber);
+  CDBInterface::instance()->Verbosity(1);
 
-  Enable::CDB = true;
   rc->set_StringFlag("CDB_GLOBALTAG", dbtag );
-  rc->set_uint64Flag("TIMESTAMP", CDB::timestamp);
+  rc->set_uint64Flag("TIMESTAMP", runnumber);
   
   FlagHandler *flag = new FlagHandler();
   se->registerSubsystem(flag);
@@ -123,6 +123,7 @@ out->AddNode("SvtxVertexMap");
 
   se->run(nEvents);
   se->End();
+  CDBInterface::instance()->Print();
   se->PrintTimer();
 
   delete se;
