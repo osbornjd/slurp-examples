@@ -19,7 +19,7 @@ sighandler()
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
 }
-trap sighandler SIGTERM SIGSTP SIGINT SIGKILL
+trap sighandler SIGTERM SIGINT SIGKILL
 
 {
 
@@ -111,7 +111,9 @@ if [ "${status_f4a}" -eq 0 ]; then
 fi
 
 echo "script done"
-} >& ${logdir#file:/}/${logbase}.out 
+} 2>&1 | head -c 1G > ${logdir#file:/}/${logbase}.out 
+
+#>& ${logdir#file:/}/${logbase}.out 
 
 # Direct stageout
 #mv ${logbase}.out ${logdir#file:/}

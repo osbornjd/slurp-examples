@@ -21,7 +21,7 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e 255 --
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
 }
-trap sighandler SIGTERM SIGSTP SIGINT SIGKILL
+trap sighandler SIGTERM SIGINT SIGKILL
 
 {
 

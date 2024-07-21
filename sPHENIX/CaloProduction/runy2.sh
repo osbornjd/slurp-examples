@@ -24,7 +24,7 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${stat
 }
 
 # On evict (term,stp) or hold (kill) branch to signal handler
-trap sighandler SIGTERM SIGSTP SIGINT SIGKILL  
+trap sighandler SIGTERM SIGINT SIGKILL  
 
 {
 
