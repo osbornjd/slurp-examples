@@ -39,6 +39,7 @@
 #include <calotrigger/MinimumBiasClassifier.h>
 
 #include <calovalid/CaloValid.h>
+#include <globalqa/GlobalQA.h>
 
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libfun4allraw.so)
@@ -62,7 +63,8 @@ void Fun4All_Year2(int nEvents=0,
   // v1 uncomment:
   // CaloTowerDefs::BuilderType buildertype = CaloTowerDefs::kPRDFTowerv1;
   // v2 uncomment:
-   CaloTowerDefs::BuilderType buildertype = CaloTowerDefs::kWaveformTowerv2;
+  // CaloTowerDefs::BuilderType buildertype = CaloTowerDefs::kWaveformTowerv2;
+   CaloTowerDefs::BuilderType buildertype = CaloTowerDefs::kPRDFTowerv4;
   // v3 uncomment:
   // CaloTowerDefs::BuilderType buildertype = CaloTowerDefs::kPRDFWaveform;
 
@@ -121,6 +123,7 @@ void Fun4All_Year2(int nEvents=0,
   ctbEMCal->set_builder_type(buildertype);
   ctbEMCal->set_offlineflag(true);
   ctbEMCal->set_nsamples(12);
+  ctbEMCal->set_bitFlipRecovery(true);
   se->registerSubsystem(ctbEMCal);
 
   CaloTowerBuilder *ctbIHCal = new CaloTowerBuilder("HCALINBUILDER");
@@ -129,6 +132,7 @@ void Fun4All_Year2(int nEvents=0,
   ctbIHCal->set_builder_type(buildertype);
   ctbIHCal->set_offlineflag();
   ctbIHCal->set_nsamples(12);
+  ctbIHCal->set_bitFlipRecovery(true);
   se->registerSubsystem(ctbIHCal);
 
   CaloTowerBuilder *ctbOHCal = new CaloTowerBuilder("HCALOUTBUILDER");
@@ -137,6 +141,7 @@ void Fun4All_Year2(int nEvents=0,
   ctbOHCal->set_builder_type(buildertype);
   ctbOHCal->set_offlineflag();
   ctbOHCal->set_nsamples(12);
+  ctbOHCal->set_bitFlipRecovery(true);
   se->registerSubsystem(ctbOHCal);
 
   CaloTowerBuilder *caEPD = new CaloTowerBuilder("SEPDBUILDER");
@@ -279,6 +284,8 @@ void Fun4All_Year2(int nEvents=0,
   ca->set_timing_cut_width(200);  //integers for timing width, > 1 : wider cut around max peak time
   se->registerSubsystem(ca);
 
+  GlobalQA *gqa = new GlobalQA("GlobalQA");
+  se->registerSubsystem(gqa);
 
   Fun4AllInputManager *In = new Fun4AllDstInputManager("in");
   In->AddFile(fname);
