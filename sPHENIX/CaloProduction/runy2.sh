@@ -59,8 +59,6 @@ echo logdir:  $logdir
 echo histdir: $histdir
 echo .............................................................................................. 
 
-ls ${inputs[@]} > input.list
-
 #______________________________________________________________________________________ running __
 #
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files ${inputs[@]}
@@ -68,6 +66,9 @@ ls ${inputs[@]} > input.list
 #_________________________________________________________________________________________________
 
 
+dstname=${logbase%%-*}
+echo ./bachi.py --blame cups created ${dstname} ${runnumber} --parent ${inputs[0]}
+     ./bachi.py --blame cups created ${dstname} ${runnumber} --parent ${inputs[0]}
 
 out0=${logbase}.root
 out1=HIST_${logbase#DST_}.root
@@ -75,7 +76,9 @@ out1=HIST_${logbase#DST_}.root
 nevents=-1
 status_f4a=0
 
-for infile in ${inputs[@]}; do
+for infile_ in ${inputs[@]}; do
+    infile=$( basename ${infile_} )
+    cp -v ${infile_} .
     root.exe -q -b Fun4All_Year2.C\(${nevents},\"${infile}\",\"${out0}\",\"${out1}\",\"${dbtag}\"\);  status_f4a=$?
     # Stageout the (single) DST created in the macro run
     for rfile in `ls DST_*.root`; do 
@@ -90,6 +93,11 @@ for infile in ${inputs[@]}; do
     done
 done
 
+if [ "${status_f4a}" -eq 0 ]; then
+  echo ./bachi.py --blame cups finalized ${dstname} ${runnumber}  
+       ./bachi.py --blame cups finalized ${dstname} ${runnumber} 
+fi
+
 # In principle, stageout should have moved the files to their final location
 rm *.root
 
@@ -100,7 +108,7 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${stat
      ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents ${nevents} --inc 
 #_________________________________________________________________________________________________
 
-
+ls > THIS_FILE_SHOULD_NOT_BE_COPIED_BACK
 
 echo "bdee bdee bdee, That's All Folks!"
 } > ${logbase}.out 2>${logbase}.err
