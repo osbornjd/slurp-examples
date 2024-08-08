@@ -111,7 +111,7 @@ if [ "${status_f4a}" -eq 0 ]; then
 fi
 
 echo "script done"
-} 2>&1 | head -c 1G > ${logdir#file:/}/${logbase}.out 
+} >& ${logdir#file:/}/${logbase}.out 
 
 #>& ${logdir#file:/}/${logbase}.out 
 
