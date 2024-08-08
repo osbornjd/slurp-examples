@@ -207,19 +207,18 @@ rm *.root *.list
 
 ls -la
 
-echo "script done"
-} 2>&1 | head -c 1G > ${logdir#file:/}/${logbase}.out 
-
-
-logsize=$( du -s ${logdir#file:/}/${logbase}.out )
-if (( $logsize > 10240 ))
+logsize=$( du -s ${logdir#file:/}/${logbase}.out | awk '//{ print $1 }' )
+if [ "$logsize" -gt 10240 ];
 then
-   echo "Normal termination with large log file: " ${logsize} "kB"
-   ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} message "Normal termination with large log file" --flags 10 --logsize ${logsize}
+   ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} message "Normal termination with large log file" --flag 10 --logsize ${logsize}
 else
-   echo "Normal termination"
-   ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} message "Normal termination" --flags 0 --logsize ${logsize}
+   ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} message "Normal termination" --flag 0 --logsize ${logsize}
 fi
+
+echo "script done"
+} >& ${logdir#file:/}/${logbase}.out 
+
+echo "Job termination with logsize= " ${logsize} "kB"
 
 
 #mv ${logbase}.out ${logdir#file:/}
