@@ -8,6 +8,7 @@
 #include <Trkr_RecoInit.C>
 #include <QA.C>
 
+#include <fun4all/Fun4AllUtils.h>
 #include <fun4all/Fun4AllDstInputManager.h>
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllInputManager.h>
@@ -43,38 +44,42 @@ void Fun4All_Job0(
 {
 
   gSystem->Load("libg4dst.so");
-  //char filename[500];
-  //sprintf(filename, "%s%08d-0000.root", inputRawHitFile.c_str(), runnumber);
- 
 
   auto se = Fun4AllServer::instance();
   se->Verbosity(1);
   auto rc = recoConsts::instance();
-  rc->set_IntFlag("RUNNUMBER", runnumber);
   CDBInterface::instance()->Verbosity(1);
 
   rc->set_StringFlag("CDB_GLOBALTAG", dbtag ); 
-  rc->set_uint64Flag("TIMESTAMP", runnumber);
  
   FlagHandler *flag = new FlagHandler();
   se->registerSubsystem(flag);
 
-  std::string geofile = CDBInterface::instance()->getUrl("Tracking_Geometry");
-  Fun4AllRunNodeInputManager *ingeo = new Fun4AllRunNodeInputManager("GeoIn");
-  ingeo->AddFile(geofile);
-  se->registerInputManager(ingeo);
 
   std::ifstream ifs(filelist);
   std::string filepath;
   int i = 0;
   while(std::getline(ifs,filepath))
     {
+      if(i==0)
+	{
+	   std::pair<int, int> runseg = Fun4AllUtils::GetRunSegment(filepath);
+	   int runNumber = runseg.first;
+	   int segment = runseg.second;
+	   rc->set_IntFlag("RUNNUMBER", runNumber);
+	   rc->set_uint64Flag("TIMESTAMP", runNumber);
+	}
       std::string inputname = "InputManager" + std::to_string(i);
       auto hitsin = new Fun4AllDstInputManager(inputname);
       hitsin->fileopen(filepath);
       se->registerInputManager(hitsin);
       i++;
     }
+
+  std::string geofile = CDBInterface::instance()->getUrl("Tracking_Geometry");
+  Fun4AllRunNodeInputManager *ingeo = new Fun4AllRunNodeInputManager("GeoIn");
+  ingeo->AddFile(geofile);
+  se->registerInputManager(ingeo);
 
   TrackingInit();
 
