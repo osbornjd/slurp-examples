@@ -25,6 +25,7 @@
 
 #include <trackingqa/SiliconSeedsQA.h>
 #include <trackingqa/TpcSeedsQA.h>
+#include <trackingqa/TpcSiliconQA.h>
 
 #include <stdio.h>
 
@@ -40,7 +41,7 @@ void Fun4All_JobA(
     const int nEvents = 2,
     const int runnumber = 26048,
     const std::string outfilename = "cosmicsseed",
-    const std::string dbtag = "2024p001",
+    const std::string dbtag = "2024p007",
     const std::string filelist = "filelist.list")
 {
 
@@ -231,6 +232,9 @@ void Fun4All_JobA(
   tpcqa->setTrackMapName("TpcSvtxTrackMap");
   tpcqa->setVertexMapName("TpcSvtxVertexMap");
   se->registerSubsystem(tpcqa);
+
+  auto tpcsiliconqa = new TpcSiliconQA;
+  se->registerSubsystem(tpcsiliconqa);
 
   se->run(nEvents);
   se->End();

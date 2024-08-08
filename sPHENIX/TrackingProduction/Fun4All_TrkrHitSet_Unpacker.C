@@ -19,6 +19,7 @@
 #include <ffamodules/FlagHandler.h>
 #include <mvtxrawhitqa/MvtxRawHitQA.h>
 #include <inttrawhitqa/InttRawHitQA.h>
+#include <tpcqa/TpcRawHitQA.h>
 #include <phool/recoConsts.h>
 
 #include <stdio.h>
@@ -31,6 +32,7 @@ R__LOAD_LIBRARY(libtpc.so)
 R__LOAD_LIBRARY(libmicromegas.so)
 R__LOAD_LIBRARY(libinttrawhitqa.so)
 R__LOAD_LIBRARY(libmvtxrawhitqa.so)
+R__LOAD_LIBRARY(libtpcqa.so)
 void Fun4All_TrkrHitSet_Unpacker(
     const int nEvents = 2,
     const int runnumber = 41626,
@@ -87,6 +89,8 @@ void Fun4All_TrkrHitSet_Unpacker(
   auto intt = new InttRawHitQA;
   se->registerSubsystem(intt);
   
+  auto tpc = new TpcRawHitQA;
+  se->registerSubsystem(tpc);
 
   Fun4AllOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outfilename);
 
