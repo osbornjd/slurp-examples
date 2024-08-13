@@ -68,6 +68,8 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
 // create and register input managers
   int i = 0;
 
+  std::string readoutNumber = "";
+
   for (auto iter : gl1_infile)
   {
     if (isGood(iter))
@@ -93,7 +95,7 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
     
     auto pos = iter.find("intt");
     std::string num = iter.substr(pos+4, pos+5);
-    
+    readoutNumber = "INTT"+num;
     intt_sngl->setHitContainerName("INTTRAWHIT_" + num);
     
     intt_sngl->AddListFile(iter);
@@ -116,7 +118,7 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
 	  felix = filepath.substr(pos+4, 1);
 	  break;
 	}
-
+      readoutNumber = "MVTX"+felix;
     SingleMvtxPoolInput *mvtx_sngl = new SingleMvtxPoolInput("MVTX_" + to_string(i));
 //    mvtx_sngl->Verbosity(5);
     mvtx_sngl->SetBcoRange(100);
@@ -148,6 +150,7 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
     SingleTpcPoolInput *tpc_sngl = new SingleTpcPoolInput("TPC_" + to_string(i));
 //    tpc_sngl->Verbosity(2);
     //   tpc_sngl->DryRun();
+    readoutNumber = "TPC"+ebdc;
     tpc_sngl->SetBcoRange(5);
     tpc_sngl->setHitContainerName("TPCRAWHIT_" + ebdc);
     tpc_sngl->AddListFile(iter);
@@ -167,6 +170,7 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
     mm_sngl->SetNegativeBco(2);
     mm_sngl->AddListFile(iter);
     in->registerStreamingInput(mm_sngl, InputManagerType::MICROMEGAS);
+    readoutNumber = "TPOT";
     i++;
     }
   }
@@ -188,9 +192,11 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
   FlagHandler *flag = new FlagHandler();
   se->registerSubsystem(flag);
 
+
+  char outfile[500];
+  sprintf(outfile,"./%s-%s.root",type.c_str(),readoutNumber.c_str());
   
-  string outfilename = "./" + type + ".root";
-  Fun4AllOutputManager *out = new Fun4AllDstOutputManager("out",outfilename);
+  Fun4AllOutputManager *out = new Fun4AllDstOutputManager("out",outfile);
   out->UseFileRule();
   out->SetNEvents(neventsper);                       // number of events per output file
   out->SetClosingScript("stageout.sh");      // script to call on file close (not quite working yet...)
@@ -207,9 +213,9 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
 
   se->End();
 
-  TString qaname = "HIST_" + type + "-" + runnumber + "-0000.root";
-  std::string qaOutputFileName(qaname.Data());
-  QAHistManagerDef::saveQARootFile(qaOutputFileName);
+  char histoutfile[500];
+  sprintf(histoutfile,"./HIST_%s-%s-%08i-%05i.root",type.c_str(),readoutNumber.c_str(),runnumber,0);
+  QAHistManagerDef::saveQARootFile(histoutfile);
 
   delete se;
   cout << "all done" << endl;
