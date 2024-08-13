@@ -42,6 +42,10 @@ export ODBCINI=./odbc.ini
  
 # There ought to be just one here... but ymmv...
 echo ${inputs[@]}
+for i in ${inputs[@]}; do
+    cp -v $i .
+done
+inputs0=${inputs[0]}
 
 if test -f cupstest.py; then
    mv cupstest.py cups.py
@@ -72,8 +76,8 @@ done
 echo "###############################################################################################################"
 echo "Running pass1 calibration"
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} message "Running PASS 1 calibration (hardcoded 100k events pass1)"
-echo root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs[0]}\",1,-1\) 
-root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs[0]}\",1,-1\) 
+echo root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs0}\",1,-1\) 
+root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs0}\",1,-1\) 
 
 echo "Pass 1 calibration done"
 ls -la *.root
@@ -84,8 +88,8 @@ ls -la *.root
 ################################################
 # Pass 2 calibrations waveforms
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} message "Running PASS 2 calibration, process waveforms"
-echo root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs[0]}\",2,${nevents}\)
-root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs[0]}\",2,${nevents}\)
+echo root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs0}\",2,${nevents}\)
+root.exe -q -b Fun4All_MBD_CalPass.C\(\"${inputs0}\",2,${nevents}\)
 
 echo "Pass 2 calibration done (waveforms processed)"
 ls -la *.root

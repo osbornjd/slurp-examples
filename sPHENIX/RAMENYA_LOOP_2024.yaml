@@ -12,27 +12,14 @@ DST_STREAMING_EVENT_cosmics:
      build:      new
      build_name: new
      dbtag:      2024p002
-     logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
+     logbase :   $(name)_$(build)_$(tag)-$INT(run,{RUNFMT})-$INT(seg,{SEGFMT})
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     neventsper: 500
+     neventsper: 10
+     comment : "..."
 
-   #
-   # input query:
-   #
-   # This builds a list of all runs known to the file catalog "datasets" table.
-   # The query should return:
-   # 1. The source of the information (formatted as database name/table name)
-   # 2. The run number
-   # 3. A sequence number (a placeholder fixed at zero for event builders)
-   # 4. And a space-separated list of logical filenames 
-   #
-   # The {*_condition} parameters (run, seg, limit) are substituted by kaedama
-   # based on (optional) command line options.
-   #
-   # For now, require GL1 files...
    input:
       db: daqdb
       direct_path: /sphenix/lustre01/sphnxpro/physics/*/cosmics/
@@ -72,9 +59,10 @@ DST_STREAMING_EVENT_cosmics:
 
    # TODO:  Need to add error checking to make sure that outdir, logdir, etc... are quoted properly.  Else, this will cause problems with argument substitution
    filesystem:  
-     outdir : "/sphenix/lustre01/sphnxpro/physics/slurp/tpccosmics/run_$(rungroup)"
-     logdir : "file:///sphenix/data/data02/sphnxpro/testlogs/run_$(rungroup)"
-     condor :        "/tmp/testlogs/run_$(rungroup)"
+     outdir  : "/sphenix/lustre01/sphnxpro/physics/slurp/cosmics/physics/run_$(rungroup)"
+     logdir  : "file:///sphenix/data/data02/sphnxpro/cosmicslogs/run_$(rungroup)"
+     histdir :       "/sphenix/data/data02/sphnxpro/cosmicshist/run_$(rungroup)"
+     condor :        "/tmp/cosmicslogs/run_$(rungroup)"
 
    #
    # Again I note the need to ensure that the arguments are properly specified given the
@@ -82,17 +70,18 @@ DST_STREAMING_EVENT_cosmics:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
 #    transfer_output_files : 'stdout.log,stderr.log'
-     priority : '3800'
+     priority : '4000'
+#    output                : '{logbase}.condor.stdout'
+#    error                 : '{logbase}.condor.stderr'
+
 
 #_______________________________________________________________________________________________________DST_EVENT__
 #
@@ -105,7 +94,7 @@ DST_TPCCALIB:
      name:       DST_TPCCALIB_run2pp
      build:      new
      build_name: new
-     dbtag:      2024p002
+     dbtag:      2024p005
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -165,14 +154,15 @@ DST_TPCCALIB:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
      transfer_output_files : ""
 #    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
+#    output                : '{logbase}.condor.stdout'
+#    error                 : '{logbase}.condor.stderr'
+
 
 
 
@@ -187,7 +177,7 @@ DST_COSMICS_INTT_RAW:
      name:       DST_STREAMING_EVENT_cosmics
      build:      new
      build_name: new
-     dbtag:      2024p002
+     dbtag:      2024p005
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -263,8 +253,8 @@ DST_COSMICS_INTT_RAW:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
+#    output                : '{logbase}.condor.stdout'
+#    error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -283,7 +273,7 @@ DST_COSMICS_NO_INTT:
      name:       DST_STREAMING_EVENT_cosmics
      build:      new
      build_name: new
-     dbtag:      2024p002
+     dbtag:      2024p005
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_cosmics.sh
@@ -357,8 +347,8 @@ DST_COSMICS_NO_INTT:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
+#    output                : '{logbase}.condor.stdout'
+#    error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -379,7 +369,7 @@ DST_TRIGGERED:
      name:       DST_TRIGGERED_EVENT_cosmics
      build:      new
      build_name: new
-     dbtag:      2024p002
+     dbtag:      2024p005
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run.sh
@@ -456,8 +446,8 @@ DST_TRIGGERED:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
+#    output                : '{logbase}.condor.stdout'
+#    error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -473,7 +463,7 @@ DST_TRKR_HIT_SET_cosmics:
      name:       DST_TRKR_HIT_cosmics
      build:      new
      build_name: new
-     dbtag:      2024p002
+     dbtag:      2024p005
      logbase :   $(name)_$(build)_$(tag)-$INT(run,%08d)-$INT(seg,%04d)
      outbase :   $(name)_$(build)_$(tag)
      script  :   run_trkrhitset.sh
@@ -507,8 +497,8 @@ DST_TRKR_HIT_SET_cosmics:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
+#    output                : '{logbase}.condor.stdout'
+#    error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
