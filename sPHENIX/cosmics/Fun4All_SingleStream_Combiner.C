@@ -94,7 +94,7 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
     intt_sngl->SetBcoRange(2);
     
     auto pos = iter.find("intt");
-    std::string num = iter.substr(pos+4, pos+5);
+    std::string num = iter.substr(pos+4, 1);
     readoutNumber = "INTT"+num;
     intt_sngl->setHitContainerName("INTTRAWHIT_" + num);
     
