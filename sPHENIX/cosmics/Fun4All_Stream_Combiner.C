@@ -159,8 +159,8 @@ void Fun4All_Stream_Combiner(int nEvents = 100,
     {
     SingleInttPoolInput *intt_sngl = new SingleInttPoolInput("INTT_" + to_string(i));
     //    intt_sngl->Verbosity(3);
-    intt_sngl->SetNegativeBco(1);
-    intt_sngl->SetBcoRange(2);
+    intt_sngl->SetNegativeBco(120-23);
+    intt_sngl->SetBcoRange(120);
     intt_sngl->AddListFile(iter);
     in->registerStreamingInput(intt_sngl, InputManagerType::INTT);
     i++;
