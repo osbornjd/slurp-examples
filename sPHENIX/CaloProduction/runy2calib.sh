@@ -80,15 +80,15 @@ for infile_ in ${inputs[@]}; do
     infile=$( basename ${infile_} )
     cp -v ${infile_} .
     outfile=${infile/CALOFITTING/CALO}
-    outhist=${outfile/DST_CALO/HIST_CALOQA/}
+    outhist=${outfile/DST_CALO/HIST_CALOQA}
     root.exe -q -b Fun4All_Year2_Calib.C\(${nevents},\"${infile}\",\"${outfile}\",\"${outhist}\",\"${dbtag}\"\);  status_f4a=$?
     # Stageout the (single) DST created in the macro run
-    for rfile in `ls DST_*.root`; do 
-        #nevents_=$( root.exe -q -b GetEntries.C\(\"${filename}\"\) | awk '/Number of Entries/{ print $4; }' )
+    #for rfile in ${outfile}; do 
+    #    #nevents_=$( root.exe -q -b GetEntries.C\(\"${filename}\"\) | awk '/Number of Entries/{ print $4; }' )
         nevents=${nevents_:--1}
-	echo Stageout ${rfile} to ${outdir}
-        ./stageout.sh ${rfile} ${outdir}
-    done
+	echo Stageout ${outfile} to ${outdir}
+        ./stageout.sh ${outfile} ${outdir}
+    #done
     for hfile in `ls HIST_*.root`; do
 	echo Stageout ${hfile} to ${histdir}
         ./stageout.sh ${hfile} ${histdir}

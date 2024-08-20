@@ -81,8 +81,8 @@ for infile_ in ${inputs[@]}; do
     cp -v ${infile_} .
     root.exe -q -b Fun4All_Year2.C\(${nevents},\"${infile}\",\"${out0}\",\"${out1}\",\"${dbtag}\"\);  status_f4a=$?
     # Stageout the (single) DST created in the macro run
-    for rfile in `ls DST_*.root`; do 
-        nevents_=$( root.exe -q -b GetEntries.C\(\"${filename}\"\) | awk '/Number of Entries/{ print $4; }' )
+    for rfile in `ls DST_CALO_*.root`; do 
+        nevents_=$( root.exe -q -b GetEntries.C\(\"${out0}\"\) | awk '/Number of Entries/{ print $4; }' )
         nevents=${nevents_:--1}
 	echo Stageout ${rfile} to ${outdir}
         ./stageout.sh ${rfile} ${outdir}
@@ -108,13 +108,10 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${stat
      ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${status_f4a} --nevents ${nevents} --inc 
 #_________________________________________________________________________________________________
 
-ls > THIS_FILE_SHOULD_NOT_BE_COPIED_BACK
-
 echo "bdee bdee bdee, That's All Folks!"
 } > ${logbase}.out 2>${logbase}.err
 
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
-
 
 exit ${status_f4a}

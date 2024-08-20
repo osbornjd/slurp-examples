@@ -82,12 +82,12 @@ for infile_ in ${inputs[@]}; do
     outfile=${logbase}.root
     root.exe -q -b Fun4All_Year2_Fitting.C\(${nevents},\"${infile}\",\"${outfile}\",\"${dbtag}\"\);  status_f4a=$?
     # Stageout the (single) DST created in the macro run
-    for rfile in `ls DST_*.root`; do 
+    #for rfile in `ls DST_*.root`; do 
         #nevents_=$( root.exe -q -b GetEntries.C\(\"${filename}\"\) | awk '/Number of Entries/{ print $4; }' )
         nevents=${nevents_:--1}
-	echo Stageout ${rfile} to ${outdir}
-        ./stageout.sh ${rfile} ${outdir}
-    done
+	echo Stageout ${outfile} to ${outdir}
+        ./stageout.sh ${outfile} ${outdir}
+    #done
     for hfile in `ls HIST_*.root`; do
 	echo Stageout ${hfile} to ${histdir}
         ./stageout.sh ${hfile} ${histdir}
