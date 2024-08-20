@@ -96,4 +96,5 @@ echo "bdee bdee bdee, That's All Folks!"
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
 
+exit $status_f4a
 
