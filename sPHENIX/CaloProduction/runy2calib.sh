@@ -82,6 +82,7 @@ for infile_ in ${inputs[@]}; do
     outfile=${infile/CALOFITTING/CALO}
     outhist=${outfile/DST_CALO/HIST_CALOQA}
     root.exe -q -b Fun4All_Year2_Calib.C\(${nevents},\"${infile}\",\"${outfile}\",\"${outhist}\",\"${dbtag}\"\);  status_f4a=$?
+
     # Stageout the (single) DST created in the macro run
     #for rfile in ${outfile}; do 
     #    #nevents_=$( root.exe -q -b GetEntries.C\(\"${filename}\"\) | awk '/Number of Entries/{ print $4; }' )
@@ -102,7 +103,7 @@ if [ "${status_f4a}" -eq 0 ]; then
 fi
 
 # In principle, stageout should have moved the files to their final location
-rm *.root
+#rm *.root
 
 ls -lah
 
@@ -118,6 +119,5 @@ echo "bdee bdee bdee, That's All Folks!"
 
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
-
 
 exit $status_f4a
