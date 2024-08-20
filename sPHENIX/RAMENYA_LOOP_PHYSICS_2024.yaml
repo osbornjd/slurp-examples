@@ -12,7 +12,7 @@ PHYS_DST_STREAMING_EVENT_run2pp:
      script  :   run_cosmics.sh
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   4096MB
-     neventsper: 2500
+     neventsper: 1000
      comment:    "---"
 
    input:
@@ -71,14 +71,8 @@ PHYS_DST_STREAMING_EVENT_run2pp:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-#    transfer_output_files : '{logbase}.out,{logbase}.err'
-     transfer_output_files : ""
-#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '4000'
      request_xferslots: '0'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
-
 
 
 
@@ -156,15 +150,7 @@ DST_TPCCALIB:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-#    transfer_output_files : '{logbase}.out,{logbase}.err'
-#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
-
-
-
 
 
 DST_INTT_EVENT:
@@ -255,13 +241,8 @@ DST_INTT_EVENT:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-#    transfer_output_files : '{logbase}.out,{logbase}.err'
-#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
      request_xferslots: '0'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
 
 
 
@@ -359,10 +340,7 @@ PHYS_DST_TRIGGERED_EVENT_run2pp:
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
      priority : '3900'
-     transfer_output_files : ""
      request_xferslots: '1'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
 
 
 #___________________________________________________________________________________________________DST_CALO_run2pp __     
@@ -406,9 +384,7 @@ DST_CALO_Y2:
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
      priority : '3800'
-     transfer_output_files : ""
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
+
 
 
    filesystem:  
@@ -459,9 +435,6 @@ DST_CALO_Y2_2024p005:
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
      priority : '3800'
-     transfer_output_files : ""
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
 
 
 
@@ -518,10 +491,8 @@ DST_TRKR_HIT_SET_physics:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
+
 
 
 
@@ -574,10 +545,7 @@ DST_TRKR_CLUSTER_SET_run2pp:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
 
 
 
@@ -629,14 +597,7 @@ DST_TRKR_SEED_SET_run2pp:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
-
-
-
-
 
 
 DST_TRKR_TRACKS_SET_run2pp:
@@ -700,11 +661,7 @@ DST_TRKR_TRACKS_SET_run2pp:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
-
 
 
 
@@ -759,12 +716,7 @@ DST_TRKR_HIT_SET_physics_2024p005:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
-
-
 
 
 
@@ -815,12 +767,7 @@ DST_TRKR_CLUSTER_SET_run2pp_2024p005:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
-
-
 
 
 #_________________________________________________________________________________________________________________________________________
@@ -870,10 +817,8 @@ DST_TRKR_SEED_SET_run2pp_2024p005:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
+
 
 
 
@@ -941,10 +886,7 @@ DST_TRKR_TRACKS_SET_run2pp_2024p005:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
 
 
 
@@ -996,12 +938,7 @@ DST_TRKR_HIT_SET_physics_2024p007:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
-
-
 
 
 
@@ -1052,11 +989,7 @@ DST_TRKR_CLUSTER_SET_run2pp_2024p007:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
-
 
 
 
@@ -1107,12 +1040,7 @@ DST_TRKR_SEED_SET_run2pp_2024p007:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
-
-
 
 
 
@@ -1178,10 +1106,7 @@ DST_TRKR_TRACKS_SET_run2pp_2024p007:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
 
 
 
@@ -1268,14 +1193,8 @@ PHYS_DST_STREAMING_EVENT_run2pp_nomvtx:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-#    transfer_output_files : '{logbase}.out,{logbase}.err'
-     transfer_output_files : ""
-#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
      request_xferslots: '0'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
-
 
 
 
@@ -1334,11 +1253,8 @@ PHYS_DST_TPC_EVENT_run2pp:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
      request_xferslots: '0'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
 
 
 #_______________________________________________________________________________________________________________________________________________________
@@ -1395,11 +1311,9 @@ PHYS_DST_TPOT_EVENT_run2pp:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
      request_xferslots: '0'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
+
 
 
 #_______________________________________________________________________________________________________________________________________________________
@@ -1456,11 +1370,9 @@ PHYS_DST_INTT_EVENT_run2pp:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
      request_xferslots: '0'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
+
 
 
 
@@ -1518,9 +1430,7 @@ PHYS_DST_MVTX_EVENT_run2pp:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
      request_xferslots: '0'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
+
 

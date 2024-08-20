@@ -76,11 +76,7 @@ DST_STREAMING_EVENT_cosmics:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '4000'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
 
 
 #_______________________________________________________________________________________________________DST_EVENT__
@@ -157,11 +153,7 @@ DST_TPCCALIB:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
 
 
 
@@ -258,8 +250,6 @@ DST_COSMICS_INTT_RAW:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
 
 
@@ -347,13 +337,9 @@ DST_COSMICS_NO_INTT:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
 
 #_______________________________________________________________________________________________________DST_EVENT__
@@ -446,12 +432,9 @@ DST_TRIGGERED:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
 
 
@@ -497,10 +480,7 @@ DST_TRKR_HIT_SET_cosmics:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-#    output                : '{logbase}.condor.stdout'
-#    error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'

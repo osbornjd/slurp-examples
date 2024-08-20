@@ -95,9 +95,6 @@ BEAM_DST_STREAMING_EVENT_run2pp:
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-     transfer_output_files : ''
-#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
 
 
@@ -159,13 +156,9 @@ __DST_BEAM_nogl1__:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-#    transfer_output_files : '{logbase}.out,{logbase}.err'
      priority : '3800'
 
 
@@ -240,12 +233,9 @@ BEAM_DST_TPCCALIB_run2pp:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
 
 
@@ -337,14 +327,9 @@ DST_BEAM_INTT_RAW:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-#    transfer_output_files : '{logbase}.out,{logbase}.err'
-#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
 
 
@@ -432,14 +417,9 @@ DST_BEAM_NO_INTT:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-#    transfer_output_files : '{logbase}.out,{logbase}.err'
-#    transfer_output_files : 'stdout.log,stderr.log'
      priority : '3800'
 #_______________________________________________________________________________________________________DST_EVENT__
 
@@ -532,13 +512,9 @@ BEAM_DST_TRIGGERED_EVENT_run2pp:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-#    transfer_output_files : '{logbase}.out,{logbase}.err'
      priority : '3800'
 
 
@@ -628,13 +604,9 @@ __DST_BEAM_TRIGGERED_nogl1__:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
-#    transfer_output_files : '{logbase}.out,{logbase}.err'
      priority : '3800'
 
 
@@ -678,12 +650,9 @@ __DST_TRKR_HIT_SET_beam__:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
 
 
@@ -756,11 +725,8 @@ PHYS_MBD_CALIBRATION:
      arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {pass0dir}"
      output_destination    : '{logdir}'
      transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
-     output                : '{logbase}.condor.stdout'
-     error                 : '{logbase}.condor.stderr'
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
-     transfer_output_files : ""
      priority : '3800'
 
