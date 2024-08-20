@@ -49,6 +49,7 @@ for i in ${inputs[@]}; do
 done
 
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files "$( cat inlist )"
+#$$$ ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files "$( cat inlist )"
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
 
 dstname=${logbase%%-*}

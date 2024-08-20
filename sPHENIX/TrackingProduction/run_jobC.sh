@@ -58,7 +58,7 @@ for i in ${inputs[@]}; do
    echo $( basename $i ) >> inlist   
 done
 
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files "$( cat inlist )"
+#$$$./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files "$( cat inlist )"
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
 
 dstname=${logbase%%-*}
@@ -90,10 +90,10 @@ echo "bdee bdee bdee, That's All Folks!"
 
 }  >& ${logbase}.out 
 #2>${logbase}.err
+
 touch ${logbase}.out
 
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
-
 
 exit $status_f4a

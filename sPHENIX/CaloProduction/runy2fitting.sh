@@ -77,6 +77,8 @@ nevents=-1
 status_f4a=0
 
 for infile_ in ${inputs[@]}; do
+#for infile_ in $( ./cups.py -t production_status -d ${outbase} -r ${runnumber} -s ${segment} getinputs ); do
+
     infile=$( basename ${infile_} )
     cp -v ${infile_} .
     outfile=${logbase}.root
