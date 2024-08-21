@@ -160,7 +160,7 @@ void Fun4All_Stream_Combiner(int nEvents = 100,
     SingleInttPoolInput *intt_sngl = new SingleInttPoolInput("INTT_" + to_string(i));
     //    intt_sngl->Verbosity(3);
     intt_sngl->SetNegativeBco(120-23);
-    intt_sngl->SetBcoRange(120);
+    intt_sngl->SetBcoRange(500);
     intt_sngl->AddListFile(iter);
     in->registerStreamingInput(intt_sngl, InputManagerType::INTT);
     i++;
@@ -174,7 +174,7 @@ void Fun4All_Stream_Combiner(int nEvents = 100,
     SingleMvtxPoolInput *mvtx_sngl = new SingleMvtxPoolInput("MVTX_" + to_string(i));
     //    mvtx_sngl->Verbosity(3);
     mvtx_sngl->SetBcoRange(100);
-    mvtx_sngl->SetNegativeBco(100);
+    mvtx_sngl->SetNegativeBco(500);
     mvtx_sngl->AddListFile(iter);
     in->registerStreamingInput(mvtx_sngl, InputManagerType::MVTX);
     i++;
