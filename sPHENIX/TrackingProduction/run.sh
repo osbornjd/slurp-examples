@@ -48,7 +48,15 @@ for i in ${inputs[@]}; do
    echo $( basename $i ) >> inlist   
 done
 
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files "$( cat inlist )"
+# Temp hack for testing...
+#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/cups.py .
+#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/bachi.py .
+#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/odbc.ini .
+#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/slurp-examples/sPHENIX/TrackingProduction/ .
+
+
+
+
 #$$$ ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files "$( cat inlist )"
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
 
@@ -63,7 +71,11 @@ ls -la
 
 ./stageout.sh ${logbase}.root ${outdir}
 
-mv HIST_*.root ${histdir}/
+for hfile in `ls HIST_*.root`; do
+    echo Stageout ${hfile} to ${histdir}
+    ./stageout.sh ${hfile} ${histdir}
+done}
+
 
 ls -la
 
@@ -78,12 +90,10 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${stat
 
 echo "bdee bdee bdee, That's All Folks!"
 
-rm inlist
 
 }  > ${logbase}.out 2>${logbase}.err
 
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
-
 
 exit $status_f4a

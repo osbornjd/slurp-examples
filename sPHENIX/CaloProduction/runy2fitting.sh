@@ -92,8 +92,8 @@ for infile_ in ${inputs[@]}; do
     #done
     for hfile in `ls HIST_*.root`; do
 	echo Stageout ${hfile} to ${histdir}
-        #./stageout.sh ${hfile} ${histdir}
-        mv --verbose ${hfile} ${histdir}
+        ./stageout.sh ${hfile} ${histdir}
+        #mv --verbose ${hfile} ${histdir}
     done
 done
 

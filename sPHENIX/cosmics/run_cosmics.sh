@@ -200,7 +200,10 @@ echo $logbase
 #cp stderr.log ${logbase}.err
 #cp stdout.log ${logbase}.out
 
-mv HIST_*.root ${histdir}
+for hfile in `ls HIST_*.root`; do
+    echo Stageout ${hfile} to ${histdir}
+    ./stageout.sh ${hfile} ${histdir}
+done
 
 # Cleanup any stray root and/or list files leftover from stageout
 rm *.root *.list
