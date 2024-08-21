@@ -113,6 +113,8 @@ fi
 echo "script done"
 } >& ${logdir#file:/}/${logbase}.out 
 
+exit ${status_f4a}
+
 #>& ${logdir#file:/}/${logbase}.out 
 
 # Direct stageout
