@@ -121,8 +121,10 @@ void Fun4All_JobC(
   se->registerSubsystem(finder);
 
   Fun4AllOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outfilename);
+  out->AddNode("Sync");
+  out->AddNode("EventHeader");
   out->AddNode("SvtxTrackMap");
-out->AddNode("SvtxVertexMap");
+  out->AddNode("SvtxVertexMap");
   se->registerOutputManager(out);
 
   se->run(nEvents);
