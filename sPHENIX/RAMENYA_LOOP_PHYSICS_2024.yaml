@@ -13,7 +13,8 @@ PHYS_DST_STREAMING_EVENT_run2pp:
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   20480MB
      neventsper: 1000
-     comment:    "---"
+     comment :    "---"
+     rsync   : "./slurp-examples/sPHENIX/cosmics/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: daqdb
@@ -65,9 +66,8 @@ PHYS_DST_STREAMING_EVENT_run2pp:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -82,7 +82,6 @@ PHYS_DST_STREAMING_EVENT_run2pp:
 #
 DST_TPCCALIB:
 
-   # DST_EVENT works from a pre-built set of run lists.
    params:
      name:       DST_TPC_EVENT_run2pp
      build:      new
@@ -94,8 +93,8 @@ DST_TPCCALIB:
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   2048MB
      neventsper: 50000
-#    mem     :   8192MB
      mem     :   16384MB
+     rsync   : "./slurp-examples/sPHENIX/cosmics/*,cups.py,bachi.py,odbc.ini"
 
    #
    # input query:
@@ -144,9 +143,8 @@ DST_TPCCALIB:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} TPCCALIB {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -169,6 +167,7 @@ DST_INTT_EVENT:
      payload :   ./slurp-examples/sPHENIX/cosmics/
      mem     :   8192MB
      neventsper: 500000
+     rsync   : "./slurp-examples/sPHENIX/cosmics/*,cups.py,bachi.py,odbc.ini"
 
    #
    # input query:
@@ -235,9 +234,8 @@ DST_INTT_EVENT:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} INTT {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -259,6 +257,7 @@ DST_TRKR_HIT_SET_physics:
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: fc
@@ -286,9 +285,8 @@ DST_TRKR_HIT_SET_physics:
 
    job:
      executable            : "{payload}/run.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -313,6 +311,7 @@ DST_TRKR_CLUSTER_SET_run2pp:
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
      nevents :  0
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: fc
@@ -340,9 +339,8 @@ DST_TRKR_CLUSTER_SET_run2pp:
 
    job:
      executable            : "{payload}/run_job0.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -365,6 +363,7 @@ DST_TRKR_SEED_SET_run2pp:
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
      nevents :  0
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: fc
@@ -392,9 +391,8 @@ DST_TRKR_SEED_SET_run2pp:
 
    job:
      executable            : "{payload}/run_jobA.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -414,6 +412,9 @@ DST_TRKR_TRACKS_SET_run2pp:
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
      nevents :   0
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
+
+
 
    input:
       db: fc
@@ -456,9 +457,8 @@ DST_TRKR_TRACKS_SET_run2pp:
 
    job:
      executable            : "{payload}/run_jobC.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -484,6 +484,7 @@ DST_TRKR_HIT_SET_physics_2024p005:
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: fc
@@ -511,9 +512,8 @@ DST_TRKR_HIT_SET_physics_2024p005:
 
    job:
      executable            : "{payload}/run.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -535,6 +535,7 @@ DST_TRKR_CLUSTER_SET_run2pp_2024p005:
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
      nevents :  0
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: fc
@@ -562,9 +563,8 @@ DST_TRKR_CLUSTER_SET_run2pp_2024p005:
 
    job:
      executable            : "{payload}/run_job0.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -612,9 +612,8 @@ DST_TRKR_SEED_SET_run2pp_2024p005:
 
    job:
      executable            : "{payload}/run_jobA.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -639,6 +638,7 @@ DST_TRKR_TRACKS_SET_run2pp_2024p005:
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
      nevents :   0
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: fc
@@ -681,9 +681,8 @@ DST_TRKR_TRACKS_SET_run2pp_2024p005:
 
    job:
      executable            : "{payload}/run_jobC.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -706,6 +705,7 @@ DST_TRKR_HIT_SET_physics_2024p007:
      script  :   run.sh
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: fc
@@ -733,9 +733,8 @@ DST_TRKR_HIT_SET_physics_2024p007:
 
    job:
      executable            : "{payload}/run.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -757,6 +756,7 @@ DST_TRKR_CLUSTER_SET_run2pp_2024p007:
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
      nevents :  0
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: fc
@@ -784,9 +784,8 @@ DST_TRKR_CLUSTER_SET_run2pp_2024p007:
 
    job:
      executable            : "{payload}/run_job0.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -808,6 +807,7 @@ DST_TRKR_SEED_SET_run2pp_2024p007:
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
      nevents :  0
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: fc
@@ -835,9 +835,8 @@ DST_TRKR_SEED_SET_run2pp_2024p007:
 
    job:
      executable            : "{payload}/run_jobA.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -859,6 +858,7 @@ DST_TRKR_TRACKS_SET_run2pp_2024p007:
      payload :   ./slurp-examples/sPHENIX/TrackingProduction/
      mem     :   2048MB
      nevents :   0
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: fc
@@ -901,9 +901,8 @@ DST_TRKR_TRACKS_SET_run2pp_2024p007:
 
    job:
      executable            : "{payload}/run_jobC.sh"
-     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir}"
+     arguments             : "{nevents} {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {logdir} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -939,6 +938,7 @@ PHYS_DST_STREAMING_EVENT_run2pp_nomvtx:
 #    mem     :   16384MB
      neventsper: 2500
      comment:    "---"
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
 
    input:
       db: daqdb
@@ -988,9 +988,8 @@ PHYS_DST_STREAMING_EVENT_run2pp_nomvtx:
    #
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -1013,6 +1012,8 @@ PHYS_DST_TPC_EVENT_run2pp:
      mem     :   4096MB
      neventsper: 2500
      comment:    "---"
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
+
    input:
       db: daqdb
       direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/physics/
@@ -1048,9 +1049,8 @@ PHYS_DST_TPC_EVENT_run2pp:
 
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -1072,6 +1072,8 @@ PHYS_DST_TPOT_EVENT_run2pp:
      mem     :   4096MB
      neventsper: 2500
      comment:    "---"
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
+
    input:
       db: daqdb
       direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/physics/
@@ -1106,9 +1108,8 @@ PHYS_DST_TPOT_EVENT_run2pp:
 
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -1131,6 +1132,7 @@ PHYS_DST_INTT_EVENT_run2pp:
      mem     :   4096MB
      neventsper: 2500
      comment:    "---"
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
    input:
       db: daqdb
       direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/physics/
@@ -1165,9 +1167,8 @@ PHYS_DST_INTT_EVENT_run2pp:
 
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"
@@ -1191,6 +1192,8 @@ PHYS_DST_MVTX_EVENT_run2pp:
      mem     :   4096MB
      neventsper: 2500
      comment:    "---"
+     rsync   : "./slurp-examples/sPHENIX/TrackingProduction/*,cups.py,bachi.py,odbc.ini"
+
    input:
       db: daqdb
       direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/physics/
@@ -1225,9 +1228,8 @@ PHYS_DST_MVTX_EVENT_run2pp:
 
    job:
      executable            : "{payload}/run_cosmics.sh"
-     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir}"
+     arguments             : "$(nevents) {outbase} {logbase} $(run) $(seg) {outdir} $(build) $(tag) $(inputs) $(ranges) {neventsper} {logdir} {comment} {histdir} {PWD} {rsync}"
      output_destination    : '{logdir}'
-     transfer_input_files  : "{payload},cups.py,bachi.py,odbc.ini"
      log                   : '{condor}/{logbase}.condor'
      accounting_group      : "group_sphenix.mdc2"
      accounting_group_user : "sphnxpro"

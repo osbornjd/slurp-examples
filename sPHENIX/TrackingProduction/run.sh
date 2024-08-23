@@ -12,6 +12,8 @@ inputs=(`echo ${9} | tr "," " "`)  # array of input files
 ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 logdir=${11:-.}
 histdir=${12:-.}
+subdir=${13}
+payload=(`echo ${14} | tr ","  " "`) # array of files to be rsynced
 {
 
 export USER="$(id -u -n)"
@@ -40,13 +42,20 @@ echo outdir:  $outdir
 echo build:   $build
 echo dbtag:   $dbtag
 echo inputs:  ${inputs[@]}
+echo subdir:  ${subdir}
+echo payload: ${payload[@]}
 
 echo .............................................................................................. 
+
+for i in ${payload[@]}; do
+    cp --verbose ${subdir}/${i} .
+done
 
 for i in ${inputs[@]}; do
    cp -v ${i} .
    echo $( basename $i ) >> inlist   
 done
+
 
 # Temp hack for testing...
 #rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/cups.py .
