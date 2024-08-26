@@ -222,7 +222,8 @@ void Fun4All_JobA(
   findertpc->setTrackPtCut(-99999.);
   findertpc->setBeamLineCut(1);
   findertpc->setTrackQualityCut(1000000000);
-  findertpc->setNmvtxRequired(3);
+  //findertpc->setNmvtxRequired(3);
+  findertpc->setRequireMVTX(false);
   findertpc->setOutlierPairCut(0.1);
   findertpc->setTrackMapName("TpcSvtxTrackMap");
   findertpc->setVertexMapName("TpcSvtxVertexMap");
