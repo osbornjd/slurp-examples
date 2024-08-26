@@ -5,6 +5,7 @@
  */
 #include <GlobalVariables.C>
 #include <Trkr_Clustering.C>
+#include <Trkr_LaserClustering.C>
 #include <Trkr_RecoInit.C>
 #include <QA.C>
 
