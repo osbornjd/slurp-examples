@@ -14,6 +14,7 @@ logdir=${11:-.}
 histdir=${12:-.}
 subdir=${13}
 payload=(`echo ${14} | tr ","  " "`) # array of files to be rsynced
+
 {
 
 export USER="$(id -u -n)"
@@ -24,11 +25,6 @@ hostname
 source /opt/sphenix/core/bin/sphenix_setup.sh -n ${7}
 
 export ODBCINI=./odbc.ini
-
-#______________________________________________________________________________________ started __
-#
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
-#_________________________________________________________________________________________________
 
 echo ..............................................................................................
 echo $@
@@ -51,10 +47,16 @@ for i in ${payload[@]}; do
     cp --verbose ${subdir}/${i} .
 done
 
+#______________________________________________________________________________________ started __
+#
+./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
+#_________________________________________________________________________________________________
+
 for i in ${inputs[@]}; do
    cp -v ${i} .
    echo $( basename $i ) >> inlist   
 done
+cat inlist
 
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
 
@@ -89,7 +91,7 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${stat
 echo "bdee bdee bdee, That's All Folks!"
 
 
-}  > ${logbase}.out 2>${logbase}.err
+}  >${logbase}.out  2>${logbase}.err
 
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}
