@@ -56,12 +56,15 @@ void Fun4All_TrkrHitSet_Unpacker(
   std::ifstream ifs(filelist);
   std::string filepath;
   int i = 0;
+
+  int runNumber = runnumber;
+
   while(std::getline(ifs,filepath))
     {
       if(i==0)
 	{
 	   std::pair<int, int> runseg = Fun4AllUtils::GetRunSegment(filepath);
-	   int runNumber = runseg.first;
+	   runNumber = runseg.first;
 	   int segment = runseg.second;
 	   rc->set_IntFlag("RUNNUMBER", runNumber);
 	   rc->set_uint64Flag("TIMESTAMP", runNumber);
@@ -72,7 +75,10 @@ void Fun4All_TrkrHitSet_Unpacker(
       se->registerInputManager(hitsin);
       i++;
     }
-
+  if(runNumber>51428)
+    {
+      TRACKING::tpc_zero_supp = true;
+    }
   std::string geofile = CDBInterface::instance()->getUrl("Tracking_Geometry");
   Fun4AllRunNodeInputManager *ingeo = new Fun4AllRunNodeInputManager("GeoIn");
   ingeo->AddFile(geofile);
