@@ -5,6 +5,7 @@
  */
 #include <GlobalVariables.C>
 #include <Trkr_Clustering.C>
+#include <Trkr_LaserClustering.C>
 #include <Trkr_RecoInit.C>
 #include <QA.C>
 
@@ -93,6 +94,8 @@ void Fun4All_Job0(
   tpcclusterizer->set_rawdata_reco();
   se->registerSubsystem(tpcclusterizer);
 
+  TPC_LaserClustering();
+
   Micromegas_Clustering();
 
   se->registerSubsystem(new MvtxClusterQA);
@@ -107,6 +110,10 @@ void Fun4All_Job0(
   out->AddNode("EventHeader");
   out->AddNode("TRKR_CLUSTER");
   out->AddNode("TRKR_CLUSTERCROSSINGASSOC");
+  if(G4TPC::ENABLE_CENTRAL_MEMBRANE_HITS)
+  {
+    out->AddNode("LASER_CLUSTER");
+  }
   se->registerOutputManager(out);
 
   se->run(nEvents);
