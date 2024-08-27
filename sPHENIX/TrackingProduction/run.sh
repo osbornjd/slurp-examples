@@ -56,17 +56,6 @@ for i in ${inputs[@]}; do
    echo $( basename $i ) >> inlist   
 done
 
-
-# Temp hack for testing...
-#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/cups.py .
-#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/bachi.py .
-#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/odbc.ini .
-#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/slurp-examples/sPHENIX/TrackingProduction/ .
-
-
-
-
-#$$$ ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files "$( cat inlist )"
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
 
 dstname=${logbase%%-*}
