@@ -67,7 +67,8 @@ echo root.exe -q -b Fun4All_TrkrHitSet_Unpacker.C\(${nevents},${runnumber},\"${l
 
 ls -la
 
-./stageout.sh ${logbase}.root ${outdir}
+echo ./stageout.sh ${logbase}.root ${outdir}
+     ./stageout.sh ${logbase}.root ${outdir}
 
 for hfile in `ls HIST_*.root`; do
     echo Stageout ${hfile} to ${histdir}
