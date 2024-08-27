@@ -73,8 +73,7 @@ echo ./stageout.sh ${logbase}.root ${outdir}
 for hfile in `ls HIST_*.root`; do
     echo Stageout ${hfile} to ${histdir}
     ./stageout.sh ${hfile} ${histdir}
-done}
-
+done
 
 ls -la
 
