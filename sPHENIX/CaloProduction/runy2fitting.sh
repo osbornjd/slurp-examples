@@ -13,6 +13,9 @@ ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 neventsper=${11:-1000}
 logdir=${12:-.}
 histdir=${13:-.}
+subdir=${14}
+payload=(`echo ${15} | tr ","  " "`) # array of files to be rsynced
+
 
 sighandler()
 {
@@ -37,11 +40,6 @@ source /opt/sphenix/core/bin/sphenix_setup.sh -n ${7}
 
 export ODBCINI=./odbc.ini
 
-#______________________________________________________________________________________ started __
-#
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
-#_________________________________________________________________________________________________
-
 echo ..............................................................................................
 echo $@
 echo .............................................................................................. 
@@ -58,6 +56,17 @@ echo nper:    $neventsper
 echo logdir:  $logdir
 echo histdir: $histdir
 echo .............................................................................................. 
+
+# Stagein
+for i in ${payload[@]}; do
+    cp --verbose ${subdir}/${i} .
+done
+
+#______________________________________________________________________________________ started __
+#
+./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
+#_________________________________________________________________________________________________
+
 
 #______________________________________________________________________________________ running __
 #
@@ -77,24 +86,21 @@ nevents=-1
 status_f4a=0
 
 for infile_ in ${inputs[@]}; do
-#for infile_ in $( ./cups.py -t production_status -d ${outbase} -r ${runnumber} -s ${segment} getinputs ); do
 
     infile=$( basename ${infile_} )
     cp -v ${infile_} .
     outfile=${logbase}.root
     root.exe -q -b Fun4All_Year2_Fitting.C\(${nevents},\"${infile}\",\"${outfile}\",\"${dbtag}\"\);  status_f4a=$?
-    # Stageout the (single) DST created in the macro run
-    #for rfile in `ls DST_*.root`; do 
-        #nevents_=$( root.exe -q -b GetEntries.C\(\"${filename}\"\) | awk '/Number of Entries/{ print $4; }' )
-        nevents=${nevents_:--1}
-	echo Stageout ${outfile} to ${outdir}
+
+    nevents=${nevents_:--1}
+    echo Stageout ${outfile} to ${outdir}
         ./stageout.sh ${outfile} ${outdir}
-    #done
+ 
     for hfile in `ls HIST_*.root`; do
 	echo Stageout ${hfile} to ${histdir}
         ./stageout.sh ${hfile} ${histdir}
-        #mv --verbose ${hfile} ${histdir}
     done
+
 done
 
 if [ "${status_f4a}" -eq 0 ]; then
