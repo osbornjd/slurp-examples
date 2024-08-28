@@ -14,8 +14,6 @@ neventsper=${11:-1000}
 logdir=${12:-.}
 comment=${13}
 histdir=${14:-.}
-subdir=${15}
-payload=(`echo ${16} | tr ","  " "`) # array of files to be rsynced
 
 sighandler()
 {
@@ -37,16 +35,11 @@ export HOME=/sphenix/u/${USER}
 source /opt/sphenix/core/bin/sphenix_setup.sh -n ${5}
 
 export ODBCINI=./odbc.ini
-
-echo "INPUTS" 
+ 
 echo ${inputs[@]}
 
-echo "PAYLOAD"
-for i in ${payload[@]}; do
-    cp --verbose ${subdir}/${i} .
-done
-
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
+
 
 #______________________________________________________________________________________________
 # Map TPC input files into filelists
