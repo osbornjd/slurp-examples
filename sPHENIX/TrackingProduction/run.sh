@@ -12,9 +12,6 @@ inputs=(`echo ${9} | tr "," " "`)  # array of input files
 ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 logdir=${11:-.}
 histdir=${12:-.}
-subdir=${13}
-payload=(`echo ${14} | tr ","  " "`) # array of files to be rsynced
-
 {
 
 export USER="$(id -u -n)"
@@ -25,6 +22,11 @@ hostname
 source /opt/sphenix/core/bin/sphenix_setup.sh -n ${7}
 
 export ODBCINI=./odbc.ini
+
+#______________________________________________________________________________________ started __
+#
+./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
+#_________________________________________________________________________________________________
 
 echo ..............................................................................................
 echo $@
@@ -38,26 +40,24 @@ echo outdir:  $outdir
 echo build:   $build
 echo dbtag:   $dbtag
 echo inputs:  ${inputs[@]}
-echo subdir:  ${subdir}
-echo payload: ${payload[@]}
 
 echo .............................................................................................. 
-
-for i in ${payload[@]}; do
-    cp --verbose ${subdir}/${i} .
-done
-
-#______________________________________________________________________________________ started __
-#
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
-#_________________________________________________________________________________________________
 
 for i in ${inputs[@]}; do
    cp -v ${i} .
    echo $( basename $i ) >> inlist   
 done
-cat inlist
 
+# Temp hack for testing...
+#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/cups.py .
+#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/bachi.py .
+#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/odbc.ini .
+#rsync --verbose /direct/sphenix+u/sphnxpro/ProductionSystemIntegration/ProductionSystem/slurp-examples/sPHENIX/TrackingProduction/ .
+
+
+
+
+#$$$ ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files "$( cat inlist )"
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
 
 dstname=${logbase%%-*}
@@ -69,13 +69,13 @@ echo root.exe -q -b Fun4All_TrkrHitSet_Unpacker.C\(${nevents},${runnumber},\"${l
 
 ls -la
 
-echo ./stageout.sh ${logbase}.root ${outdir}
-     ./stageout.sh ${logbase}.root ${outdir}
+./stageout.sh ${logbase}.root ${outdir}
 
 for hfile in `ls HIST_*.root`; do
     echo Stageout ${hfile} to ${histdir}
     ./stageout.sh ${hfile} ${histdir}
-done
+done}
+
 
 ls -la
 
@@ -91,7 +91,7 @@ echo ./cups.py -v -r ${runnumber} -s ${segment} -d ${outbase} finished -e ${stat
 echo "bdee bdee bdee, That's All Folks!"
 
 
-}  >${logbase}.out  2>${logbase}.err
+}  > ${logbase}.out 2>${logbase}.err
 
 mv ${logbase}.out ${logdir#file:/}
 mv ${logbase}.err ${logdir#file:/}

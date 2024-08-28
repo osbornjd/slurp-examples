@@ -13,8 +13,6 @@ ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 neventsper=${11:-1000}
 logdir=${12:-.}
 histdir=${13:-.}
-subdir=${14}
-payload=(`echo ${15} | tr ","  " "`) # array of files to be rsynced
 
 sighandler()
 {
@@ -38,11 +36,6 @@ hostname
 source /opt/sphenix/core/bin/sphenix_setup.sh -n ${7}
 
 export ODBCINI=./odbc.ini
-
-# Stagein
-for i in ${payload[@]}; do
-    cp --verbose ${subdir}/${i} .
-done
 
 #______________________________________________________________________________________ started __
 #
