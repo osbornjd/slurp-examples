@@ -29,11 +29,11 @@ PHYS_DST_STREAMING_EVENT_run2pp:
                 filelist
          where 
            ( 
-             (filename  like '/bbox%/TPC%physics%.evt'   and lastevent>2 ) or
-             (filename  like '/bbox%/TPOT%physics%.evt'  and lastevent>2 ) or
-             (filename  like '/bbox%/physics_intt%.evt'  and lastevent>2 ) or
-             (filename  like '/bbox%/GL1_physics%'       and lastevent>2 ) or
-             (filename  like '/bbox%/physics_mvtx%.evt'  and lastevent>2 )
+             (filename  like '/bbox%/TPC%physics%-0000.evt'   and lastevent>2 ) or
+             (filename  like '/bbox%/TPOT%physics%-0000.evt'  and lastevent>2 ) or
+             (filename  like '/bbox%/physics_intt%-0000.evt'  and lastevent>2 ) or
+             (filename  like '/bbox%/GL1_physics%-0000.evt'   and lastevent>2 ) or
+             (filename  like '/bbox%/physics_mvtx%-0000.evt'  and lastevent>2 )
            )
                 {run_condition}
 
