@@ -163,7 +163,6 @@ cat inputfiles.list | while read -r f; do
     
 done
 
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files ${inputlist}
 #______________________________________________________________________________________________
 
 touch gl1.list
