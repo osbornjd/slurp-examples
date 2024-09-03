@@ -15,7 +15,6 @@ PHYS_DST_STREAMING_EVENT_run2pp:
      neventsper: 1000
      comment :    "---"
      rsync   : "./slurp-examples/sPHENIX/cosmics/*,cups.py,bachi.py,odbc.ini"
-
    input:
       db: daqdb
       direct_path: /sphenix/lustre01/sphnxpro/{mode}/*/physics/
@@ -26,6 +25,7 @@ PHYS_DST_STREAMING_EVENT_run2pp:
                 0                                                                                                   as segment     , 
                 string_agg( distinct split_part(filename,'/',-1), ' ' )                                             as files       ,   
                 string_agg( distinct split_part(filename,'/',-1) || ':' || firstevent || ':' || lastevent, ' ' )    as fileranges  
+
          from filelist
          where 
            ( 
