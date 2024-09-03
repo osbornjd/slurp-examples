@@ -54,11 +54,9 @@ else
    done
 fi
 
-while read -r fname; do
-   echo $fname
-done < inputfiles.list
-
-
+#while read -r fname; do
+#   echo $fname
+#done < inputfiles.list
 
 #______________________________________________________________________________________________
 # Map TPC input files into filelists
