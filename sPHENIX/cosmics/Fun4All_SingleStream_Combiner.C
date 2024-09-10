@@ -23,7 +23,7 @@
 #include <ffamodules/SyncReco.h>
 
 R__LOAD_LIBRARY(libfun4all.so)
-R__LOAD_LIBRARY(libffamodules.so)
+  R__LOAD_LIBRARY(libffamodules.so)
 R__LOAD_LIBRARY(libfun4allraw.so)
 R__LOAD_LIBRARY(libffarawmodules.so)
 
@@ -34,11 +34,11 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
 				   const string &outdir = "/sphenix/lustre01/sphnxpro/commissioning/slurp/tpccosmics/",
 				   const string &type = "beam",
 				   const int neventsper = 100,
-		        const string &input_gl1file = "gl1daq.list",
-		        const string &input_tpcfile00 = "tpc00.list",
-		        const string &input_inttfile00 = "intt0.list",
-                        const string &input_mvtxfile00 = "mvtx0.list",
-                        const string &input_tpotfile = "tpot.list")
+				   const string &input_gl1file = "gl1daq.list",
+				   const string &input_tpcfile00 = "tpc00.list",
+				   const string &input_inttfile00 = "intt0.list",
+				   const string &input_mvtxfile00 = "mvtx0.list",
+				   const string &input_tpotfile = "tpot.list")
 {
 // GL1 which provides the beam clock reference (if we ran with GL1)
   vector<string> gl1_infile;
@@ -88,19 +88,19 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
   {
     if (isGood(iter))
     {
-    SingleInttPoolInput *intt_sngl = new SingleInttPoolInput("INTT_" + to_string(i));
-    //intt_sngl->Verbosity(3);
-    intt_sngl->SetNegativeBco(1);
-    intt_sngl->SetBcoRange(2);
+      SingleInttPoolInput *intt_sngl = new SingleInttPoolInput("INTT_" + to_string(i));
+      //intt_sngl->Verbosity(3);
+      intt_sngl->SetNegativeBco(120-23);
+      intt_sngl->SetBcoRange(500);
     
-    auto pos = iter.find("intt");
-    std::string num = iter.substr(pos+4, 1);
-    readoutNumber = "INTT"+num;
-    intt_sngl->setHitContainerName("INTTRAWHIT_" + num);
+      auto pos = iter.find("intt");
+      std::string num = iter.substr(pos+4, 1);
+      readoutNumber = "INTT"+num;
+      intt_sngl->setHitContainerName("INTTRAWHIT_" + num);
     
-    intt_sngl->AddListFile(iter);
-    in->registerStreamingInput(intt_sngl, InputManagerType::INTT);
-    i++;
+      intt_sngl->AddListFile(iter);
+      in->registerStreamingInput(intt_sngl, InputManagerType::INTT);
+      i++;
     }
   }
   i = 0;
@@ -113,22 +113,22 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
       std::string filepath, felix;
       std::ifstream ifs(iter);
       while(std::getline(ifs, filepath))
-	{
-	  auto pos = filepath.find("mvtx");
-	  felix = filepath.substr(pos+4, 1);
-	  break;
-	}
+      {
+	auto pos = filepath.find("mvtx");
+	felix = filepath.substr(pos+4, 1);
+	break;
+      }
       readoutNumber = "MVTX"+felix;
-    SingleMvtxPoolInput *mvtx_sngl = new SingleMvtxPoolInput("MVTX_" + to_string(i));
+      SingleMvtxPoolInput *mvtx_sngl = new SingleMvtxPoolInput("MVTX_" + to_string(i));
 //    mvtx_sngl->Verbosity(5);
-    mvtx_sngl->SetBcoRange(100);
-    mvtx_sngl->SetNegativeBco(100);
+      mvtx_sngl->SetBcoRange(100);
+      mvtx_sngl->SetNegativeBco(500);
     
-    mvtx_sngl->setHitContainerName("MVTXRAWHIT_" + felix);
-    mvtx_sngl->setRawEventHeaderName("MVTXRAWEVTHEADER_" + felix);
-    mvtx_sngl->AddListFile(iter);
-    in->registerStreamingInput(mvtx_sngl, InputManagerType::MVTX);
-    i++;
+      mvtx_sngl->setHitContainerName("MVTXRAWHIT_" + felix);
+      mvtx_sngl->setRawEventHeaderName("MVTXRAWEVTHEADER_" + felix);
+      mvtx_sngl->AddListFile(iter);
+      in->registerStreamingInput(mvtx_sngl, InputManagerType::MVTX);
+      i++;
     }
   }
   i = 0;
@@ -141,21 +141,22 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
       std::string filepath, ebdc;
       std::ifstream ifs(iter);
       while(std::getline(ifs, filepath))
-	{
-	  auto pos = filepath.find("ebdc");
-	  ebdc = filepath.substr(pos+4, 2);
-	  break;
-	}
+      {
+	auto pos = filepath.find("ebdc");
+	ebdc = filepath.substr(pos+4, 2);
+	break;
+      }
 
-    SingleTpcPoolInput *tpc_sngl = new SingleTpcPoolInput("TPC_" + to_string(i));
+      SingleTpcPoolInput *tpc_sngl = new SingleTpcPoolInput("TPC_" + to_string(i));
 //    tpc_sngl->Verbosity(2);
-    //   tpc_sngl->DryRun();
-    readoutNumber = "TPC"+ebdc;
-    tpc_sngl->SetBcoRange(5);
-    tpc_sngl->setHitContainerName("TPCRAWHIT_" + ebdc);
-    tpc_sngl->AddListFile(iter);
-    in->registerStreamingInput(tpc_sngl, InputManagerType::TPC);
-    i++;
+      //   tpc_sngl->DryRun();
+      readoutNumber = "TPC"+ebdc;
+      tpc_sngl->SetBcoRange(5);
+      tpc_sngl->SetMaxTpcTimeSamples(1024);
+      tpc_sngl->setHitContainerName("TPCRAWHIT_" + ebdc);
+      tpc_sngl->AddListFile(iter);
+      in->registerStreamingInput(tpc_sngl, InputManagerType::TPC);
+      i++;
     }
   }
   i = 0;
@@ -164,14 +165,14 @@ void Fun4All_SingleStream_Combiner(int nEvents = 0,
   {
     if (isGood(iter))
     {
-    SingleMicromegasPoolInput *mm_sngl = new SingleMicromegasPoolInput("MICROMEGAS_" + to_string(i));
-    //   sngl->Verbosity(3);
-    mm_sngl->SetBcoRange(5);
-    mm_sngl->SetNegativeBco(2);
-    mm_sngl->AddListFile(iter);
-    in->registerStreamingInput(mm_sngl, InputManagerType::MICROMEGAS);
-    readoutNumber = "TPOT";
-    i++;
+      SingleMicromegasPoolInput *mm_sngl = new SingleMicromegasPoolInput("MICROMEGAS_" + to_string(i));
+      //   sngl->Verbosity(3);
+      mm_sngl->SetBcoRange(10);
+      mm_sngl->SetNegativeBco(2);
+      mm_sngl->AddListFile(iter);
+      in->registerStreamingInput(mm_sngl, InputManagerType::MICROMEGAS);
+      readoutNumber = "TPOT";
+      i++;
     }
   }
 
@@ -233,7 +234,7 @@ bool isGood(const string &infile)
     {
       goodfile = true;
     }
-      intest.close();
+    intest.close();
   }
   return goodfile;
 }
