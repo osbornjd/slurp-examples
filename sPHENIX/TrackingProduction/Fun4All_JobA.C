@@ -68,6 +68,7 @@ void Fun4All_JobA(
 	   int runNumber = runseg.first;
 	   int segment = runseg.second;
 	   rc->set_IntFlag("RUNNUMBER", runNumber);
+	   rc->set_IntFlag("RUNSEGMENT", segment);
 	   rc->set_uint64Flag("TIMESTAMP", runNumber);
 	}
       std::string inputname = "InputManager" + std::to_string(i);
@@ -232,6 +233,7 @@ void Fun4All_JobA(
   auto tpcqa = new TpcSeedsQA;
   tpcqa->setTrackMapName("TpcSvtxTrackMap");
   tpcqa->setVertexMapName("TpcSvtxVertexMap");
+  tpcqa->setSegment(rc->get_IntFlag("RUNSEGMENT");
   se->registerSubsystem(tpcqa);
 
   auto tpcsiliconqa = new TpcSiliconQA;

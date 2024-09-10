@@ -6,6 +6,7 @@
 #include <QA.C>
 #include <GlobalVariables.C>
 #include <Trkr_Clustering.C>
+#include <Trkr_TpcReadoutInit.C>
 
 #include <fun4all/Fun4AllUtils.h>
 #include <fun4all/Fun4AllDstInputManager.h>
@@ -42,7 +43,7 @@ void Fun4All_TrkrHitSet_Unpacker(
 {
 
   gSystem->Load("libg4dst.so");
-  
+
   auto se = Fun4AllServer::instance();
   se->Verbosity(1);
   auto rc = recoConsts::instance();
