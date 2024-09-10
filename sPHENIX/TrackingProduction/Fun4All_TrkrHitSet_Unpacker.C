@@ -6,7 +6,6 @@
 #include <QA.C>
 #include <GlobalVariables.C>
 #include <Trkr_Clustering.C>
-#include <Trkr_TpcReadoutInit.C>
 
 #include <fun4all/Fun4AllUtils.h>
 #include <fun4all/Fun4AllDstInputManager.h>
