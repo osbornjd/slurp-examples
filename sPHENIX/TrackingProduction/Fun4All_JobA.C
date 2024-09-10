@@ -233,7 +233,7 @@ void Fun4All_JobA(
   auto tpcqa = new TpcSeedsQA;
   tpcqa->setTrackMapName("TpcSvtxTrackMap");
   tpcqa->setVertexMapName("TpcSvtxVertexMap");
-  tpcqa->setSegment(rc->get_IntFlag("RUNSEGMENT");
+  tpcqa->setSegment(rc->get_IntFlag("RUNSEGMENT"));
   se->registerSubsystem(tpcqa);
 
   auto tpcsiliconqa = new TpcSiliconQA;
