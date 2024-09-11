@@ -110,7 +110,7 @@ void Fun4All_Job0(
   out->AddNode("EventHeader");
   out->AddNode("TRKR_CLUSTER");
   out->AddNode("TRKR_CLUSTERCROSSINGASSOC");
-  if(G4TPC::ENABLE_CENTRAL_MEMBRANE_HITS)
+  if(G4TPC::ENABLE_CENTRAL_MEMBRANE_CLUSTERING)
   {
     out->AddNode("LASER_CLUSTER");
   }
