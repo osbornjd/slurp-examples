@@ -14,6 +14,8 @@ neventsper=${11:-1000}
 logdir=${12:-.}
 comment=${13}
 histdir=${14:-.}
+subdir=${15}
+payload=(`echo ${16} | tr ","  " "`) # array of files to be rsynced
 
 sighandler()
 {
@@ -35,17 +37,33 @@ export HOME=/sphenix/u/${USER}
 source /opt/sphenix/core/bin/sphenix_setup.sh -n ${5}
 
 export ODBCINI=./odbc.ini
- 
-echo ${inputs[@]}
+
+echo "PAYLOAD"
+for i in ${payload[@]}; do
+    cp --verbose ${subdir}/${i} .
+done
 
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
 
+echo "INPUTS" 
+if [[ "${9}" == *"dbinput"* ]]; then
+   ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} getinputs >> inputfiles.list
+else
+   for i in ${inputs[@]}; do
+      echo $i >> inputfiles.list
+   done
+fi
+
+#while read -r fname; do
+#   echo $fname
+#done < inputfiles.list
 
 #______________________________________________________________________________________________
 # Map TPC input files into filelists
 # TPC_ebdc23_cosmics-00030117-0009.evt test%%_cosmics*
 inputlist=""
-for f in "${inputs[@]}"; do
+#for f in "${inputs[@]}"; do
+cat inputfiles.list | while read -r f; do
     b=$( basename $f )
     # TPC files
     if [[ $b =~ "TPC_ebdc" ]]; then
@@ -145,7 +163,6 @@ for f in "${inputs[@]}"; do
     
 done
 
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files ${inputlist}
 #______________________________________________________________________________________________
 
 touch gl1.list

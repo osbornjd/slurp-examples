@@ -11,6 +11,8 @@ dbtag=${8}
 inputs=(`echo ${9} | tr "," " "`)  # array of input files 
 ranges=(`echo ${10} | tr "," " "`)  # array of input files with ranges appended
 logdir=${11:-.}
+subdir=${13}
+payload=(`echo ${14} | tr ","  " "`) # array of files to be rsynced
 
 sighandler()
 {
@@ -33,11 +35,6 @@ source /opt/sphenix/core/bin/sphenix_setup.sh -n ${7}
 
 export ODBCINI=./odbc.ini
 
-#______________________________________________________________________________________ started __
-#
-./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
-#_________________________________________________________________________________________________
-
 echo ..............................................................................................
 echo $@
 echo .............................................................................................. 
@@ -50,13 +47,27 @@ echo outdir:  $outdir
 echo build:   $build
 echo dbtag:   $dbtag
 echo inputs:  ${inputs[@]}
+echo subdir:  ${subdir}
+echo payload: ${payload[@]}
 
 echo .............................................................................................. 
+
+for i in ${payload[@]}; do
+    cp --verbose ${subdir}/${i} .
+done
+
+#______________________________________________________________________________________ started __
+#
+./cups.py -r ${runnumber} -s ${segment} -d ${outbase} started
+#_________________________________________________________________________________________________
 
 for i in ${inputs[@]}; do
    cp -v ${i} .
    echo $( basename $i ) >> inlist   
 done
+
+
+
 
 #$$$./cups.py -r ${runnumber} -s ${segment} -d ${outbase} inputs --files "$( cat inlist )"
 ./cups.py -r ${runnumber} -s ${segment} -d ${outbase} running
