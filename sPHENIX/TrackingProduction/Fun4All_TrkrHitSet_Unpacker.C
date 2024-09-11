@@ -42,7 +42,7 @@ void Fun4All_TrkrHitSet_Unpacker(
 {
 
   gSystem->Load("libg4dst.so");
-  
+
   auto se = Fun4AllServer::instance();
   se->Verbosity(1);
   auto rc = recoConsts::instance();
