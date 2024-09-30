@@ -95,6 +95,10 @@ void Fun4All_JobC(
   actsFit->setFieldMap(G4MAGNET::magfield_tracking);
   se->registerSubsystem(actsFit);
   
+  
+  auto cleaner = new PHTrackCleaner();
+  cleaner->Verbosity(0);
+  se->registerSubsystem(cleaner);
 
   PHSimpleVertexFinder *finder = new PHSimpleVertexFinder;
   finder->Verbosity(0);
